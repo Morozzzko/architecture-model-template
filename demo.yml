@@ -1,0 +1,719 @@
+# The configurations that used for the recording, feel free to edit them
+config:
+
+  # Specify a command to be executed
+  # like `/bin/bash -l`, `ls`, or any other commands
+  # the default is bash for Linux
+  # or powershell.exe for Windows
+  command: /usr/local/bin/fish
+  
+  # Specify the current working directory path
+  # the default is the current working directory path
+  cwd: /Users/moroz/projects/mine/c4template
+  
+  # Export additional ENV variables
+  env:
+    recording: true
+  
+  # Explicitly set the number of columns
+  # or use `auto` to take the current
+  # number of columns of your shell
+  cols: 122
+  
+  # Explicitly set the number of rows
+  # or use `auto` to take the current
+  # number of rows of your shell
+  rows: 26
+  
+  # Amount of times to repeat GIF
+  # If value is -1, play once
+  # If value is 0, loop indefinitely
+  # If value is a positive number, loop n times
+  repeat: 0
+  
+  # Quality
+  # 1 - 100
+  quality: 100
+  
+  # Delay between frames in ms
+  # If the value is `auto` use the actual recording delays
+  frameDelay: auto
+  
+  # Maximum delay between frames in ms
+  # Ignored if the `frameDelay` isn't set to `auto`
+  # Set to `auto` to prevent limiting the max idle time
+  maxIdleTime: 2000
+  
+  # The surrounding frame box
+  # The `type` can be null, window, floating, or solid`
+  # To hide the title use the value null
+  # Don't forget to add a backgroundColor style with a null as type
+  frameBox:
+    type: floating
+    title: Terminalizer
+    style:
+      border: 0px black solid
+      # boxShadow: none
+      # margin: 0px
+  
+  # Add a watermark image to the rendered gif
+  # You need to specify an absolute path for
+  # the image on your machine or a URL, and you can also
+  # add your own CSS styles
+  watermark:
+    imagePath: null
+    style:
+      position: absolute
+      right: 15px
+      bottom: 15px
+      width: 100px
+      opacity: 0.9
+  
+  # Cursor style can be one of
+  # `block`, `underline`, or `bar`
+  cursorStyle: block
+  
+  # Font family
+  # You can use any font that is installed on your machine
+  # in CSS-like syntax
+  fontFamily: "Monaco, Lucida Console, Ubuntu Mono, Monospace"
+  
+  # The size of the font
+  fontSize: 12
+  
+  # The height of lines
+  lineHeight: 1
+  
+  # The spacing between letters
+  letterSpacing: 0
+  
+  # Theme
+  theme:
+    background: "transparent"
+    foreground: "#afafaf"
+    cursor: "#c7c7c7"
+    black: "#232628"
+    red: "#fc4384"
+    green: "#b3e33b"
+    yellow: "#ffa727"
+    blue: "#75dff2"
+    magenta: "#ae89fe"
+    cyan: "#708387"
+    white: "#d5d5d0"
+    brightBlack: "#626566"
+    brightRed: "#ff7fac"
+    brightGreen: "#c8ed71"
+    brightYellow: "#ebdf86"
+    brightBlue: "#75dff2"
+    brightMagenta: "#ae89fe"
+    brightCyan: "#b1c6ca"
+    brightWhite: "#f9f9f4"
+  
+# Records, feel free to edit them
+records:
+  - delay: 1238
+    content: "\e]0;fish /Users/moroz/projects/mine/c4template\a\e[30m\e(B\e[m\e[38;5;237m⏎\e(B\e[m                                                                                                                         \r⏎ \r\e[KWelcome to fish, the friendly interactive shell\r\n"
+  - delay: 25
+    content: "\e[?2004h"
+  - delay: 21
+    content: "\e]0;fish /Users/moroz/projects/mine/c4template\a\e[30m\e(B\e[m\r\r\e[1m\e[37m\e[42m[I]\e(B\e[m \e[97m\e[46m⋊>\e(B\e[m \e[38;2;153;153;0m~/p/m/c4template\e(B\e[m on \e[32mmain\e(B\e[m ⨯ \e[K\e[80C\e[38;2;85;85;85m05:03:42\e(B\e[m\r\e[114C\r\e[34C"
+  - delay: 5778
+    content: "d\e[79C\e[38;2;85;85;85m05:03:42\e(B\e[m\r\e[114C\r\e[35C\e[79C\e[38;2;85;85;85m05:03:42\e(B\e[m\r\e[114C\r\e[35C\b\e[38;2;255;0;0md\e[79C\e[30m\e(B\e[m\e[38;2;85;85;85m05:03:42\e(B\e[m\r\e[114C\r\e[35C"
+  - delay: 5
+    content: "\e[38;2;85;85;85mip repl\e[72C\e[30m\e(B\e[m\e[38;2;85;85;85m05:03:42\e(B\e[m\r\e[114C\r\e[35C"
+  - delay: 91
+    content: "\e[38;2;255;0;0mi\e[38;2;85;85;85mp repl\e[72C\e[30m\e(B\e[m\e[38;2;85;85;85m05:03:42\e(B\e[m\r\e[114C\r\e[36C\e[78C\e[38;2;85;85;85m05:03:42\e(B\e[m\r\e[114C\r\e[36C"
+  - delay: 188
+    content: "\e[38;2;255;0;0mp\e[38;2;85;85;85m repl\e[72C\e[30m\e(B\e[m\e[38;2;85;85;85m05:03:42\e(B\e[m\r\e[114C\r\e[37C\e[77C\e[38;2;85;85;85m05:03:42\e(B\e[m\r\e[114C\r\e[37C\b\b\b\e[38;2;0;95;215mdip\e[38;2;85;85;85m repl\e[72C\e[30m\e(B\e[m\e[38;2;85;85;85m05:03:42\e(B\e[m\r\e[114C\r\e[37C"
+  - delay: 28
+    content: "\e[38;2;0;95;215m \e[38;2;85;85;85mrepl\e[72C\e[30m\e(B\e[m\e[38;2;85;85;85m05:03:42\e(B\e[m\r\e[114C\r\e[38C\e[76C\e[38;2;85;85;85m05:03:42\e(B\e[m\r\e[114C\r\e[38C\b \e[38;2;85;85;85mrepl\e[72C\e[30m\e(B\e[m\e[38;2;85;85;85m05:03:42\e(B\e[m\r\e[114C\r\e[38C"
+  - delay: 77
+    content: "r\e[38;2;85;85;85mepl\e[72C\e[30m\e(B\e[m\e[38;2;85;85;85m05:03:42\e(B\e[m\r\e[114C\r\e[39C\e[75C\e[38;2;85;85;85m05:03:42\e(B\e[m\r\e[114C\r\e[39C\b\e[38;2;0;175;255m\e[4mr\e[38;2;85;85;85m\e[24mepl\e[72C\e[30m\e(B\e[m\e[38;2;85;85;85m05:03:42\e(B\e[m\r\e[114C\r\e[39C"
+  - delay: 165
+    content: "\e[38;2;0;175;255m\e[4me\e[38;2;85;85;85m\e[24mpl\e[72C\e[30m\e(B\e[m\e[38;2;85;85;85m05:03:42\e(B\e[m\r\e[114C\r\e[40C\e[74C\e[38;2;85;85;85m05:03:42\e(B\e[m\r\e[114C\r\e[40C"
+  - delay: 51
+    content: "\e[38;2;0;175;255m\e[4mp\e[38;2;85;85;85m\e[24ml\e[72C\e[30m\e(B\e[m\e[38;2;85;85;85m05:03:42\e(B\e[m\r\e[114C\r\e[41C\e[73C\e[38;2;85;85;85m05:03:42\e(B\e[m\r\e[114C\r\e[41C\b\b\b\e[38;2;0;175;255mrep\e[38;2;85;85;85ml\e[72C\e[30m\e(B\e[m\e[38;2;85;85;85m05:03:42\e(B\e[m\r\e[114C\r\e[41C"
+  - delay: 168
+    content: "\e[38;2;0;175;255ml\e[72C\e[30m\e(B\e[m\e[38;2;85;85;85m05:03:42\e(B\e[m\r\e[114C\r\e[42C\e[72C\e[38;2;85;85;85m05:03:42\e(B\e[m\r\e[114C\r\e[42C"
+  - delay: 127
+    content: "\e[72C\e[38;2;85;85;85m05:03:42\e(B\e[m\r\e[114C\r\e[42C\r\n\e[30m\e(B\e[m\e[?2004l\e]0;dip /Users/moroz/projects/mine/c4template\a\e[30m\e(B\e[m\r"
+  - delay: 1098
+    content: "Creating c4model_structurizr_run ... \r\r\n"
+  - delay: 88
+    content: "\e[1A\e[2K\rCreating c4model_structurizr_run ... \e[32mdone\e[0m\r\e[1B"
+  - delay: 8515
+    content: "Welcome to Structurizr REPL\r\n\r\nType `help structurizr` to get a list of commands\r\n\e[0G"
+  - delay: 396
+    content: '[1] pry(#<Structurizr::REPL::Context>)> '
+  - delay: 110
+    content: w
+  - delay: 279
+    content: o
+  - delay: 141
+    content: r
+  - delay: 108
+    content: k
+  - delay: 117
+    content: s
+  - delay: 129
+    content: p
+  - delay: 77
+    content: a
+  - delay: 79
+    content: c
+  - delay: 198
+    content: e
+  - delay: 31
+    content: .
+  - delay: 214
+    content: 'n'
+  - delay: 70
+    content: a
+  - delay: 115
+    content: m
+  - delay: 99
+    content: e
+  - delay: 206
+    content: "\r\n"
+  - delay: 126
+    content: "\e[1A\e[0G[1] pry(#<Structurizr::REPL::Context>)> workspace.name\e[1B\e[0G"
+  - delay: 107
+    content: '=> '
+  - delay: 8
+    content: "\e[31m\e[1;31m\"\e[0m\e[31mBig Bank plc\e[1;31m\"\e[0m\e[31m\e[0m\r\n"
+  - delay: 51
+    content: '[2] pry(#<Structurizr::REPL::Context>)> '
+  - delay: 401
+    content: w
+  - delay: 97
+    content: o
+  - delay: 94
+    content: r
+  - delay: 100
+    content: k
+  - delay: 112
+    content: s
+  - delay: 117
+    content: p
+  - delay: 80
+    content: a
+  - delay: 88
+    content: c
+  - delay: 188
+    content: e
+  - delay: 60
+    content: .
+  - delay: 134
+    content: d
+  - delay: 153
+    content: e
+  - delay: 148
+    content: s
+  - delay: 99
+    content: c
+  - delay: 203
+    content: r
+  - delay: 47
+    content: i
+  - delay: 178
+    content: p
+  - delay: 109
+    content: t
+  - delay: 87
+    content: i
+  - delay: 161
+    content: o
+  - delay: 190
+    content: 'n'
+  - delay: 706
+    content: "\r\n"
+  - delay: 20
+    content: "\e[1A\e[0G[2] pry(#<Structurizr::REPL::Context>)> workspace.description\e[1B\e[0G"
+  - delay: 117
+    content: "=> \e[31m\e[1;31m\"\e[0m\e[31mThis is an example workspace to illustrate the key features of Structurizr, via the DSL, based around a fictional online banking system.\e[1;31m\"\e[0m\e[31m\e[0m\r\n"
+  - delay: 78
+    content: '[3] pry(#<Structurizr::REPL::Context>)> '
+  - delay: 740
+    content: s
+  - delay: 95
+    content: o
+  - delay: 166
+    content: f
+  - delay: 183
+    content: t
+  - delay: 111
+    content: w
+  - delay: 70
+    content: a
+  - delay: 150
+    content: r
+  - delay: 179
+    content: e
+  - delay: 156
+    content: _
+  - delay: 146
+    content: s
+  - delay: 97
+    content: 'y'
+  - delay: 104
+    content: s
+  - delay: 140
+    content: t
+  - delay: 175
+    content: e
+  - delay: 60
+    content: m
+  - delay: 136
+    content: s
+  - delay: 137
+    content: "\r\n"
+  - delay: 14
+    content: "\e[1A\e[0G[3] pry(#<Structurizr::REPL::Context>)> software_systems\e[1B\e[0G"
+  - delay: 125
+    content: "=> \e[32m#<Java::JavaUtil::LinkedHashSet: [<SoftwareSystem: \"E-mail System\">, <SoftwareSystem: \"ATM\">, <SoftwareSystem: \"Mainframe Banking System\">, <SoftwareSystem: \"Internet Banking System\">]>\e[0m\r\n"
+  - delay: 41
+    content: '[4] pry(#<Structurizr::REPL::Context>)> '
+  - delay: 8355
+    content: s
+  - delay: 147
+    content: o
+  - delay: 184
+    content: f
+  - delay: 337
+    content: t
+  - delay: 175
+    content: w
+  - delay: 150
+    content: a
+  - delay: 165
+    content: r
+  - delay: 170
+    content: e
+  - delay: 107
+    content: _
+  - delay: 156
+    content: s
+  - delay: 81
+    content: 'y'
+  - delay: 106
+    content: s
+  - delay: 139
+    content: t
+  - delay: 162
+    content: e
+  - delay: 56
+    content: m
+  - delay: 131
+    content: s
+  - delay: 117
+    content: .
+  - delay: 214
+    content: m
+  - delay: 102
+    content: a
+  - delay: 121
+    content: p
+  - delay: 160
+    content: ' '
+  - delay: 163
+    content: '{'
+  - delay: 133
+    content: ' '
+  - delay: 240
+    content: _
+  - delay: 184
+    content: '1'
+  - delay: 157
+    content: .
+  - delay: 101
+    content: c
+  - delay: 116
+    content: o
+  - delay: 182
+    content: 'n'
+  - delay: 65
+    content: t
+  - delay: 79
+    content: a
+  - delay: 83
+    content: i
+  - delay: 156
+    content: 'n'
+  - delay: 56
+    content: e
+  - delay: 136
+    content: r
+  - delay: 66
+    content: s
+  - delay: 62
+    content: .
+  - delay: 191
+    content: c
+  - delay: 67
+    content: o
+  - delay: 190
+    content: u
+  - delay: 159
+    content: 'n'
+  - delay: 38
+    content: t
+  - delay: 44
+    content: ' '
+  - delay: 199
+    content: '}'
+  - delay: 271
+    content: "\r\n"
+  - delay: 14
+    content: "\e[1A\e[0G[4] pry(#<Structurizr::REPL::Context>)> software_systems.map { _1.containers.count }\e[1B\e[0G"
+  - delay: 111
+    content: '=> ['
+  - delay: 8
+    content: "\e[1;34m0\e[0m,"
+  - delay: 13
+    content: " \e[1;34m0\e[0m, \e[1;34m0\e[0m, \e[1;34m5\e[0m]\r\n"
+  - delay: 31
+    content: '[5] pry(#<Structurizr::REPL::Context>)> '
+  - delay: 1697
+    content: s
+  - delay: 80
+    content: o
+  - delay: 112
+    content: f
+  - delay: 152
+    content: t
+  - delay: 112
+    content: w
+  - delay: 84
+    content: a
+  - delay: 164
+    content: r
+  - delay: 179
+    content: e
+  - delay: 120
+    content: _
+  - delay: 159
+    content: s
+  - delay: 73
+    content: 'y'
+  - delay: 122
+    content: s
+  - delay: 102
+    content: t
+  - delay: 184
+    content: e
+  - delay: 52
+    content: m
+  - delay: 134
+    content: s
+  - delay: 96
+    content: .
+  - delay: 690
+    content: t
+  - delay: 58
+    content: o
+  - delay: 211
+    content: _
+  - delay: 117
+    content: a
+  - delay: 179
+    content: .
+  - delay: 206
+    content: l
+  - delay: 75
+    content: a
+  - delay: 81
+    content: s
+  - delay: 149
+    content: t
+  - delay: 69
+    content: .
+  - delay: 234
+    content: i
+  - delay: 1509
+    content: "\b\e[K"
+  - delay: 196
+    content: "\b\e[K"
+  - delay: 589
+    content: "\e[26D"
+  - delay: 758
+    content: "isoftware_systems.to_a.last\e[26D"
+  - delay: 177
+    content: "nsoftware_systems.to_a.last\e[26D"
+  - delay: 46
+    content: "tsoftware_systems.to_a.last\e[26D"
+  - delay: 236
+    content: "esoftware_systems.to_a.last\e[26D"
+  - delay: 149
+    content: "rsoftware_systems.to_a.last\e[26D"
+  - delay: 124
+    content: "nsoftware_systems.to_a.last\e[26D"
+  - delay: 384
+    content: "esoftware_systems.to_a.last\e[26D"
+  - delay: 180
+    content: "tsoftware_systems.to_a.last\e[26D"
+  - delay: 358
+    content: "_software_systems.to_a.last\e[26D"
+  - delay: 648
+    content: "bsoftware_systems.to_a.last\e[26D"
+  - delay: 62
+    content: "asoftware_systems.to_a.last\e[26D"
+  - delay: 78
+    content: "nsoftware_systems.to_a.last\e[26D"
+  - delay: 198
+    content: "ksoftware_systems.to_a.last\e[26D"
+  - delay: 224
+    content: "isoftware_systems.to_a.last\e[26D"
+  - delay: 152
+    content: "nsoftware_systems.to_a.last\e[26D"
+  - delay: 74
+    content: "gsoftware_systems.to_a.last\e[26D"
+  - delay: 187
+    content: "_software_systems.to_a.last\e[26D"
+  - delay: 156
+    content: "ssoftware_systems.to_a.last\e[26D"
+  - delay: 87
+    content: "ysoftware_systems.to_a.last\e[26D"
+  - delay: 92
+    content: "ssoftware_systems.to_a.last\e[26D"
+  - delay: 124
+    content: "tsoftware_systems.to_a.last\e[26D"
+  - delay: 169
+    content: "esoftware_systems.to_a.last\e[26D"
+  - delay: 78
+    content: "msoftware_systems.to_a.last\e[26D"
+  - delay: 91
+    content: " software_systems.to_a.last\e[26D"
+  - delay: 152
+    content: "=software_systems.to_a.last\e[26D"
+  - delay: 103
+    content: " software_systems.to_a.last\e[26D"
+  - delay: 262
+    content: "\e[26C\r\n"
+  - delay: 8
+    content: "\e[1A\e[0G[5] pry(#<Structurizr::REPL::Context>)> internet_banking_system = software_systems.to_a.last\e[1B\e[0G"
+  - delay: 103
+    content: '=> '
+  - delay: 14
+    content: "<\e[35mSoftwareSystem\e[0m: \e[31m\e[1;31m\"\e[0m\e[31mInternet Banking System\e[1;31m\"\e[0m\e[31m\e[0m>\r\n"
+  - delay: 46
+    content: '[6] pry(#<Structurizr::REPL::Context>)> '
+  - delay: 2739
+    content: i
+  - delay: 161
+    content: 'n'
+  - delay: 75
+    content: t
+  - delay: 195
+    content: e
+  - delay: 137
+    content: r
+  - delay: 85
+    content: 'n'
+  - delay: 102
+    content: e
+  - delay: 139
+    content: t
+  - delay: 198
+    content: _
+  - delay: 115
+    content: b
+  - delay: 86
+    content: a
+  - delay: 97
+    content: 'n'
+  - delay: 193
+    content: k
+  - delay: 166
+    content: i
+  - delay: 159
+    content: 'n'
+  - delay: 60
+    content: g
+  - delay: 212
+    content: _
+  - delay: 109
+    content: s
+  - delay: 105
+    content: 'y'
+  - delay: 76
+    content: s
+  - delay: 125
+    content: t
+  - delay: 171
+    content: e
+  - delay: 35
+    content: m
+  - delay: 210
+    content: .
+  - delay: 106
+    content: c
+  - delay: 124
+    content: o
+  - delay: 162
+    content: 'n'
+  - delay: 51
+    content: t
+  - delay: 70
+    content: a
+  - delay: 99
+    content: i
+  - delay: 159
+    content: 'n'
+  - delay: 48
+    content: e
+  - delay: 153
+    content: r
+  - delay: 57
+    content: s
+  - delay: 545
+    content: "\r\n"
+  - delay: 16
+    content: "\e[1A\e[0G[6] pry(#<Structurizr::REPL::Context>)> internet_banking_system.containers\e[1B\e[0G"
+  - delay: 63
+    content: "=> \e[32m#<Java::JavaUtil::HashSet: [<Container: \"Single-Page Application\">, <Container: \"API Application\">, <Container: \"Web Application\">, <Container: \"Database\">, <Container: \"Mobile App\">]>\e[0m\r\n"
+  - delay: 36
+    content: '[7] pry(#<Structurizr::REPL::Context>)> '
+  - delay: 5482
+    content: internet_banking_system.containers
+  - delay: 274
+    content: "\b\e[K"
+  - delay: 501
+    content: "\b\e[K"
+  - delay: 85
+    content: "\b\e[K"
+  - delay: 83
+    content: "\b\e[K"
+  - delay: 85
+    content: "\b\e[K"
+  - delay: 82
+    content: "\b\e[K"
+  - delay: 85
+    content: "\b\e[K"
+  - delay: 84
+    content: "\b\e[K"
+  - delay: 190
+    content: "\b\e[K"
+  - delay: 187
+    content: "\b\e[K"
+  - delay: 182
+    content: i
+  - delay: 130
+    content: d
+  - delay: 214
+    content: "\r\n"
+  - delay: 12
+    content: "\e[1A\e[0G[7] pry(#<Structurizr::REPL::Context>)> internet_banking_system.id\e[1B\e[0G"
+  - delay: 41
+    content: "=> \e[31m\e[1;31m\"\e[0m\e[31m7\e[1;31m\"\e[0m\e[31m\e[0m\r\n"
+  - delay: 26
+    content: '[8] pry(#<Structurizr::REPL::Context>)> '
+  - delay: 593
+    content: internet_banking_system.id
+  - delay: 308
+    content: "\b\e[K"
+  - delay: 186
+    content: "\b\e[K"
+  - delay: 177
+    content: t
+  - delay: 79
+    content: a
+  - delay: 128
+    content: g
+  - delay: 140
+    content: s
+  - delay: 132
+    content: "\r\n"
+  - delay: 10
+    content: "\e[1A\e[0G[8] pry(#<Structurizr::REPL::Context>)> internet_banking_system.tags\e[1B\e[0G"
+  - delay: 41
+    content: '=> '
+  - delay: 7
+    content: "[\e[31m\e[1;31m\"\e[0m\e[31mElement\e[1;31m\"\e[0m\e[31m\e[0m,"
+  - delay: 8
+    content: ' '
+  - delay: 6
+    content: "\e[31m\e[1;31m\"\e[0m\e[31mSoftware System\e[1;31m\"\e[0m\e[31m\e[0m]\r\n"
+  - delay: 40
+    content: '[9] pry(#<Structurizr::REPL::Context>)> '
+  - delay: 1947
+    content: internet_banking_system.tags
+  - delay: 2540
+    content: "\b\e[K"
+  - delay: 187
+    content: "\b\e[K"
+  - delay: 165
+    content: "\b\e[K"
+  - delay: 173
+    content: "\b\e[K"
+  - delay: 95
+    content: r
+  - delay: 171
+    content: e
+  - delay: 69
+    content: l
+  - delay: 97
+    content: a
+  - delay: 118
+    content: t
+  - delay: 60
+    content: i
+  - delay: 155
+    content: o
+  - delay: 190
+    content: 'n'
+  - delay: 44
+    content: s
+  - delay: 142
+    content: h
+  - delay: 181
+    content: i
+  - delay: 187
+    content: p
+  - delay: 98
+    content: s
+  - delay: 104
+    content: "\r\n"
+  - delay: 19
+    content: "\e[1A\e[0G[9] pry(#<Structurizr::REPL::Context>)> internet_banking_system.relationships\e[1B\e[0G"
+  - delay: 72
+    content: '=> '
+  - delay: 13
+    content: "\e[32m#<Java::JavaUtil::LinkedHashSet:0x3ffa0f38>\e[0m\e[0m\r\n"
+  - delay: 46
+    content: '[10] pry(#<Structurizr::REPL::Context>)> '
+  - delay: 4673
+    content: internet_banking_system.relationships
+  - delay: 329
+    content: .
+  - delay: 186
+    content: t
+  - delay: 123
+    content: o
+  - delay: 216
+    content: _
+  - delay: 115
+    content: a
+  - delay: 94
+    content: "\r\n"
+  - delay: 12
+    content: "\e[1A\e[0G[10] pry(#<Structurizr::REPL::Context>)> internet_banking_system.relationships.to_a\e[1B\e[0G"
+  - delay: 67
+    content: '=> ['
+  - delay: 6
+    content: "\e[32m#<Java::ComStructurizrModel::Relationship:0x34a33343>\e[0m\e[0m"
+  - delay: 17
+    content: ','
+  - delay: 6
+    content: "\r\n \e[32m#<Java::ComStructurizrModel::Relationship:0x98722ef>\e[0m\e[0m"
+  - delay: 10
+    content: "]\r\n"
+  - delay: 44
+    content: '[11] pry(#<Structurizr::REPL::Context>)> '
+  - delay: 1937
+    content: "\r\n"
+  - delay: 245
+    content: "\e[2m⏎\e(B\e[m                                                                                                                         \r⏎ \r\e[K\e[?2004h"
+  - delay: 21
+    content: "\e]0;fish /Users/moroz/projects/mine/c4template\a\e[30m\e(B\e[m\r\r\e[1m\e[37m\e[42m[I]\e(B\e[m \e[97m\e[46m⋊>\e(B\e[m \e[38;2;153;153;0m~/p/m/c4template\e(B\e[m on \e[32mmain\e(B\e[m ⨯ \e[K\e[80C\e[38;2;85;85;85m05:05:08\e(B\e[m\r\e[114C\r\e[34C"
+  - delay: 1252
+    content: "\e[80C\e[38;2;85;85;85m05:05:08\e(B\e[m\r\e[114C\r\e[34C\r\n\e[30m\e(B\e[m\e[30m\e(B\e[m\e[?2004l"

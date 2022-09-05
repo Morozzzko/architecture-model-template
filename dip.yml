@@ -1,0 +1,39 @@
+version: '7.1'
+
+compose:
+  files:
+    - docker-compose.yml
+    - docker-compose.$DIP_OS.yml
+  project_name: c4model
+
+environment:
+  WORKSPACE_PATH: workspace.dsl
+  WORKSPACE_JSON_PATH: workspace.json # TODO: replace from workspace.json?
+  OUTPUT_DIR: output/
+
+interaction:
+  lite:
+    description: Start structurizr lite server
+    service: structurizr
+    compose:
+      run_options: [service-ports]
+  cli:
+    description: Run structurizr CLI
+    service: structurizr
+    command: structurizr.sh
+  validate:
+    description: Validate workspace
+    service: structurizr
+    command: structurizr.sh validate -w ${WORKSPACE_PATH}
+  export:
+    description: Export workspace to /output. You have to specify format using -f
+    service: structurizr
+    command: structurizr.sh export -w ${WORKSPACE_PATH} -o ${OUTPUT_DIR}
+  shell:
+    description: Open shell in the CLI container
+    service: structurizr
+    command: bash
+  repl:
+    description: Open workspace REPL
+    service: structurizr
+    command: structurizr-repl $WORKSPACE_JSON_PATH

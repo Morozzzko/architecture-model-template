@@ -1,0 +1,9 @@
+
+version: '2'
+services:
+  structurizr: &structurizr
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/usr/local/structurizr

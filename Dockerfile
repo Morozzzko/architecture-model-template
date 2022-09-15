@@ -41,7 +41,7 @@ RUN mkdir -p "$GEM_HOME" && chmod 777 "$GEM_HOME"
 
 # Install REPL
 
-ARG STRUCTURIZR_GEM_VERSION=1.0.0.rc.1
+ARG STRUCTURIZR_GEM_VERSION=1.0.0.rc.2
 
 RUN jruby -S gem install structurizr -v $STRUCTURIZR_GEM_VERSION
 

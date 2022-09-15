@@ -45,3 +45,24 @@ Basically, what we've got are:
 2. `docs` directory for documentation. It contains an example of embedding diagrams.
 2. `output` directory for all of the CLI-generated outputs. It's gitignored, so feel free to put anything there
 
+
+## License and considerations
+
+This code is licensed under the [MIT license](LICENSE).
+
+However, this repository distributes and incorporates other people's works.
+
+### arc42
+
+This repository contains a derivative of [arc42](https://arc42.org/download#file-based-formats) 8.0 at `docs/arc42`
+
+Modifications:
+
+* Removed images, config and root file
+* `src` directory is now `arc42`
+
+This content is licensed under [Creative Commons Attribution-ShareAlike 4.0 International License.](https://github.com/arc42/arc42-template/blob/master/LICENSE.txt)
+
+### JRuby docker image
+
+Dockerfile contains code from JRuby's official Docker image. It is licensed under MIT. You can see the copyright at [JRuby Docker repo](https://github.com/jruby/docker-jruby/blob/master/LICENSE.md).

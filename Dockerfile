@@ -3,9 +3,6 @@ FROM structurizr/lite:latest
 # Install structurizr CLI on top of Lite
 
 ARG STRUCTURIZR_CLI_VERSION=1.33.1
-ARG STRUCTURIZR_GEM_VERSION=1.26.1
-ENV JRUBY_VERSION 9.4.3.0
-ENV JRUBY_SHA256 b097e08c5669e8a188288e113911d12b4ad2bd67a2c209d6dfa8445d63a4d8c9
 
 RUN apt-get update && apt-get install -y bash curl unzip
 RUN curl -L -o /tmp/structurizr-cli.zip "https://github.com/structurizr/cli/releases/download/v$STRUCTURIZR_CLI_VERSION/structurizr-cli-$STRUCTURIZR_CLI_VERSION.zip" && unzip "/tmp/structurizr-cli.zip" -d /usr/local/bin
@@ -13,6 +10,9 @@ RUN curl -L -o /tmp/structurizr-cli.zip "https://github.com/structurizr/cli/rele
 RUN apt-get update && apt-get install -y libc6-dev --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 # Install JRuby for REPL
+
+ENV JRUBY_VERSION 9.4.3.0
+ENV JRUBY_SHA256 b097e08c5669e8a188288e113911d12b4ad2bd67a2c209d6dfa8445d63a4d8c9
 
 RUN mkdir /opt/jruby \
   && curl -fSL https://repo1.maven.org/maven2/org/jruby/jruby-dist/${JRUBY_VERSION}/jruby-dist-${JRUBY_VERSION}-bin.tar.gz -o /tmp/jruby.tar.gz \
@@ -41,8 +41,9 @@ RUN mkdir -p "$GEM_HOME" && chmod 777 "$GEM_HOME"
 
 # Install REPL
 
+ARG STRUCTURIZR_GEM_VERSION=1.26.1
 RUN jruby -S gem install structurizr -v $STRUCTURIZR_GEM_VERSION
 
-#
+RUN apt-get update && apt-get install adr-tools
 
 WORKDIR /usr/local/structurizr

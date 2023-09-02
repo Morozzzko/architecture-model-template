@@ -37,3 +37,7 @@ interaction:
     description: Open workspace REPL
     service: structurizr
     command: structurizr-repl $WORKSPACE_JSON_PATH
+  push:
+    description: Upload workspace to Structurizr instance
+    service: structurizr
+    command: structurizr.sh push -id ${STRUCTURIZR_WORKSPACE_ID} -key ${STRUCTURIZR_WORKSPACE_KEY} -secret ${STRUCTURIZR_WORKSPACE_SECRET} -url ${STRUCTURIZR_URL} -workspace ${WORKSPACE_JSON_PATH}

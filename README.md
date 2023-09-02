@@ -45,6 +45,29 @@ Basically, what we've got are:
 2. `docs` directory for documentation. It contains an example of embedding diagrams.
 2. `output` directory for all of the CLI-generated outputs. It's gitignored, so feel free to put anything there
 
+## Upload to Structurizr
+
+If you'd like to upload your workspace, you can use `dip cli` to access Structurizr CLI.
+
+There's also a shortcut to upload the workspace – `dip push`. It'll get data from your env and upload the workspace. Here's what you need to provide to env:
+
+* `STRUCTURIZR_WORKSPACE_ID` — workspace ID, what you'd put under `-id ...` in CLI
+* `STRUCTURIZR_WORKSPACE_KEY` — workspace key, `-key ...`
+* `STRUCTURIZR_WORKSPACE_SECRET` — workspace secret, `-secret ...`
+* `STRUCTURIZR_URL` — structurizr instance URL, `-url https:/..`
+    
+If you don't want to handle env yourself, feel free to create `dip.override.yml` with the contents:
+
+```yml
+# dip.override.yml
+environment:
+  STRUCTURIZR_WORKSPACE_ID: 123
+  STRUCTURIZR_WORKSPACE_KEY: key
+  STRUCTURIZR_WORKSPACE_SECRET: key
+  STRUCTURIZR_URL: https://api.structurizr.com
+```
+
+Don't forget to supply your values!
 
 ## License and considerations
 

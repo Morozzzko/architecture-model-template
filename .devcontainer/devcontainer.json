@@ -9,7 +9,7 @@
 	"forwardPorts": [8080],
 
 	// Uncomment the next line to run commands after the container is created.
-	"postCreateCommand": "echo 'Welcome! Use structurizr.sh to interact with your workspace or structurizr-repl to launch REPL",
+	"postCreateCommand": "echo 'Welcome! Use structurizr.sh to interact with your workspace or structurizr-repl to launch REPL'",
 
 	// Configure tool-specific properties.
 	"customizations": {
@@ -19,6 +19,9 @@
 			]
 		  }
 	},
+	"features": {
+		"ghcr.io/devcontainers/features/git:1": {}
+	}
 
 	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "devcontainer"

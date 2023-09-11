@@ -1,0 +1,21 @@
+name: Push workspace to Structurizr
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  push-workspace:
+    runs-on: ubuntu-latest
+    name: Push workspace
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Run structurizr-cli action
+        uses: aidmax/structurizr-cli-action@v1
+        id: test
+        with:
+          id: ${{ secrets.STRUCTURIZR_WORKSPACE_ID }} 
+          key: ${{ secrets.STRUCTURIZR_WORKSPACE_KEY }}
+          secret: ${{ secrets.STRUCTURIZR_WORKSPACE_SECRET }}
+          workspace: workspace.json
+          url: ${{ secrets.STRUCTURIZR_URL }}

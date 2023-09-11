@@ -2,6 +2,10 @@ name: Push workspace to Structurizr
 
 on: 
   workflow_dispatch:
+  # Uncomment the following 3 lines to deploy on each push to main
+  # push:
+  #   branches:
+  #     - main
 
 jobs:
   push-workspace:

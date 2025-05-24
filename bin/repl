@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+#
+# Opens the workspace REPL interface
+# 
+# Usage: bin/repl
+#
+# This script launches the interactive REPL (Read-Eval-Print Loop) for your
+# workspace, allowing you to explore and manipulate the model programmatically.
+
+WORKSPACE_DIR="$(realpath "$(dirname "$0")/..")"
+
+devcontainer exec --workspace-folder "$WORKSPACE_DIR" structurizr-repl $WORKSPACE_JSON_PATH "$@"

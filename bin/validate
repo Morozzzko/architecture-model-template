@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+#
+# Validates the structurizr workspace file for syntax errors and correctness
+# 
+# Usage: bin/validate
+#
+# This script checks your workspace DSL file for any issues before generating
+# diagrams or documentation.
+
+WORKSPACE_DIR="$(realpath "$(dirname "$0")/..")"
+
+devcontainer exec --workspace-folder "$WORKSPACE_DIR" structurizr.sh validate -w workspace.json "$@"

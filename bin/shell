@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+#
+# Opens a shell inside the container
+# 
+# Usage: bin/shell
+#
+# This script gives you a bash shell inside the Structurizr container for
+# advanced operations and troubleshooting.
+
+WORKSPACE_DIR="$(realpath "$(dirname "$0")/..")"
+
+devcontainer exec --workspace-folder "$WORKSPACE_DIR" bash "$@"

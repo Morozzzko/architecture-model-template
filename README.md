@@ -6,13 +6,13 @@ Current tooling is heavily based on [Structurizr](https://structurizr.com/) and 
 
 Here's the description of the setup:
 
-[DIP](https://github.com/bibendi/dip) is the tool of choice for interacting with workspace. We're running Docker with Compose. DIP facilitates and unifies interactions.
+[Dev Containers](https://containers.dev/) is the tool of choice for interacting with workspace. Shell scripts in the `bin` directory facilitate and unify interactions.
 
-[Structurizr Lite](https://structurizr.com/help/lite) for previewing, editing and interacting with workspace through browser. It's by far the most complex tool for the C4 model, and we're including it by default. Run `dip lite` to start it.
+[Structurizr Lite](https://structurizr.com/help/lite) for previewing, editing and interacting with workspace through browser. It's by far the most complex tool for the C4 model, and we're including it by default. Run `./bin/lite` to start it.
 
-[Structurizr CLI](https://github.com/structurizr/cli) for exporting, publishing, workspace validation, and some other automation. Sometimes it's just more handy than running `Lite`. Run `dip cli` to interact with CLI. Alternatively, run `dip validate` to validate the workspace, or `dip export` to export the workspace.
+[Structurizr CLI](https://github.com/structurizr/cli) for exporting, publishing, workspace validation, and some other automation. Sometimes it's just more handy than running `Lite`. Run `./bin/cli` to interact with CLI. Alternatively, run `./bin/validate` to validate the workspace, or `./bin/export` to export the workspace.
 
-[structurizr-ruby](https://github.com/Morozzzko/structurizr-ruby) for JRuby [scripting](https://github.com/structurizr/dsl/blob/master/docs/language-reference.md#scripts) and interactive REPL for querying workspace. Run `dip repl` to open a REPL session
+[structurizr-ruby](https://github.com/Morozzzko/structurizr-ruby) for JRuby [scripting](https://github.com/structurizr/dsl/blob/master/docs/language-reference.md#scripts) and interactive REPL for querying workspace. Run `./bin/repl` to open a REPL session
 
 ![REPL demo session](.github/pics/demo.gif)
 
@@ -22,22 +22,23 @@ GitHub Codespaces for editing on the go.
 
 ## Installation
 
-1. Install `dip` using their [instructions](https://github.com/bibendi/dip#installation)
-2. Run `dip build` to build Docker image with Structurizr Lite, CLI and REPL.
+1. Install [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) for VS Code
+2. Open the repository in VS Code and click "Reopen in Container" when prompted
 3. That's it!
 
 ## Running Structurizr Lite
 
-The template incorporates the latest version of Structurizr Lite. Run `dip lite` to launch it in the current workspace
+The template incorporates the latest version of Structurizr Lite. Run `./bin/lite` to launch it in the current workspace
 
 ## Running Structurizr CLI
 
-In case you need Structurizr CLI for validations, export, pushing, or anything else, there are sample commands to run it. Run `dip ls` for the full list, but here are the basic ones:
+In case you need Structurizr CLI for validations, export, pushing, or anything else, there are sample commands to run it. Here are the basic ones:
 
-* `dip cli` – run Structurizr CLI
-* `dip validate` – shortcut to `structurizr.sh validate -w workspace.dsl`
-* `dip export` – shortcut to `... export -w ... -o output/`
-* `dip push` – to push the workspace to Structurizr Cloud or On-Premise instance
+* `./bin/cli` – run Structurizr CLI
+* `./bin/validate` – shortcut to validate the workspace
+* `./bin/export` – shortcut to export the workspace to the output directory
+* `./bin/push` – to push the workspace to Structurizr Cloud or On-Premise instance
+* `./bin/stop` – stop the running devcontainer
 
 ## GitHub actions
 
@@ -61,7 +62,7 @@ If you have a Structurizr workspace on either structurizr.com or an on-premise i
 
 There are basically three ways to do so:
 
-* `dip push` through structurizr CLI
+* `./bin/push` through structurizr CLI
 * GitHub Actions
 * GitHub Codespaces: use `structurizr.sh push`
 
@@ -72,19 +73,9 @@ All of those options require their own credentials. For the sake of uniformity, 
 * `STRUCTURIZR_WORKSPACE_SECRET` — workspace secret, `-secret ...`
 * `STRUCTURIZR_URL` — structurizr instance URL, `-url https:/..`
 
-If you'd like to have any of those features enabled, you need to supply ENV accordingly.
+If you'd like to have any of those features enabled, you need to supply ENV accordingly. The DevContainer is configured to automatically inherit these environment variables from your host system. You can also use `.devcontainer/devcontainer.env` file to supply those.
     
-If you'd like to use `dip push` and don't want to handle env yourself, feel free to create `dip.override.yml` with the following contents:
-
-```yaml
-# dip.override.yml
-# Don't forget to supply your values!
-environment:
-  STRUCTURIZR_WORKSPACE_ID: id
-  STRUCTURIZR_WORKSPACE_KEY: key
-  STRUCTURIZR_WORKSPACE_SECRET: key
-  STRUCTURIZR_WORKSPACE_URL: https://api.structurizr.com
-```
+If you'd like to use `./bin/push`, make sure these environment variables are set before starting the DevContainer.
 
 ## Conventions
 
@@ -95,10 +86,10 @@ Right now the most sigificant parts of the model look like this:
 ```
 .
 ├── docs
-│   └── 01-test.md
-│   ├── .keep
+│   └── 01-test.md
+│   ├── .keep
 ├── output
-│   ├── .keep
+│   ├── .keep
 ├── workspace.dsl
 └── workspace.json
 ```

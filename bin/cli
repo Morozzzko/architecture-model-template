@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#
+# Run the Structurizr CLI
+# 
+# Usage: bin/cli
+#
+# This script provides direct access to the Structurizr CLI for advanced operations.
+
+WORKSPACE_DIR="$(realpath "$(dirname "$0")/..")"
+
+devcontainer exec --workspace-folder "$WORKSPACE_DIR" structurizr.sh "$@"

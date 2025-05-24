@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+#
+# Export the workspace to various formats
+# 
+# Usage: bin/export -f [format]
+#
+# This script exports your architecture diagrams and models to different formats.
+# You must specify the output format using the -f parameter.
+# 
+# Example: bin/export -f png
+
+WORKSPACE_DIR="$(realpath "$(dirname "$0")/..")"
+
+devcontainer exec --workspace-folder "$WORKSPACE_DIR" structurizr.sh export -w ${WORKSPACE_PATH} -o ${OUTPUT_DIR} "$@"

@@ -5,3 +5,5 @@
 dip.override.yml
 
 .tool-versions
+
+.devcontainer/devcontainer.env

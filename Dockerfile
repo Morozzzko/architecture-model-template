@@ -2,10 +2,10 @@ FROM structurizr/lite:latest
 
 # Install structurizr CLI on top of Lite
 
-ARG STRUCTURIZR_CLI_VERSION=1.33.1
+ARG STRUCTURIZR_CLI_VERSION=2025.03.28
 
 RUN apt-get update && apt-get install -y bash curl unzip
-RUN curl -L -o /tmp/structurizr-cli.zip "https://github.com/structurizr/cli/releases/download/v$STRUCTURIZR_CLI_VERSION/structurizr-cli-$STRUCTURIZR_CLI_VERSION.zip" && unzip "/tmp/structurizr-cli.zip" -d /usr/local/bin
+RUN curl -L -o /tmp/structurizr-cli.zip "https://github.com/structurizr/cli/releases/download/v$STRUCTURIZR_CLI_VERSION/structurizr-cli.zip" && unzip "/tmp/structurizr-cli.zip" -d /usr/local/bin
 
 RUN apt-get update && apt-get install -y libc6-dev --no-install-recommends && rm -rf /var/lib/apt/lists/*
 

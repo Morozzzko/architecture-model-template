@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+#
+# Upload workspace to Structurizr instance
+# 
+# Usage: bin/push
+#
+# This script uploads your workspace to a remote Structurizr instance.
+# It requires the following environment variables to be set:
+# - STRUCTURIZR_WORKSPACE_ID
+# - STRUCTURIZR_WORKSPACE_KEY
+# - STRUCTURIZR_WORKSPACE_SECRET
+# - STRUCTURIZR_URL
+
+WORKSPACE_DIR="$(realpath "$(dirname "$0")/..")"
+
+devcontainer exec --workspace-folder "$WORKSPACE_DIR" structurizr.sh push -id ${STRUCTURIZR_WORKSPACE_ID} -key ${STRUCTURIZR_WORKSPACE_KEY} -secret ${STRUCTURIZR_WORKSPACE_SECRET} -url ${STRUCTURIZR_URL} -workspace ${WORKSPACE_JSON_PATH} "$@"

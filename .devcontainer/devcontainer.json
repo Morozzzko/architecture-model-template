@@ -2,13 +2,32 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-dockerfile
 {
 	"name": "Structurizr codespace",
-	"dockerComposeFile": "../docker-compose.yml",
-	"service": "structurizr",
+	"build": {
+		"dockerfile": "../Dockerfile",
+		"context": ".."
+	},
+	"workspaceFolder": "/usr/local/structurizr",
+	"workspaceMount": "source=${localWorkspaceFolder},target=/usr/local/structurizr,type=bind",
+	"overrideCommand": false,
+	// "runArgs": ["--entrypoint", "structurizr"],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	"forwardPorts": [8080],
+	"appPort": ["8080:8080"],
 
-	// Uncomment the next line to run commands after the container is created.
+	// Environment variables for the container
+	"remoteEnv": {
+		"WORKSPACE_PATH": "workspace.dsl",
+		"WORKSPACE_JSON_PATH": "workspace.json",
+		"OUTPUT_DIR": "output/",
+		// Pass host environment variables to container
+		"STRUCTURIZR_WORKSPACE_ID": "${localEnv:STRUCTURIZR_WORKSPACE_ID}",
+		"STRUCTURIZR_WORKSPACE_KEY": "${localEnv:STRUCTURIZR_WORKSPACE_KEY}",
+		"STRUCTURIZR_WORKSPACE_SECRET": "${localEnv:STRUCTURIZR_WORKSPACE_SECRET}",
+		"STRUCTURIZR_URL": "${localEnv:STRUCTURIZR_URL}"
+	},
+
+	// Post-creation commands
 	"postCreateCommand": "echo 'Welcome! Use structurizr.sh to interact with your workspace or structurizr-repl to launch REPL'",
 
 	// Configure tool-specific properties.
@@ -17,7 +36,7 @@
 			"extensions": [
 				"ciarant.vscode-structurizr"
 			]
-		  }
+		}
 	},
 	"features": {
 		"ghcr.io/devcontainers/features/git:1": {}

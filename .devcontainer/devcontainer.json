@@ -28,7 +28,7 @@
 	},
 
 	// Post-creation commands
-	"postCreateCommand": "echo 'Welcome! Use structurizr.sh to interact with your workspace or structurizr-repl to launch REPL'",
+	"postCreateCommand": "echo 'Welcome! Use bin/structurizr to run CLI or bin/repl to launch REPL'",
 
 	// Configure tool-specific properties.
 	"customizations": {

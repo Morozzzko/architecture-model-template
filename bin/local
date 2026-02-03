@@ -2,10 +2,9 @@
 #
 # Starts Structurizr Lite web server
 # 
-# Usage: bin/lite
+# Usage: bin/local
 #
 # This script launches the Structurizr Lite server which provides a web UI for
 # viewing and editing your architecture diagrams.
 
-WORKSPACE_DIR="$(realpath "$(dirname "$0")/..")"
-devcontainer up --workspace-folder "$WORKSPACE_DIR" 
+bin/structurizr local

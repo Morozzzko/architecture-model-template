@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+#
+# Starts Structurizr playground web server
+# 
+# Usage: bin/playground
+#
+# This script launches the Structurizr playground server which provides 
+# a simple web ui.
+
+bin/structurizr playground

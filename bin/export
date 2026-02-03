@@ -9,6 +9,4 @@
 # 
 # Example: bin/export -f png
 
-WORKSPACE_DIR="$(realpath "$(dirname "$0")/..")"
-
-devcontainer exec --workspace-folder "$WORKSPACE_DIR" structurizr.sh export -w ${WORKSPACE_PATH} -o ${OUTPUT_DIR} "$@"
+bin/structurizr export -w ${WORKSPACE_PATH} -o ${OUTPUT_DIR} "$@"

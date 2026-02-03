@@ -7,4 +7,4 @@
 # This script checks your workspace DSL file for any issues before generating
 # diagrams or documentation.
 
-bin/structurizr validate -w workspace.dsl "$@"
+java -Dserver.port=${PORT} -jar --enable-native-access=ALL-UNNAMED /usr/local/structurizr.war "$@"

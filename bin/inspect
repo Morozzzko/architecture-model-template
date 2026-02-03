@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#
+# Checks the structurizr workspace file for violations
+# 
+# Usage: bin/inspect
+
+bin/structurizr inspect -w workspace.dsl "$@"

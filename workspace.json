@@ -83,13 +83,11 @@
     } ]
   },
   "id" : 1,
-  "lastModifiedAgent" : "structurizr-ui",
-  "lastModifiedDate" : "2025-05-24T00:32:59Z",
+  "lastModifiedDate" : "2026-02-03T22:17:10Z",
   "model" : {
     "people" : [ {
       "description" : "A user of the system.",
       "id" : "1",
-      "location" : "Unspecified",
       "name" : "User",
       "properties" : {
         "structurizr.dsl.identifier" : "user"
@@ -107,7 +105,6 @@
       "description" : "A software system.",
       "documentation" : { },
       "id" : "2",
-      "location" : "Unspecified",
       "name" : "Software System",
       "properties" : {
         "structurizr.dsl.identifier" : "system"
@@ -117,42 +114,38 @@
   },
   "name" : "Name",
   "properties" : {
-    "structurizr.dsl" : "IyBTZWUgaHR0cHM6Ly9naXRodWIuY29tL3N0cnVjdHVyaXpyL2V4YW1wbGVzL3RyZWUvbWFpbi9kc2wgZm9yIGJldHRlciBleGFtcGxlcyBhbmQgcG90ZW50aWFsIGJvaWxlcnBsYXRlCgp3b3Jrc3BhY2UgewogICAgIWlkZW50aWZpZXJzIGhpZXJhcmNoaWNhbAogICAgIWRvY3MgZG9jcy9hcmM0MiBjb20uc3RydWN0dXJpenIuaW1wb3J0ZXIuZG9jdW1lbnRhdGlvbi5SZWN1cnNpdmVEZWZhdWx0RG9jdW1lbnRhdGlvbkltcG9ydGVyCiAgICAKICAgIG1vZGVsIHsKICAgICAgICB1c2VyID0gcGVyc29uICJVc2VyIiB7CiAgICAgICAgICAgIGRlc2NyaXB0aW9uICJBIHVzZXIgb2YgdGhlIHN5c3RlbS4iCiAgICAgICAgfQogICAgICAgIHN5c3RlbSA9IHNvZnR3YXJlU3lzdGVtICJTb2Z0d2FyZSBTeXN0ZW0iIHsKICAgICAgICAgICAgZGVzY3JpcHRpb24gIkEgc29mdHdhcmUgc3lzdGVtLiIKICAgICAgICB9CiAgICAgICAgdXNlciAtPiBzeXN0ZW0gIlVzZXMiCiAgICB9CgogICAgdmlld3MgewogICAgICAgIHN5c3RlbUxhbmRzY2FwZSAiTGFuZHNjYXBlIiAiRXZlcnl0aGluZyB3ZSBoYXZlIiB7CiAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgIGF1dG9MYXlvdXQgbHIKICAgICAgICB9CiAgICB9Cn0="
+    "structurizr.inspection.error" : "2",
+    "structurizr.inspection.info" : "0",
+    "structurizr.inspection.ignore" : "0",
+    "structurizr.inspection.warning" : "0"
   },
   "views" : {
     "configuration" : {
-      "branding" : { },
       "lastSavedView" : "Landscape",
-      "metadataSymbols" : "SquareBrackets",
       "styles" : { },
       "terminology" : { }
     },
     "systemLandscapeViews" : [ {
       "automaticLayout" : {
-        "applied" : true,
-        "edgeSeparation" : 0,
-        "implementation" : "Graphviz",
-        "nodeSeparation" : 300,
+        "edgeSeparation" : 50,
+        "nodeSeparation" : 50,
         "rankDirection" : "LeftRight",
-        "rankSeparation" : 300,
-        "vertices" : false
+        "rankSeparation" : 100,
+        "vertices" : true
       },
       "description" : "Everything we have",
-      "dimensions" : {
-        "height" : 700,
-        "width" : 1600
-      },
       "elements" : [ {
         "id" : "1",
-        "x" : 199,
-        "y" : 151
+        "x" : 0,
+        "y" : 0
       }, {
         "id" : "2",
-        "x" : 949,
-        "y" : 151
+        "x" : 0,
+        "y" : 0
       } ],
       "enterpriseBoundaryVisible" : true,
       "key" : "Landscape",
+      "name" : "System Landscape View",
       "order" : 1,
       "relationships" : [ {
         "id" : "3"

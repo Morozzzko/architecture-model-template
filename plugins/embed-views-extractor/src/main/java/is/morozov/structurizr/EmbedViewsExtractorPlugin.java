@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 public class EmbedViewsExtractorPlugin implements StructurizrDslPlugin {
 
     private static final Pattern CODE_BLOCK_PATTERN = Pattern.compile(
-            "```structurizr\\{embed\\}\\s*\\n(.*?)```",
+            "```structurizr\\{embed:\\s*([^}]+?)\\}\\s*\\R(.*?)```",
             Pattern.DOTALL
     );
 
@@ -61,9 +61,13 @@ public class EmbedViewsExtractorPlugin implements StructurizrDslPlugin {
                             String content = Files.readString(path);
                             Matcher matcher = CODE_BLOCK_PATTERN.matcher(content);
                             while (matcher.find()) {
+                                String viewName = matcher.group(1).trim();
+                                if (viewName.isEmpty()) {
+                                    continue;
+                                }
                                 definitions.add(new ViewDefinition(
                                         path.getFileName().toString(),
-                                        matcher.group(1).trim()
+                                        matcher.group(2).trim()
                                 ));
                             }
                         } catch (IOException e) {

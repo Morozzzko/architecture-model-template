@@ -23,6 +23,12 @@
             <version>${structurizr.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.structurizr</groupId>
+            <artifactId>structurizr-import</artifactId>
+            <version>${structurizr.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>

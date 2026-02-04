@@ -8,6 +8,7 @@ In your `workspace.dsl`:
 
 ```structurizr
 workspace {
+    !docs docs/arc42 is.morozov.structurizr.EmbedViewsDocumentationImporter
     !plugin is.morozov.structurizr.EmbedViewsExtractorPlugin {
         path docs/arc42
         output .generated/embedded-views.dsl
@@ -33,10 +34,10 @@ workspace {
 
 ## Markdown Syntax
 
-In your markdown files, use fenced code blocks with the `structurizr{embed}` language tag:
+In your markdown files, use fenced code blocks with the `structurizr{embed:ViewName}` language tag:
 
 ~~~markdown
-```structurizr{embed}
+```structurizr{embed:Context}
 systemContext system "Context" "Shows the system context" {
     include *
     autoLayout lr
@@ -44,7 +45,7 @@ systemContext system "Context" "Shows the system context" {
 ```
 ~~~
 
-The plugin extracts these blocks and writes them to the output file, which is then included by the DSL parser.
+The plugin extracts these blocks and writes them to the output file, which is then included by the DSL parser. The documentation importer replaces matching blocks in-memory with `![](embed:ViewName)` for inline rendering.
 
 ## Building
 

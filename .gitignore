@@ -7,3 +7,6 @@ dip.override.yml
 .tool-versions
 
 .devcontainer/devcontainer.env
+
+.generated/
+plugins/*/target/

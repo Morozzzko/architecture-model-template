@@ -123,6 +123,15 @@ Important Interfaces
 
 # Runtime View
 
+Critical flows can be documented as dynamic views in the model; see the "User request flow" dynamic view as an example.
+
+```structurizr{embed:UserRequestFlow}
+dynamic system UserRequestFlow "User request flow" {
+  user -> system.webapp "Uses"
+  autoLayout lr
+}
+```
+
 ## \<Runtime Scenario 1\>
 
 - *\<insert runtime diagram or textual description of the scenario\>*

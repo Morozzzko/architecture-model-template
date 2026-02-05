@@ -16,8 +16,13 @@ workspace {
         }
         system = softwareSystem "Software System" {
             description "A software system."
+
+            webapp = container "Web App" {
+                description "Primary user-facing interface."
+            }
         }
         user -> system "Uses"
+        user -> system.webapp "Uses"
     }
 
     views {

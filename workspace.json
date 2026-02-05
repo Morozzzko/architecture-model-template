@@ -3,87 +3,15 @@
   "description" : "Description",
   "documentation" : {
     "sections" : [ {
-      "content" : "[[section-introduction-and-goals]]\n== Introduction and Goals\n\n[role=\"arc42help\"]\n****\nDescribes the relevant requirements and the driving forces that software architects and development team must consider. \nThese include\n\n* underlying business goals, \n* essential features, \n* essential functional requirements, \n* quality goals for the architecture and\n* relevant stakeholders and their expectations\n****\n\n=== Requirements Overview\n\n[role=\"arc42help\"]\n****\n.Contents\nShort description of the functional requirements, driving forces, extract (or abstract)\nof requirements. Link to (hopefully existing) requirements documents\n(with version number and information where to find it).\n\n.Motivation\nFrom the point of view of the end users a system is created or modified to\nimprove support of a business activity and/or improve the quality.\n\n.Form\nShort textual description, probably in tabular use-case format.\nIf requirements documents exist this overview should refer to these documents.\n\nKeep these excerpts as short as possible. Balance readability of this document with potential redundancy w.r.t to requirements documents.\n\n\n.Further Information\n\nSee https://docs.arc42.org/section-1/[Introduction and Goals] in the arc42 documentation.\n\n****\n\n=== Quality Goals\n\n[role=\"arc42help\"]\n****\n.Contents\nThe top three (max five) quality goals for the architecture whose fulfillment is of highest importance to the major stakeholders. \nWe really mean quality goals for the architecture. Don't confuse them with project goals.\nThey are not necessarily identical.\n\nConsider this overview of potential topics (based upon the ISO 25010 standard):\n\nimage::01_2_iso-25010-topics-EN.drawio.png[\"Categories of Quality Requirements\"]\n\n.Motivation\nYou should know the quality goals of your most important stakeholders, since they will influence fundamental architectural decisions. \nMake sure to be very concrete about these qualities, avoid buzzwords.\nIf you as an architect do not know how the quality of your work will be judged...\n\n.Form\nA table with quality goals and concrete scenarios, ordered by priorities\n****\n\n=== Stakeholders\n\n[role=\"arc42help\"]\n****\n.Contents\nExplicit overview of stakeholders of the system, i.e. all person, roles or organizations that\n\n* should know the architecture\n* have to be convinced of the architecture\n* have to work with the architecture or with code\n* need the documentation of the architecture for their work\n* have to come up with decisions about the system or its development\n\n.Motivation\nYou should know all parties involved in development of the system or affected by the system.\nOtherwise, you may get nasty surprises later in the development process.\nThese stakeholders determine the extent and the level of detail of your work and its results.\n\n.Form\nTable with role names, person names, and their expectations with respect to the architecture and its documentation.\n****\n\n[options=\"header\",cols=\"1,2,2\"]\n|===\n|Role/Name|Contact|Expectations\n| _<Role-1>_ | _<Contact-1>_ | _<Expectation-1>_\n| _<Role-2>_ | _<Contact-2>_ | _<Expectation-2>_\n|===\n",
-      "filename" : "01_introduction_and_goals.adoc",
-      "format" : "AsciiDoc",
+      "content" : "---\ndate: July 2025\ntitle: \"![arc42](images/arc42-logo.png) Template\"\n---\n\n# \n\n**About arc42**\n\narc42, the template for documentation of software and system\narchitecture.\n\nTemplate Version 9.0-EN. (based upon AsciiDoc version), July 2025\n\nCreated, maintained and © by Dr. Peter Hruschka, Dr. Gernot Starke and\ncontributors. See <https://arc42.org>.\n\n# Introduction and Goals\n\n## Requirements Overview\n\n## Quality Goals\n\n## Stakeholders\n\n| Role/Name    | Contact         | Expectations        |\n|--------------|-----------------|---------------------|\n| *\\<Role-1\\>* | *\\<Contact-1\\>* | *\\<Expectation-1\\>* |\n| *\\<Role-2\\>* | *\\<Contact-2\\>* | *\\<Expectation-2\\>* |\n\n# Architecture Constraints\n\n# Context and Scope\n\n## Business Context\n\n**\\<Diagram or Table\\>**\n\n**\\<optionally: Explanation of external domain interfaces\\>**\n\n## Technical Context\n\n**\\<Diagram or Table\\>**\n\n**\\<optionally: Explanation of technical interfaces\\>**\n\n**\\<Mapping Input/Output to Channels\\>**\n\n# Solution Strategy\n\n# Building Block View\n\n## Whitebox Overall System\n\n***\\<Overview Diagram\\>***\n\nMotivation  \n*\\<text explanation\\>*\n\nContained Building Blocks  \n*\\<Description of contained building block (black boxes)\\>*\n\nImportant Interfaces  \n*\\<Description of important interfaces\\>*\n\n### \\<Name black box 1\\>\n\n*\\<Purpose/Responsibility\\>*\n\n*\\<Interface(s)\\>*\n\n*\\<(Optional) Quality/Performance Characteristics\\>*\n\n*\\<(Optional) Directory/File Location\\>*\n\n*\\<(Optional) Fulfilled Requirements\\>*\n\n*\\<(optional) Open Issues/Problems/Risks\\>*\n\n### \\<Name black box 2\\>\n\n*\\<black box template\\>*\n\n### \\<Name black box n\\>\n\n*\\<black box template\\>*\n\n### \\<Name interface 1\\>\n\n…​\n\n### \\<Name interface m\\>\n\n## Level 2\n\n### White Box *\\<building block 1\\>*\n\n*\\<white box template\\>*\n\n### White Box *\\<building block 2\\>*\n\n*\\<white box template\\>*\n\n…​\n\n### White Box *\\<building block m\\>*\n\n*\\<white box template\\>*\n\n## Level 3\n\n### White Box \\<\\_building block x.1\\_\\>\n\n*\\<white box template\\>*\n\n### White Box \\<\\_building block x.2\\_\\>\n\n*\\<white box template\\>*\n\n### White Box \\<\\_building block y.1\\_\\>\n\n*\\<white box template\\>*\n\n# Runtime View\n\nCritical flows can be documented as dynamic views in the model; see the \"User request flow\" dynamic view as an example.\n\n![](embed:UserRequestFlow)\n\n## \\<Runtime Scenario 1\\>\n\n- *\\<insert runtime diagram or textual description of the scenario\\>*\n\n- *\\<insert description of the notable aspects of the interactions\n  between the building block instances depicted in this diagram.\\>*\n\n## \\<Runtime Scenario 2\\>\n\n## …​\n\n## \\<Runtime Scenario n\\>\n\n# Deployment View\n\n## Infrastructure Level 1\n\n***\\<Overview Diagram\\>***\n\nMotivation  \n*\\<explanation in text form\\>*\n\nQuality and/or Performance Features  \n*\\<explanation in text form\\>*\n\nMapping of Building Blocks to Infrastructure  \n*\\<description of the mapping\\>*\n\n## Infrastructure Level 2\n\n### *\\<Infrastructure Element 1\\>*\n\n*\\<diagram + explanation\\>*\n\n### *\\<Infrastructure Element 2\\>*\n\n*\\<diagram + explanation\\>*\n\n…​\n\n### *\\<Infrastructure Element n\\>*\n\n*\\<diagram + explanation\\>*\n\n# Cross-cutting Concepts\n\n## *\\<Concept 1\\>*\n\n*\\<explanation\\>*\n\n## *\\<Concept 2\\>*\n\n*\\<explanation\\>*\n\n…​\n\n## *\\<Concept n\\>*\n\n*\\<explanation\\>*\n\n# Architecture Decisions\n\n# Quality Requirements\n\n## Quality Requirements Overview\n\n## Quality Scenarios\n\n# Risks and Technical Debts\n\n# Glossary\n\n| Term         | Definition         |\n|--------------|--------------------|\n| *\\<Term-1\\>* | *\\<definition-1\\>* |\n| *\\<Term-2\\>* | *\\<definition-2\\>* |\n",
+      "filename" : "arc42-template-EN.md",
+      "format" : "Markdown",
       "order" : 1,
-      "title" : ""
-    }, {
-      "content" : "[[section-architecture-constraints]]\n== Architecture Constraints\n\n\n[role=\"arc42help\"]\n****\n.Contents\nAny requirement that constraints software architects in their freedom of design and implementation decisions or decision about the development process. These constraints sometimes go beyond individual systems and are valid for whole organizations and companies.\n\n.Motivation\nArchitects should know exactly where they are free in their design decisions and where they must adhere to constraints.\nConstraints must always be dealt with; they may be negotiable, though.\n\n.Form\nSimple tables of constraints with explanations.\nIf needed you can subdivide them into\ntechnical constraints, organizational and political constraints and\nconventions (e.g. programming or versioning guidelines, documentation or naming conventions)\n\n\n.Further Information\n\nSee https://docs.arc42.org/section-2/[Architecture Constraints] in the arc42 documentation.\n\n****\n",
-      "filename" : "02_architecture_constraints.adoc",
-      "format" : "AsciiDoc",
-      "order" : 2,
-      "title" : ""
-    }, {
-      "content" : "[[section-system-scope-and-context]]\n== System Scope and Context\n\n\n[role=\"arc42help\"]\n****\n.Contents\nSystem scope and context - as the name suggests - delimits your system (i.e. your scope) from all its communication partners\n(neighboring systems and users, i.e. the context of your system). It thereby specifies the external interfaces.\n\nIf necessary, differentiate the business context (domain specific inputs and outputs) from the technical context (channels, protocols, hardware).\n\n.Motivation\nThe domain interfaces and technical interfaces to communication partners are among your system's most critical aspects. Make sure that you completely understand them.\n\n.Form\nVarious options:\n\n* Context diagrams\n* Lists of communication partners and their interfaces.\n\n\n.Further Information\n\nSee https://docs.arc42.org/section-3/[Context and Scope] in the arc42 documentation.\n\n****\n\n\n=== Business Context\n\n[role=\"arc42help\"]\n****\n.Contents\nSpecification of *all* communication partners (users, IT-systems, ...) with explanations of domain specific inputs and outputs or interfaces.\nOptionally you can add domain specific formats or communication protocols.\n\n.Motivation\nAll stakeholders should understand which data are exchanged with the environment of the system.\n\n.Form\nAll kinds of diagrams that show the system as a black box and specify the domain interfaces to communication partners.\n\nAlternatively (or additionally) you can use a table.\nThe title of the table is the name of your system, the three columns contain the name of the communication partner, the inputs, and the outputs.\n\n****\n\n**<Diagram or Table>**\n\n**<optionally: Explanation of external domain interfaces>**\n\n=== Technical Context\n\n[role=\"arc42help\"]\n****\n.Contents\nTechnical interfaces (channels and transmission media) linking your system to its environment. In addition a mapping of domain specific input/output to the channels, i.e. an explanation with I/O uses which channel.\n\n.Motivation\nMany stakeholders make architectural decision based on the technical interfaces between the system and its context. Especially infrastructure or hardware designers decide these technical interfaces.\n\n.Form\nE.g. UML deployment diagram describing channels to neighboring systems,\ntogether with a mapping table showing the relationships between channels and input/output.\n\n****\n\n**<Diagram or Table>**\n\n**<optionally: Explanation of technical interfaces>**\n\n**<Mapping Input/Output to Channels>**\n",
-      "filename" : "03_system_scope_and_context.adoc",
-      "format" : "AsciiDoc",
-      "order" : 3,
-      "title" : ""
-    }, {
-      "content" : "[[section-solution-strategy]]\n== Solution Strategy\n\n\n[role=\"arc42help\"]\n****\n.Contents\nA short summary and explanation of the fundamental decisions and solution strategies, that shape system architecture. It includes\n\n* technology decisions\n* decisions about the top-level decomposition of the system, e.g. usage of an architectural pattern or design pattern\n* decisions on how to achieve key quality goals\n* relevant organizational decisions, e.g. selecting a development process or delegating certain tasks to third parties.\n\n.Motivation\nThese decisions form the cornerstones for your architecture. They are the foundation for many other detailed decisions or implementation rules.\n\n.Form\nKeep the explanations of such key decisions short.\n\nMotivate what was decided and why it was decided that way,\nbased upon problem statement, quality goals and key constraints.\nRefer to details in the following sections.\n\n\n.Further Information\n\nSee https://docs.arc42.org/section-4/[Solution Strategy] in the arc42 documentation.\n\n****\n",
-      "filename" : "04_solution_strategy.adoc",
-      "format" : "AsciiDoc",
-      "order" : 4,
-      "title" : ""
-    }, {
-      "content" : "[[section-building-block-view]]\n\n\n== Building Block View\n\n[role=\"arc42help\"]\n****\n.Content\nThe building block view shows the static decomposition of the system into building blocks (modules, components, subsystems, classes, interfaces, packages, libraries, frameworks, layers, partitions, tiers, functions, macros, operations, data structures, ...) as well as their dependencies (relationships, associations, ...)\n\nThis view is mandatory for every architecture documentation.\nIn analogy to a house this is the _floor plan_.\n\n.Motivation\nMaintain an overview of your source code by making its structure understandable through\nabstraction.\n\nThis allows you to communicate with your stakeholder on an abstract level without disclosing implementation details.\n\n.Form\nThe building block view is a hierarchical collection of black boxes and white boxes\n(see figure below) and their descriptions.\n\nimage::05_building_blocks-EN.png[\"Hierarchy of building blocks\"]\n\n*Level 1* is the white box description of the overall system together with black\nbox descriptions of all contained building blocks.\n\n*Level 2* zooms into some building blocks of level 1.\nThus it contains the white box description of selected building blocks of level 1, together with black box descriptions of their internal building blocks.\n\n*Level 3* zooms into selected building blocks of level 2, and so on.\n\n\n.Further Information\n\nSee https://docs.arc42.org/section-5/[Building Block View] in the arc42 documentation.\n\n****\n\n=== Whitebox Overall System\n\n[role=\"arc42help\"]\n****\nHere you describe the decomposition of the overall system using the following white box template. It contains\n\n * an overview diagram\n * a motivation for the decomposition\n * black box descriptions of the contained building blocks. For these we offer you alternatives:\n\n   ** use _one_ table for a short and pragmatic overview of all contained building blocks and their interfaces\n   ** use a list of black box descriptions of the building blocks according to the black box template (see below).\n   Depending on your choice of tool this list could be sub-chapters (in text files), sub-pages (in a Wiki) or nested elements (in a modeling tool).\n\n\n * (optional:) important interfaces, that are not explained in the black box templates of a building block, but are very important for understanding the white box.\nSince there are so many ways to specify interfaces why do not provide a specific template for them.\n In the worst case you have to specify and describe syntax, semantics, protocols, error handling,\n restrictions, versions, qualities, necessary compatibilities and many things more.\nIn the best case you will get away with examples or simple signatures.\n\n****\n\n_**<Overview Diagram>**_\n\nMotivation::\n\n_<text explanation>_\n\n\nContained Building Blocks::\n_<Description of contained building block (black boxes)>_\n\nImportant Interfaces::\n_<Description of important interfaces>_\n\n[role=\"arc42help\"]\n****\nInsert your explanations of black boxes from level 1:\n\nIf you use tabular form you will only describe your black boxes with name and\nresponsibility according to the following schema:\n\n[cols=\"1,2\" options=\"header\"]\n|===\n| **Name** | **Responsibility**\n| _<black box 1>_ | _<Text>_\n| _<black box 2>_ | _<Text>_\n|===\n\n\n\nIf you use a list of black box descriptions then you fill in a separate black box template for every important building block .\nIts headline is the name of the black box.\n****\n\n\n==== <Name black box 1>\n\n[role=\"arc42help\"]\n****\nHere you describe <black box 1>\naccording the the following black box template:\n\n* Purpose/Responsibility\n* Interface(s), when they are not extracted as separate paragraphs. This interfaces may include qualities and performance characteristics.\n* (Optional) Quality-/Performance characteristics of the black box, e.g.availability, run time behavior, ....\n* (Optional) directory/file location\n* (Optional) Fulfilled requirements (if you need traceability to requirements).\n* (Optional) Open issues/problems/risks\n\n****\n\n_<Purpose/Responsibility>_\n\n_<Interface(s)>_\n\n_<(Optional) Quality/Performance Characteristics>_\n\n_<(Optional) Directory/File Location>_\n\n_<(Optional) Fulfilled Requirements>_\n\n_<(optional) Open Issues/Problems/Risks>_\n\n\n\n\n==== <Name black box 2>\n\n_<black box template>_\n\n==== <Name black box n>\n\n_<black box template>_\n\n\n==== <Name interface 1>\n\n...\n\n==== <Name interface m>\n\n\n\n=== Level 2\n\n[role=\"arc42help\"]\n****\nHere you can specify the inner structure of (some) building blocks from level 1 as white boxes.\n\nYou have to decide which building blocks of your system are important enough to justify such a detailed description.\nPlease prefer relevance over completeness. Specify important, surprising, risky, complex or volatile building blocks.\nLeave out normal, simple, boring or standardized parts of your system\n****\n\n==== White Box _<building block 1>_\n\n[role=\"arc42help\"]\n****\n...describes the internal structure of _building block 1_.\n****\n\n_<white box template>_\n\n==== White Box _<building block 2>_\n\n\n_<white box template>_\n\n...\n\n==== White Box _<building block m>_\n\n\n_<white box template>_\n\n\n\n=== Level 3\n\n[role=\"arc42help\"]\n****\nHere you can specify the inner structure of (some) building blocks from level 2 as white boxes.\n\nWhen you need more detailed levels of your architecture please copy this\npart of arc42 for additional levels.\n****\n\n\n==== White Box <_building block x.1_>\n\n[role=\"arc42help\"]\n****\nSpecifies the internal structure of _building block x.1_.\n****\n\n\n_<white box template>_\n\n\n==== White Box <_building block x.2_>\n\n_<white box template>_\n\n\n\n==== White Box <_building block y.1_>\n\n_<white box template>_\n",
-      "filename" : "05_building_block_view.adoc",
-      "format" : "AsciiDoc",
-      "order" : 5,
-      "title" : ""
-    }, {
-      "content" : "[[section-runtime-view]]\n== Runtime View\n\n\n[role=\"arc42help\"]\n****\n.Contents\nThe runtime view describes concrete behavior and interactions of the system’s building blocks in form of scenarios from the following areas:\n\n* important use cases or features: how do building blocks execute them?\n* interactions at critical external interfaces: how do building blocks cooperate with users and neighboring systems?\n* operation and administration: launch, start-up, stop\n* error and exception scenarios\n\nRemark: The main criterion for the choice of possible scenarios (sequences, workflows) is their *architectural relevance*. It is *not* important to describe a large number of scenarios. You should rather document a representative selection.\n\n.Motivation\nYou should understand how (instances of) building blocks of your system perform their job and communicate at runtime.\nYou will mainly capture scenarios in your documentation to communicate your architecture to stakeholders that are less willing or able to read and understand the static models (building block view, deployment view).\n\n.Form\nThere are many notations for describing scenarios, e.g.\n\n* numbered list of steps (in natural language)\n* activity diagrams or flow charts\n* sequence diagrams\n* BPMN or EPCs (event process chains)\n* state machines\n* ...\n\n\n.Further Information\n\nSee https://docs.arc42.org/section-6/[Runtime View] in the arc42 documentation.\n\n****\n\n=== <Runtime Scenario 1>\n\n\n* _<insert runtime diagram or textual description of the scenario>_\n* _<insert description of the notable aspects of the interactions between the\nbuilding block instances depicted in this diagram.>_\n\n=== <Runtime Scenario 2>\n\n=== ...\n\n=== <Runtime Scenario n>\n",
-      "filename" : "06_runtime_view.adoc",
-      "format" : "AsciiDoc",
-      "order" : 6,
-      "title" : ""
-    }, {
-      "content" : "[[section-deployment-view]]\n\n\n== Deployment View\n\n[role=\"arc42help\"]\n****\n.Content\nThe deployment view describes:\n\n 1. technical infrastructure used to execute your system, with infrastructure elements like geographical locations, environments, computers, processors, channels and net topologies as well as other infrastructure elements and\n\n2. mapping of (software) building blocks to that infrastructure elements.\n\nOften systems are executed in different environments, e.g. development environment, test environment, production environment. In such cases you should document all relevant environments.\n\nEspecially document a deployment view if your software is executed as distributed system with more than one computer, processor, server or container or when you design and construct your own hardware processors and chips.\n\nFrom a software perspective it is sufficient to capture only those elements of an infrastructure that are needed to show a deployment of your building blocks. Hardware architects can go beyond that and describe an infrastructure to any level of detail they need to capture.\n\n.Motivation\nSoftware does not run without hardware.\nThis underlying infrastructure can and will influence a system and/or some\ncross-cutting concepts. Therefore, there is a need to know the infrastructure.\n\n.Form\n\nMaybe a highest level deployment diagram is already contained in section 3.2. as\ntechnical context with your own infrastructure as ONE black box. In this section one can\nzoom into this black box using additional deployment diagrams:\n\n* UML offers deployment diagrams to express that view. Use it, probably with nested diagrams,\nwhen your infrastructure is more complex.\n* When your (hardware) stakeholders prefer other kinds of diagrams rather than a deployment diagram, let them use any kind that is able to show nodes and channels of the infrastructure.\n\n\n.Further Information\n\nSee https://docs.arc42.org/section-7/[Deployment View] in the arc42 documentation.\n\n****\n\n=== Infrastructure Level 1\n\n[role=\"arc42help\"]\n****\nDescribe (usually in a combination of diagrams, tables, and text):\n\n* distribution of a system to multiple locations, environments, computers, processors, .., as well as physical connections between them\n* important justifications or motivations for this deployment structure\n* quality and/or performance features of this infrastructure\n* mapping of software artifacts to elements of this infrastructure\n\nFor multiple environments or alternative deployments please copy and adapt this section of arc42 for all relevant environments.\n****\n\n_**<Overview Diagram>**_\n\nMotivation::\n\n_<explanation in text form>_\n\nQuality and/or Performance Features::\n\n_<explanation in text form>_\n\nMapping of Building Blocks to Infrastructure::\n_<description of the mapping>_\n\n\n=== Infrastructure Level 2\n\n[role=\"arc42help\"]\n****\nHere you can include the internal structure of (some) infrastructure elements from level 1.\n\nPlease copy the structure from level 1 for each selected element.\n****\n\n==== _<Infrastructure Element 1>_\n\n_<diagram + explanation>_\n\n==== _<Infrastructure Element 2>_\n\n_<diagram + explanation>_\n\n...\n\n==== _<Infrastructure Element n>_\n\n_<diagram + explanation>_\n",
-      "filename" : "07_deployment_view.adoc",
-      "format" : "AsciiDoc",
-      "order" : 7,
-      "title" : ""
-    }, {
-      "content" : "[[section-concepts]]\n== Cross-cutting Concepts\n\n\n[role=\"arc42help\"]\n****\n.Content\nThis section describes overall, principal regulations and solution ideas that are relevant in multiple parts (= cross-cutting) of your system.\nSuch concepts are often related to multiple building blocks.\nThey can include many different topics, such as\n\n* models, especially domain models\n* architecture or design patterns\n* rules for using specific technology\n* principal, often technical decisions of an overarching (= cross-cutting) nature\n* implementation rules\n\n\n.Motivation\nConcepts form the basis for _conceptual integrity_ (consistency, homogeneity) of the architecture. \nThus, they are an important contribution to achieve inner qualities of your system.\n\nSome of these concepts cannot be assigned to individual building blocks, e.g. security or safety. \n\n\n.Form\nThe form can be varied:\n\n* concept papers with any kind of structure\n* cross-cutting model excerpts or scenarios using notations of the architecture views\n* sample implementations, especially for technical concepts\n* reference to typical usage of standard frameworks (e.g. using Hibernate for object/relational mapping)\n\n.Structure\nA potential (but not mandatory) structure for this section could be:\n\n* Domain concepts\n* User Experience concepts (UX)\n* Safety and security concepts\n* Architecture and design patterns\n* \"Under-the-hood\"\n* development concepts\n* operational concepts\n\nNote: it might be difficult to assign individual concepts to one specific topic\non this list.\n\nimage::08-Crosscutting-Concepts-Structure-EN.png[\"Possible topics for crosscutting concepts\"]\n\n\n.Further Information\n\nSee https://docs.arc42.org/section-8/[Concepts] in the arc42 documentation.\n****\n\n\n=== _<Concept 1>_\n\n_<explanation>_\n\n\n\n=== _<Concept 2>_\n\n_<explanation>_\n\n...\n\n=== _<Concept n>_\n\n_<explanation>_\n",
-      "filename" : "08_concepts.adoc",
-      "format" : "AsciiDoc",
-      "order" : 8,
-      "title" : ""
-    }, {
-      "content" : "[[section-design-decisions]]\n== Architecture Decisions\n\n\n[role=\"arc42help\"]\n****\n.Contents\nImportant, expensive, large scale or risky architecture decisions including rationales.\nWith \"decisions\" we mean selecting one alternative based on given criteria.\n\nPlease use your judgement to decide whether an architectural decision should be documented\nhere in this central section or whether you better document it locally\n(e.g. within the white box template of one building block).\n\nAvoid redundancy. \nRefer to section 4, where you already captured the most important decisions of your architecture.\n\n.Motivation\nStakeholders of your system should be able to comprehend and retrace your decisions.\n\n.Form\nVarious options:\n\n* ADR (https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions[Documenting Architecture Decisions]) for every important decision\n* List or table, ordered by importance and consequences or:\n* more detailed in form of separate sections per decision\n\n.Further Information\n\nSee https://docs.arc42.org/section-9/[Architecture Decisions] in the arc42 documentation.\nThere you will find links and examples about ADR.\n\n****\n",
-      "filename" : "09_architecture_decisions.adoc",
-      "format" : "AsciiDoc",
-      "order" : 9,
-      "title" : ""
-    }, {
-      "content" : "[[section-quality-scenarios]]\n== Quality Requirements\n\n\n[role=\"arc42help\"]\n****\n\n.Content\nThis section contains all quality requirements as quality tree with scenarios. The most important ones have already been described in section 1.2. (quality goals)\n\nHere you can also capture quality requirements with lesser priority,\nwhich will not create high risks when they are not fully achieved.\n\n.Motivation\nSince quality requirements will have a lot of influence on architectural\ndecisions you should know for every stakeholder what is really important to them,\nconcrete and measurable.\n\n\n.Further Information\n\nSee https://docs.arc42.org/section-10/[Quality Requirements] in the arc42 documentation.\n\n****\n\n=== Quality Tree\n\n[role=\"arc42help\"]\n****\n.Content\nThe quality tree (as defined in ATAM – Architecture Tradeoff Analysis Method) with quality/evaluation scenarios as leafs.\n\n.Motivation\nThe tree structure with priorities provides an overview for a sometimes large number of quality requirements.\n\n.Form\nThe quality tree is a high-level overview of the quality goals and requirements:\n\n* tree-like refinement of the term \"quality\". Use \"quality\" or \"usefulness\" as a root\n* a mind map with quality categories as main branches\n\nIn any case the tree should include links to the scenarios of the following section.\n\n\n****\n\n=== Quality Scenarios\n\n[role=\"arc42help\"]\n****\n.Contents\nConcretization of (sometimes vague or implicit) quality requirements using (quality) scenarios.\n\nThese scenarios describe what should happen when a stimulus arrives at the system.\n\nFor architects, two kinds of scenarios are important:\n\n* Usage scenarios (also called application scenarios or use case scenarios) describe the system’s runtime reaction to a certain stimulus. This also includes scenarios that describe the system’s efficiency or performance. Example: The system reacts to a user’s request within one second.\n* Change scenarios describe a modification of the system or of its immediate environment. Example: Additional functionality is implemented or requirements for a quality attribute change.\n\n.Motivation\nScenarios make quality requirements concrete and allow to\nmore easily measure or decide whether they are fulfilled.\n\nEspecially when you want to assess your architecture using methods like\nATAM you need to describe your quality goals (from section 1.2)\nmore precisely down to a level of scenarios that can be discussed and evaluated.\n\n.Form\nTabular or free form text.\n****\n",
-      "filename" : "10_quality_requirements.adoc",
-      "format" : "AsciiDoc",
-      "order" : 10,
-      "title" : ""
-    }, {
-      "content" : "[[section-technical-risks]]\n== Risks and Technical Debts\n\n\n[role=\"arc42help\"]\n****\n.Contents\nA list of identified technical risks or technical debts, ordered by priority\n\n.Motivation\n“Risk management is project management for grown-ups” (Tim Lister, Atlantic Systems Guild.) \n\nThis should be your motto for systematic detection and evaluation of risks and technical debts in the architecture, which will be needed by management stakeholders (e.g. project managers, product owners) as part of the overall risk analysis and measurement planning.\n\n.Form\nList of risks and/or technical debts, probably including suggested measures to minimize, mitigate or avoid risks or reduce technical debts.\n\n\n.Further Information\n\nSee https://docs.arc42.org/section-11/[Risks and Technical Debt] in the arc42 documentation.\n\n****\n",
-      "filename" : "11_technical_risks.adoc",
-      "format" : "AsciiDoc",
-      "order" : 11,
-      "title" : ""
-    }, {
-      "content" : "[[section-glossary]]\n== Glossary\n\n[role=\"arc42help\"]\n****\n.Contents\nThe most important domain and technical terms that your stakeholders use when discussing the system.\n\nYou can also see the glossary as source for translations if you work in multi-language teams.\n\n.Motivation\nYou should clearly define your terms, so that all stakeholders\n\n* have an identical understanding of these terms\n* do not use synonyms and homonyms\n\n.Form\n* A table with columns <Term> and <Definition>.\n* Potentially more columns in case you need translations.\n\n\n.Further Information\n\nSee https://docs.arc42.org/section-12/[Glossary] in the arc42 documentation.\n\n****\n\n[cols=\"e,2e\" options=\"header\"]\n|===\n|Term |Definition\n\n|<Term-1>\n|<definition-1>\n\n|<Term-2>\n|<definition-2>\n|===\n",
-      "filename" : "12_glossary.adoc",
-      "format" : "AsciiDoc",
-      "order" : 12,
-      "title" : ""
-    }, {
-      "content" : ":homepage: https://arc42.org\n\n:keywords: software-architecture, documentation, template, arc42\n\n:numbered!:\n**About arc42**\n\n[role=\"lead\"]\narc42, the template for documentation of software and system architecture.\n\nTemplate Version {revnumber}. {revremark}, {revdate}\n\nCreated, maintained and (C) by Dr. Peter Hruschka, Dr. Gernot Starke and contributors.\nSee https://arc42.org.\n\n",
-      "filename" : "about-arc42.adoc",
-      "format" : "AsciiDoc",
-      "order" : 13,
       "title" : ""
     } ]
   },
   "id" : 1,
-  "lastModifiedDate" : "2026-02-03T22:17:10Z",
+  "lastModifiedDate" : "2026-02-05T23:30:06Z",
   "model" : {
     "people" : [ {
       "description" : "A user of the system.",
@@ -95,13 +23,29 @@
       "relationships" : [ {
         "description" : "Uses",
         "destinationId" : "2",
-        "id" : "3",
+        "id" : "4",
+        "sourceId" : "1",
+        "tags" : "Relationship"
+      }, {
+        "description" : "Uses",
+        "destinationId" : "3",
+        "id" : "5",
         "sourceId" : "1",
         "tags" : "Relationship"
       } ],
       "tags" : "Element,Person"
     } ],
     "softwareSystems" : [ {
+      "containers" : [ {
+        "description" : "Primary user-facing interface.",
+        "documentation" : { },
+        "id" : "3",
+        "name" : "Web App",
+        "properties" : {
+          "structurizr.dsl.identifier" : "system.webapp"
+        },
+        "tags" : "Element,Container"
+      } ],
       "description" : "A software system.",
       "documentation" : { },
       "id" : "2",
@@ -114,7 +58,7 @@
   },
   "name" : "Name",
   "properties" : {
-    "structurizr.inspection.error" : "2",
+    "structurizr.inspection.error" : "6",
     "structurizr.inspection.info" : "0",
     "structurizr.inspection.ignore" : "0",
     "structurizr.inspection.warning" : "0"
@@ -125,6 +69,36 @@
       "styles" : { },
       "terminology" : { }
     },
+    "dynamicViews" : [ {
+      "automaticLayout" : {
+        "edgeSeparation" : 50,
+        "nodeSeparation" : 50,
+        "rankDirection" : "LeftRight",
+        "rankSeparation" : 100,
+        "vertices" : true
+      },
+      "description" : "User request flow",
+      "elementId" : "2",
+      "elements" : [ {
+        "id" : "1",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "3",
+        "x" : 0,
+        "y" : 0
+      } ],
+      "externalBoundariesVisible" : false,
+      "key" : "UserRequestFlow",
+      "name" : "Dynamic View: Software System",
+      "order" : 2,
+      "relationships" : [ {
+        "description" : "Uses",
+        "id" : "5",
+        "order" : "1",
+        "response" : false
+      } ]
+    } ],
     "systemLandscapeViews" : [ {
       "automaticLayout" : {
         "edgeSeparation" : 50,
@@ -148,7 +122,7 @@
       "name" : "System Landscape View",
       "order" : 1,
       "relationships" : [ {
-        "id" : "3"
+        "id" : "4"
       } ]
     } ]
   }

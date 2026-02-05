@@ -18,6 +18,19 @@ GitHub Actions for automated deploys.
 
 GitHub Codespaces for editing on the go.
 
+There are a few custom QoL plugins in `plugins/`. See the docs:
+
+* [Embed Views Extractor](plugins/embed-views-extractor/README.md) — lets you define views in Markdown and embed them inline, e.g.:
+
+```markdown
+```structurizr{embed:Context}
+systemContext system "Context" "Shows the system context" {
+    include *
+    autoLayout lr
+}
+```
+```
+
 ## Installation
 
 1. Install [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) for VS Code

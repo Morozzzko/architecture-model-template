@@ -39,3 +39,22 @@ jobs:
 
       - name: Export workspace
         run: docker run --rm -e WORKSPACE_PATH=workspace.dsl -e OUTPUT_DIR=output/ architecture-model-template bin/export -f mermaid
+
+      - name: Start local server
+        run: |
+          container_id=$(docker run -d -p 8080:8080 -e PORT=8080 architecture-model-template bin/local)
+          trap 'docker logs "$container_id"; docker stop "$container_id"' EXIT
+
+          for attempt in {1..30}; do
+            if curl --fail --silent --show-error http://localhost:8080/ > /dev/null; then
+              exit 0
+            fi
+
+            if ! docker ps --quiet --filter "id=$container_id" | grep --quiet .; then
+              exit 1
+            fi
+
+            sleep 2
+          done
+
+          exit 1

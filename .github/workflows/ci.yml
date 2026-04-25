@@ -54,3 +54,6 @@ jobs:
 
       - name: Export workspace
         run: devcontainer exec --workspace-folder . bin/export -f mermaid
+
+      - name: Check REPL startup
+        run: devcontainer exec --workspace-folder . bash -lc 'timeout 30s bin/repl < /dev/null'

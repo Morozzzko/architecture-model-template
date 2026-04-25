@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Test plugin build
+        run: mvn test
+        working-directory: plugins/embed-views-extractor
+
+      - name: Build image
+        run: docker build --pull -t architecture-model-template .
+
+      - name: Validate workspace
+        run: docker run --rm architecture-model-template bin/validate
+
+      - name: Inspect workspace
+        run: docker run --rm architecture-model-template bin/inspect
+
+      - name: Export workspace
+        run: docker run --rm -e WORKSPACE_PATH=workspace.dsl -e OUTPUT_DIR=output/ architecture-model-template bin/export -f mermaid

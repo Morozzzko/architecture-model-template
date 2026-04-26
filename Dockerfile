@@ -1,12 +1,4 @@
-FROM structurizr/structurizr:latest AS structurizr
-
-FROM eclipse-temurin:21-jre
-
-ENV PORT=8080
-
-COPY --from=structurizr /usr/local/structurizr.war /usr/local/structurizr.war
-
-ENTRYPOINT ["sh", "-c", "java -Dserver.port=$PORT --enable-native-access=ALL-UNNAMED -jar /usr/local/structurizr.war"]
+FROM structurizr/structurizr:latest
 
 # Install JRuby for REPL
 

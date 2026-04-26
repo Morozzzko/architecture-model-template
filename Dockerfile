@@ -6,7 +6,7 @@ ENV PORT=8080
 
 COPY --from=structurizr /usr/local/structurizr.war /usr/local/structurizr.war
 
-ENTRYPOINT ["sh", "-c", "java -Dserver.port=$PORT --enable-native-access=ALL-UNNAMED -jar /usr/local/structurizr.war"]
+ENTRYPOINT ["sh", "-c", "java -Dserver.port=$PORT --enable-native-access=ALL-UNNAMED -jar /usr/local/structurizr.war local"]
 
 # Install JRuby for REPL
 

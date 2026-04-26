@@ -34,9 +34,6 @@ jobs:
       - name: Start devcontainer
         run: devcontainer up --workspace-folder .
 
-      - name: Start server
-        run: nohup devcontainer exec --workspace-folder . bin/local > /tmp/server.log 2>&1 &
-
       - name: Check default server
         run: |
           for attempt in {1..30}; do
@@ -51,9 +48,6 @@ jobs:
 
       - name: Validate workspace
         run: devcontainer exec --workspace-folder . bin/validate
-
-      - name: Inspect workspace
-        run: devcontainer exec --workspace-folder . bin/inspect
 
       - name: Export workspace
         run: devcontainer exec --workspace-folder . bin/export -f mermaid

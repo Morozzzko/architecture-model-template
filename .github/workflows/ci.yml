@@ -37,12 +37,29 @@ jobs:
       - name: Check default server
         run: |
           for attempt in {1..30}; do
-            if curl --fail --silent --show-error http://localhost:8080/ > /dev/null; then
+            container_id="$(docker ps -q \
+              --filter "label=devcontainer.local_folder=${GITHUB_WORKSPACE}" \
+              --filter "label=devcontainer.config_file=${GITHUB_WORKSPACE}/.devcontainer/devcontainer.json" \
+              | head -n 1)"
+
+            if [ -n "$container_id" ] && docker exec "$container_id" curl --fail --silent --show-error http://localhost:8080/ > /dev/null; then
               exit 0
             fi
 
             sleep 2
           done
+
+          echo "Default server did not become ready"
+          docker ps -a
+
+          container_id="$(docker ps -aq \
+            --filter "label=devcontainer.local_folder=${GITHUB_WORKSPACE}" \
+            --filter "label=devcontainer.config_file=${GITHUB_WORKSPACE}/.devcontainer/devcontainer.json" \
+            | head -n 1)"
+
+          if [ -n "$container_id" ]; then
+            docker logs "$container_id"
+          fi
 
           exit 1
 

@@ -1,4 +1,12 @@
-FROM structurizr/structurizr:latest
+FROM structurizr/structurizr:latest AS structurizr
+
+FROM eclipse-temurin:21-jre
+
+ENV PORT=8080
+
+COPY --from=structurizr /usr/local/structurizr.war /usr/local/structurizr.war
+
+ENTRYPOINT ["sh", "-c", "java -Dserver.port=$PORT --enable-native-access=ALL-UNNAMED -jar /usr/local/structurizr.war local"]
 
 # Install JRuby for REPL
 
@@ -36,6 +44,6 @@ RUN mkdir -p "$GEM_HOME" && chmod 777 "$GEM_HOME"
 ARG STRUCTURIZR_GEM_VERSION=6.0.0.1
 RUN jruby -S gem install structurizr -v $STRUCTURIZR_GEM_VERSION
 
-RUN apt-get update && apt-get install adr-tools
+RUN apt-get update && apt-get install -y adr-tools --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/local/structurizr

@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Test plugin build
+        run: mvn test
+        working-directory: plugins/embed-views-extractor
+
+      - name: Install Dev Containers CLI
+        run: npm install -g @devcontainers/cli
+
+      - name: Start devcontainer
+        run: devcontainer up --workspace-folder .
+
+      - name: Check default server
+        run: |
+          for attempt in {1..30}; do
+            container_id="$(docker ps -q \
+              --filter "label=devcontainer.local_folder=${GITHUB_WORKSPACE}" \
+              --filter "label=devcontainer.config_file=${GITHUB_WORKSPACE}/.devcontainer/devcontainer.json" \
+              | head -n 1)"
+
+            if [ -n "$container_id" ] && docker exec "$container_id" curl --fail --silent --show-error http://localhost:8080/ > /dev/null; then
+              exit 0
+            fi
+
+            sleep 2
+          done
+
+          echo "Default server did not become ready"
+          docker ps -a
+
+          container_id="$(docker ps -aq \
+            --filter "label=devcontainer.local_folder=${GITHUB_WORKSPACE}" \
+            --filter "label=devcontainer.config_file=${GITHUB_WORKSPACE}/.devcontainer/devcontainer.json" \
+            | head -n 1)"
+
+          if [ -n "$container_id" ]; then
+            docker logs "$container_id"
+          fi
+
+          exit 1
+
+      - name: Validate workspace
+        run: devcontainer exec --workspace-folder . bin/validate
+
+      - name: Export workspace
+        run: devcontainer exec --workspace-folder . bin/export -f mermaid
+
+      - name: Check REPL startup
+        run: devcontainer exec --workspace-folder . bash -lc 'timeout 30s bin/repl < /dev/null'

@@ -31,6 +31,16 @@ systemContext system "Context" "Shows the system context" {
 ```
 ```
 
+## Quick start
+
+After cloning or creating a repo from this template, run:
+
+```bash
+./setup
+```
+
+This renames the placeholder model entities for your project and optionally installs recommended tooling.
+
 ## Installation
 
 1. Install [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) for VS Code

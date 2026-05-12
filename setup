@@ -1,0 +1,140 @@
+#!/usr/bin/env bash
+#
+# One-time setup: renames template placeholders and optionally installs extras.
+#
+# Usage: ./setup
+#
+# Safe to re-run — only replaces strings that still match the current value.
+
+set -euo pipefail
+
+# ── Colour helpers (only when writing to a real terminal) ──────────────────────
+if [ -t 1 ]; then
+  BOLD='\033[1m'
+  GREEN='\033[0;32m'
+  YELLOW='\033[1;33m'
+  CYAN='\033[0;36m'
+  RED='\033[0;31m'
+  RESET='\033[0m'
+else
+  BOLD='' GREEN='' YELLOW='' CYAN='' RED='' RESET=''
+fi
+
+say()  { printf "${CYAN}==> ${RESET}%s\n" "$*"; }
+ok()   { printf "${GREEN}    ✓ ${RESET}%s\n" "$*"; }
+warn() { printf "${YELLOW}    ! ${RESET}%s\n" "$*"; }
+err()  { printf "${RED}    ✗ ${RESET}%s\n" "$*" >&2; }
+
+# ── Prompt helper: read with a default ────────────────────────────────────────
+# Usage: ask "Question text" "default value" → sets REPLY
+ask() {
+  local prompt="$1" default="$2"
+  if [[ -n "$default" ]]; then
+    printf "${BOLD}%s${RESET} [%s]: " "$prompt" "$default"
+  else
+    printf "${BOLD}%s${RESET}: " "$prompt"
+  fi
+  read -r REPLY
+  if [[ -z "$REPLY" ]]; then
+    REPLY="$default"
+  fi
+}
+
+# ── Yes/no prompt ─────────────────────────────────────────────────────────────
+# Usage: confirm "Question" → returns 0 for yes, 1 for no
+confirm() {
+  printf "${BOLD}%s${RESET} [y/N]: " "$1"
+  read -r _ans
+  [[ "$_ans" =~ ^[Yy]$ ]]
+}
+
+# ── In-place replace (portable across macOS and Linux) ────────────────────────
+# Usage: replace "old" "new" file
+replace() {
+  local old="$1" new="$2" file="$3"
+  # Escape forward slashes in old/new for use inside perl regex
+  local old_escaped new_escaped
+  old_escaped=$(printf '%s' "$old" | perl -pe 's{/}{\\/}g')
+  new_escaped=$(printf '%s' "$new" | perl -pe 's{/}{\\/}g')
+  perl -i -pe "s/\Q${old_escaped}\E/${new_escaped}/g" "$file"
+}
+
+# ── Banner ─────────────────────────────────────────────────────────────────────
+echo ""
+printf "${BOLD}Architecture Model Template — Setup${RESET}\n"
+echo "Customises placeholder names in the workspace and optionally installs"
+echo "recommended tooling. Safe to re-run."
+echo ""
+
+# ── Step 1: Collect names ─────────────────────────────────────────────────────
+say "Workspace details"
+
+ask "Workspace / project name (used in the dev-container title)" "My Project"
+WORKSPACE_NAME="$REPLY"
+
+ask "Main software system name" "$WORKSPACE_NAME"
+SYSTEM_NAME="$REPLY"
+
+ask "Main user / actor name" "User"
+USER_NAME="$REPLY"
+
+ask "Main container / component name" "Web App"
+WEBAPP_NAME="$REPLY"
+
+echo ""
+
+# ── Step 2: Apply replacements ────────────────────────────────────────────────
+say "Applying replacements to workspace.dsl"
+
+replace '"Software System"' "\"${SYSTEM_NAME}\"" workspace.dsl
+ok "\"Software System\" → \"${SYSTEM_NAME}\""
+
+replace '"Web App"' "\"${WEBAPP_NAME}\"" workspace.dsl
+ok "\"Web App\" → \"${WEBAPP_NAME}\""
+
+replace '"User"' "\"${USER_NAME}\"" workspace.dsl
+ok "\"User\" → \"${USER_NAME}\""
+
+say "Applying replacements to .devcontainer/devcontainer.json"
+
+replace '"Structurizr codespace"' "\"${WORKSPACE_NAME}\"" .devcontainer/devcontainer.json
+ok "\"Structurizr codespace\" → \"${WORKSPACE_NAME}\""
+
+echo ""
+
+# ── Step 3: Optional — install structurizr-skill ──────────────────────────────
+say "Optional extras"
+echo "  fedemagnani/structurizr-skill adds Claude Code assistance for Structurizr DSL"
+echo "  (requires the Claude Code CLI — https://claude.ai/code)"
+echo ""
+
+if confirm "Install structurizr-skill for this project?"; then
+  if ! command -v claude &>/dev/null; then
+    err "The 'claude' CLI was not found. Install Claude Code first:"
+    warn "https://claude.ai/code"
+    warn "Then run:  claude mcp add --scope project -- npx -y structurizr-skill"
+  else
+    say "Installing structurizr-skill..."
+    claude mcp add --scope project -- npx -y structurizr-skill
+    ok "structurizr-skill installed for this project"
+  fi
+else
+  warn "Skipped. You can install it later with:"
+  warn "  claude mcp add --scope project -- npx -y structurizr-skill"
+fi
+
+# ── Done ──────────────────────────────────────────────────────────────────────
+echo ""
+printf "${GREEN}${BOLD}Setup complete!${RESET}\n"
+echo ""
+echo "Next steps:"
+echo "  1. Open this folder in VS Code and click 'Reopen in Container'"
+echo "  2. Run  ./bin/local  to start the Structurizr web server"
+echo "  3. Open  http://localhost:8080  to view your diagrams"
+echo ""
+
+# ── Step 4: Optional — self-removal ───────────────────────────────────────────
+if confirm "Remove this setup script? (it's no longer needed)"; then
+  rm -- "$0"
+  ok "setup script removed"
+fi

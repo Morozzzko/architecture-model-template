@@ -25,6 +25,8 @@ workspace {
         user -> system.webapp "Uses"
     }
 
+    !adrs docs/decisions
+
     views {
         systemLandscape "Landscape" "Everything we have" {
           include *

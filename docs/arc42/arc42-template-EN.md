@@ -194,6 +194,27 @@ Mapping of Building Blocks to Infrastructure
 
 # Architecture Decisions
 
+Architecture decisions are maintained as [Architecture Decision Records (ADRs)](../decisions/)
+in `docs/decisions/`, version-controlled alongside the code, using [adr-tools](https://github.com/npryce/adr-tools).
+
+System-wide decisions live here. Service- or component-specific decisions live in their own
+`docs/decisions/` subdirectory and are managed the same way via `bin/adr --in <path>`.
+
+| Scope | Directory | Init command |
+|---|---|---|
+| System-wide | `docs/decisions/` | *(already initialised)* |
+| Service/component | `<service>/docs/decisions/` | `bin/adr --in <service> init docs/decisions` |
+
+Create a new ADR: `bin/adr new Title of the decision`  
+Supersede an existing one: `bin/adr new -s 3 Replacement decision title`  
+Service-specific: `bin/adr --in services/auth new Title of the decision`
+
+## Index
+
+<!-- Regenerate with: bin/adr generate toc -p ../decisions/ -->
+
+* [1. Record architecture decisions](../decisions/0001-record-architecture-decisions.md)
+
 # Quality Requirements
 
 ## Quality Requirements Overview

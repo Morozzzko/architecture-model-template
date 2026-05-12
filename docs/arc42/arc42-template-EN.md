@@ -209,12 +209,6 @@ Create a new ADR: `bin/adr new Title of the decision`
 Supersede an existing one: `bin/adr new -s 3 Replacement decision title`  
 Service-specific: `bin/adr --in services/auth new Title of the decision`
 
-## Index
-
-<!-- Regenerate with: bin/adr generate toc -p ../decisions/ -->
-
-* [1. Record architecture decisions](../decisions/0001-record-architecture-decisions.md)
-
 # Quality Requirements
 
 ## Quality Requirements Overview

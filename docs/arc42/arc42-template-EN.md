@@ -194,10 +194,10 @@ Mapping of Building Blocks to Infrastructure
 
 # Architecture Decisions
 
-Architecture decisions are maintained as [Architecture Decision Records (ADRs)](../decisions/)
+Architecture decisions are maintained as Architecture Decision Records (ADRs)
 in `docs/decisions/`, version-controlled alongside the code.
 
-System-wide decisions live here. Service- or component-specific decisions live in their own
+System-wide decisions live there. Service- or component-specific decisions live in their own
 `docs/decisions/` subdirectory.
 
 # Quality Requirements

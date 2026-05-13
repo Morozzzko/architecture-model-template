@@ -24,8 +24,8 @@ jobs:
           java-version: "17"
           cache: maven
 
-      - name: Test plugin build
-        run: mvn test
+      - name: Build and test plugin
+        run: mvn package
         working-directory: plugins/embed-views-extractor
 
       - name: Install Dev Containers CLI

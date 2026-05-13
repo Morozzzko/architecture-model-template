@@ -29,9 +29,10 @@ public class EmbedViewsExtractorPlugin implements StructurizrDslPlugin {
         File output = new File(context.getDslFile().getParentFile(), outputFile);
 
         if (!baseDir.exists() || !baseDir.isDirectory()) {
-            System.err.println("EmbedViewsExtractor: Directory not found: " + baseDir.getAbsolutePath());
-            return;
+            throw new IllegalArgumentException("EmbedViewsExtractor: Directory not found: " + baseDir.getAbsolutePath());
         }
+
+        new EmbedViewsDocumentationImporter().importDocumentation(context.getWorkspace(), baseDir);
 
         List<ViewDefinition> viewDefinitions = extractViewDefinitionsFromMarkdown(baseDir);
 
@@ -45,7 +46,7 @@ public class EmbedViewsExtractorPlugin implements StructurizrDslPlugin {
             }
             Files.writeString(output.toPath(), content);
         } catch (IOException e) {
-            System.err.println("EmbedViewsExtractor: Failed to write output file: " + e.getMessage());
+            throw new RuntimeException("EmbedViewsExtractor: Failed to write output file: " + output, e);
         }
     }
 
@@ -67,15 +68,15 @@ public class EmbedViewsExtractorPlugin implements StructurizrDslPlugin {
                                 }
                                 definitions.add(new ViewDefinition(
                                         path.getFileName().toString(),
-                                        matcher.group(2).trim()
+                                        matcher.group(2).strip()
                                 ));
                             }
                         } catch (IOException e) {
-                            System.err.println("EmbedViewsExtractor: Failed to read file: " + path);
+                            throw new RuntimeException("EmbedViewsExtractor: Failed to read file: " + path, e);
                         }
                     });
         } catch (IOException e) {
-            System.err.println("EmbedViewsExtractor: Failed to walk directory: " + directory);
+            throw new RuntimeException("EmbedViewsExtractor: Failed to walk directory: " + directory, e);
         }
 
         return definitions;

@@ -22,6 +22,7 @@ public class EmbedViewsDocumentationImporter extends RecursiveDefaultDocumentati
     @Override
     protected void importFile(Documentable documentable, File file) throws Exception {
         if (!FormatFinder.isMarkdownOrAsciiDoc(file)) {
+            super.importFile(documentable, file);
             return;
         }
 

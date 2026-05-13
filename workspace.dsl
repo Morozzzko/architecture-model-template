@@ -2,9 +2,9 @@
 
 workspace {
     !identifiers hierarchical
-    !docs docs/arc42 is.morozov.structurizr.EmbedViewsDocumentationImporter
-    # Extracts view definitions from ```structurizr{embed:ViewName} code blocks in markdown files
-    # and writes them to .generated/embedded-views.dsl, which is !include'd in the views block
+
+    # Imports docs and extracts embedded view DSL into a file that is included from the views block.
+    # Embedded blocks are parsed by Structurizr, so any valid view DSL remains valid here.
     !plugin is.morozov.structurizr.EmbedViewsExtractorPlugin {
         path docs/arc42
         output .generated/embedded-views.dsl
@@ -33,7 +33,6 @@ workspace {
           autoLayout lr
         }
 
-        # Views extracted from markdown files by EmbedViewsExtractorPlugin
         !include .generated/embedded-views.dsl
     }
 }

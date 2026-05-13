@@ -14,6 +14,10 @@ final class TestPluginContexts {
     }
 
     static void runPlugin(Path directory, String docsPath) throws Exception {
+        runPlugin(directory, docsPath, "embedded-views.dsl");
+    }
+
+    static void runPlugin(Path directory, String docsPath, String outputPath) throws Exception {
         Path dslFile = directory.resolve("workspace.dsl");
         Files.writeString(dslFile, "workspace {}\n");
 
@@ -21,7 +25,10 @@ final class TestPluginContexts {
                 new StructurizrDslParser(),
                 dslFile.toFile(),
                 new Workspace("Name", "Description"),
-                Map.of("path", docsPath)
+                Map.of(
+                        "path", docsPath,
+                        "output", outputPath
+                )
         );
 
         new EmbedViewsExtractorPlugin().run(context);

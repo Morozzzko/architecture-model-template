@@ -20,7 +20,7 @@ GitHub Codespaces for editing on the go.
 
 There are a few custom QoL plugins in `plugins/`. See the docs:
 
-* [Embed Views Extractor](plugins/embed-views-extractor/README.md) — imports Markdown docs and lets you define views inline, e.g.:
+* [Embed Views Extractor](plugins/embed-views-extractor/README.md) — imports Markdown docs and extracts inline view DSL, e.g.:
 
 ```markdown
 ```structurizr{embed:Context}

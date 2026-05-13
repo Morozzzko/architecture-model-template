@@ -8,16 +8,18 @@ In your `workspace.dsl`:
 
 ```structurizr
 workspace {
+    !plugin is.morozov.structurizr.EmbedViewsExtractorPlugin {
+        path docs/arc42
+        output .generated/embedded-views.dsl
+    }
+
     model {
         # ...
     }
 
-    !plugin is.morozov.structurizr.EmbedViewsExtractorPlugin {
-        path docs/arc42
-    }
-
     views {
         # ...
+        !include .generated/embedded-views.dsl
     }
 }
 ```
@@ -27,6 +29,7 @@ workspace {
 | Parameter | Default | Description |
 |-----------|---------|-------------|
 | `path` | `docs` | Directory to scan for markdown files |
+| `output` | `embedded-views.dsl` | Output file path for generated view DSL |
 
 ## Markdown Syntax
 
@@ -41,7 +44,7 @@ systemContext system "Context" "Shows the system context" {
 ```
 ~~~
 
-The plugin imports the Markdown files into workspace documentation, replaces matching blocks in-memory with `![](embed:ViewName)`, and adds the embedded views directly to the workspace.
+The plugin imports the Markdown files into workspace documentation, replaces matching blocks in-memory with `![](embed:ViewName)`, and writes the embedded view DSL to the output file. Include that generated file from `views` so Structurizr parses the embedded blocks as normal view DSL.
 
 ## Building
 

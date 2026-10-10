@@ -9,7 +9,10 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'Architecture',
-      sidebar: [{ label: 'Overview', link: '/' }],
+      sidebar: [
+        { label: 'Overview', link: '/' },
+        { label: 'arc42', link: '/arc42/' },
+      ],
     }),
     react(),
   ],

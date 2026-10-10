@@ -30,9 +30,9 @@ views {
     include *
   }
 
-  view context of system {
+  view context {
     title 'Context'
-    include *
+    include system, * -> system, system -> *
   }
 
   view containers of system {

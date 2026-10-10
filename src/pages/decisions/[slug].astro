@@ -1,0 +1,24 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro'
+
+export function getStaticPaths() {
+  const decisions = import.meta.glob('../../../docs/decisions/*.md', { eager: true })
+  return Object.entries(decisions).map(([path, decision]) => ({
+    params: { slug: path.split('/').pop().replace(/\.md$/, '') },
+    props: { decision },
+  }))
+}
+
+const { decision } = Astro.props
+const [title, ...headings] = decision.getHeadings()
+---
+
+<StarlightPage frontmatter={{ title: title.text }} headings={headings}>
+  <decision.Content />
+</StarlightPage>
+
+<style is:global>
+  .sl-markdown-content > h1:first-child {
+    display: none;
+  }
+</style>

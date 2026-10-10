@@ -1,0 +1,35 @@
+---
+import { model } from '../lib/model'
+
+interface Props {
+  kind?: string
+  of?: string
+}
+
+const { kind, of } = Astro.props
+const kinds = Object.keys(model.specification.elements)
+if (kind && !kinds.includes(kind)) {
+  throw new Error(`Unknown element kind "${kind}". Known kinds: ${kinds.join(', ')}`)
+}
+
+const scope = of ? [...model.element(of).descendants()] : [...model.elements()]
+const elements = scope.filter((element) => !kind || element.kind === kind)
+---
+
+<table>
+  <thead>
+    <tr><th>Name</th><th>Technology</th><th>Description</th><th>Tags</th></tr>
+  </thead>
+  <tbody>
+    {
+      elements.map((element) => (
+        <tr>
+          <td>{element.title}</td>
+          <td>{element.technology}</td>
+          <td>{element.description.text}</td>
+          <td>{element.tags.join(', ')}</td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>

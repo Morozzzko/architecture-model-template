@@ -2,7 +2,9 @@
 title: arc42
 ---
 
+import Elements from '../../components/Elements.astro'
 import LikeC4View from '../../components/LikeC4View.astro'
+import Relationships from '../../components/Relationships.astro'
 
 **About arc42**
 
@@ -35,6 +37,8 @@ contributors. See [arc42.org](https://arc42.org).
 
 <LikeC4View viewId="context" />
 
+<Relationships of="system" />
+
 **\<optionally: Explanation of external domain interfaces\>**
 
 ### Technical Context
@@ -57,7 +61,7 @@ Motivation
 *\<text explanation\>*
 
 Contained Building Blocks  
-*\<Description of contained building block (black boxes)\>*
+<Elements of="system" kind="container" />
 
 Important Interfaces  
 *\<Description of important interfaces\>*

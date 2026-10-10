@@ -1,0 +1,29 @@
+---
+import { model } from '../lib/model'
+
+interface Props {
+  of: string
+}
+
+const { of } = Astro.props
+const element = model.element(of)
+const relationships = [...new Set([...element.incoming(), ...element.outgoing()])]
+---
+
+<table>
+  <thead>
+    <tr><th>Source</th><th>Target</th><th>Label</th><th>Technology</th></tr>
+  </thead>
+  <tbody>
+    {
+      relationships.map((relationship) => (
+        <tr>
+          <td>{relationship.source.title}</td>
+          <td>{relationship.target.title}</td>
+          <td>{relationship.title}</td>
+          <td>{relationship.technology}</td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>

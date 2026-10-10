@@ -1,0 +1,16 @@
+---
+import { LikeC4View as ReactLikeC4View } from 'likec4:react'
+import { model } from '../lib/model'
+
+interface Props {
+  viewId: string
+}
+
+const { viewId } = Astro.props
+const viewIds = [...model.views()].map((view) => view.id as string)
+if (!viewIds.includes(viewId)) {
+  throw new Error(`Unknown view "${viewId}". Known views: ${viewIds.join(', ')}`)
+}
+---
+
+<ReactLikeC4View viewId={viewId} browser client:only="react" />

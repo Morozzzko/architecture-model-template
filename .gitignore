@@ -1,12 +1,5 @@
+node_modules/
+dist/
+.astro/
 /output/
-!/output/.keep
 .env
-.structurizr/
-dip.override.yml
-
-.tool-versions
-
-.devcontainer/devcontainer.env
-
-.generated/
-plugins/*/target/

@@ -11,14 +11,11 @@ export function getStaticPaths() {
 
 const { decision } = Astro.props
 const [title, ...headings] = decision.getHeadings()
+const html = (await decision.compiledContent())
+  .replace(/<h1[^>]*>.*?<\/h1>/s, '')
+  .replace(/href="(\d+-[^"/]+)\.md"/g, 'href="../$1/"')
 ---
 
 <StarlightPage frontmatter={{ title: title.text }} headings={headings}>
-  <decision.Content />
+  <Fragment set:html={html} />
 </StarlightPage>
-
-<style is:global>
-  .sl-markdown-content > h1:first-child {
-    display: none;
-  }
-</style>

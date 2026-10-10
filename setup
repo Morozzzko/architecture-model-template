@@ -3,8 +3,6 @@
 # One-time setup: renames template placeholders.
 #
 # Usage: ./setup
-#
-# Safe to re-run — only replaces strings that still match the current value.
 
 set -euo pipefail
 
@@ -51,18 +49,17 @@ confirm() {
 # Usage: replace "old" "new" file
 replace() {
   local old="$1" new="$2" file="$3"
-  # Escape forward slashes in old/new for use inside perl regex
-  local old_escaped new_escaped
-  old_escaped=$(printf '%s' "$old" | perl -pe 's{/}{\\/}g')
-  new_escaped=$(printf '%s' "$new" | perl -pe 's{/}{\\/}g')
-  perl -i -pe "s/\Q${old_escaped}\E/${new_escaped}/g" "$file"
+  if ! grep -qF -- "$old" "$file"; then
+    err "$old not found in $file. Has setup already been run? Edit the file directly."
+    exit 1
+  fi
+  OLD="$old" NEW="$new" perl -i -pe 's/\Q$ENV{OLD}\E/$ENV{NEW}/g' "$file"
 }
 
 # ── Banner ─────────────────────────────────────────────────────────────────────
 echo ""
 printf "${BOLD}Architecture Model Template — Setup${RESET}\n"
 echo "Customises placeholder names in the model and the site title."
-echo "Safe to re-run."
 echo ""
 
 # ── Step 1: Collect names ─────────────────────────────────────────────────────
@@ -81,8 +78,8 @@ ask "Main container / component name" "Web App"
 WEBAPP_NAME="$REPLY"
 
 for name in "$WORKSPACE_NAME" "$SYSTEM_NAME" "$USER_NAME" "$WEBAPP_NAME"; do
-  if [[ "$name" == *"'"* || "$name" == *'"'* ]]; then
-    err "Names cannot contain quotes: $name"
+  if [[ "$name" == *"'"* || "$name" == *'"'* || "$name" == *\\* ]]; then
+    err "Names cannot contain quotes or backslashes: $name"
     exit 1
   fi
 done

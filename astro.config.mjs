@@ -19,7 +19,7 @@ export default defineConfig({
             .filter((file) => /^\d+-.*\.md$/.test(file))
             .sort()
             .map((file) => ({
-              label: readFileSync(`docs/decisions/${file}`, 'utf8').split('\n', 1)[0].replace(/^# /, ''),
+              label: readFileSync(`docs/decisions/${file}`, 'utf8').split('\n', 1)[0].replace(/^# |[`*]/g, ''),
               link: `/decisions/${file.replace(/\.md$/, '')}/`,
             })),
         },

@@ -26,7 +26,13 @@ const elements = scope.filter((element) => !kind || element.kind === kind)
         <tr>
           <td>{element.title}</td>
           <td>{element.technology}</td>
-          <td>{element.description.text}</td>
+          <td>
+            {element.description.isMarkdown ? (
+              <Fragment set:html={element.description.html} />
+            ) : (
+              element.description.text
+            )}
+          </td>
           <td>{element.tags.join(', ')}</td>
         </tr>
       ))

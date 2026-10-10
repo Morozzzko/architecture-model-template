@@ -2,7 +2,7 @@
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro'
 
 export function getStaticPaths() {
-  const decisions = import.meta.glob('../../../docs/decisions/*.md', { eager: true })
+  const decisions = import.meta.glob('../../../docs/decisions/[0-9]*.md', { eager: true })
   return Object.entries(decisions).map(([path, decision]) => ({
     params: { slug: path.split('/').pop().replace(/\.md$/, '') },
     props: { decision },

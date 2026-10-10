@@ -7,7 +7,7 @@ interface Props {
 
 const { of } = Astro.props
 const element = model.element(of)
-const relationships = [...new Set([...element.incoming(), ...element.outgoing()])]
+const relationships = [...element.incoming(), ...element.outgoing()]
 ---
 
 <table>

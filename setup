@@ -63,12 +63,12 @@ echo "Customises placeholder names in the model and the site title."
 echo ""
 
 # ── Step 1: Collect names ─────────────────────────────────────────────────────
-say "Workspace details"
+say "Project details"
 
 ask "Project name (used as the site title)" "My Project"
-WORKSPACE_NAME="$REPLY"
+PROJECT_NAME="$REPLY"
 
-ask "Main software system name" "$WORKSPACE_NAME"
+ask "Main software system name" "$PROJECT_NAME"
 SYSTEM_NAME="$REPLY"
 
 ask "Main user / actor name" "User"
@@ -77,7 +77,7 @@ USER_NAME="$REPLY"
 ask "Main container / component name" "Web App"
 WEBAPP_NAME="$REPLY"
 
-for name in "$WORKSPACE_NAME" "$SYSTEM_NAME" "$USER_NAME" "$WEBAPP_NAME"; do
+for name in "$PROJECT_NAME" "$SYSTEM_NAME" "$USER_NAME" "$WEBAPP_NAME"; do
   if [[ "$name" == *"'"* || "$name" == *'"'* || "$name" == *\\* ]]; then
     err "Names cannot contain quotes or backslashes: $name"
     exit 1
@@ -100,8 +100,8 @@ ok "'User' → '${USER_NAME}'"
 
 say "Applying replacements to astro.config.mjs"
 
-replace "title: 'Architecture'" "title: '${WORKSPACE_NAME}'" astro.config.mjs
-ok "site title → '${WORKSPACE_NAME}'"
+replace "title: 'Architecture'" "title: '${PROJECT_NAME}'" astro.config.mjs
+ok "site title → '${PROJECT_NAME}'"
 
 # ── Done ──────────────────────────────────────────────────────────────────────
 echo ""

@@ -67,7 +67,7 @@ To derive something else from the model, add a component in `src/components/` th
 
 ## Architecture Decision Records
 
-ADRs live in `docs/decisions/` and are managed with adr-tools through `bin/adr`. Each one appears in the site's sidebar under Decisions. Keep them free of frontmatter: adr-tools reads an ADR's title from the first line of the file.
+ADRs live in `docs/decisions/` and are managed with adr-tools through `bin/adr`. Each one appears in the site's sidebar under Decisions; restart `npm run dev` after adding one, because the list is read at startup. Keep them free of frontmatter: adr-tools reads an ADR's title from the first line of the file.
 
 ## Querying the model
 

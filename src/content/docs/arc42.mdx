@@ -2,6 +2,7 @@
 title: arc42
 ---
 
+import Decisions from '../../components/Decisions.astro'
 import Elements from '../../components/Elements.astro'
 import LikeC4View from '../../components/LikeC4View.astro'
 import Relationships from '../../components/Relationships.astro'
@@ -195,8 +196,9 @@ Mapping of Building Blocks to Infrastructure
 Architecture decisions are maintained as Architecture Decision Records (ADRs)
 in `docs/decisions/`, version-controlled alongside the code.
 
-System-wide decisions live there and are listed under Decisions in the sidebar. Create one with
-`bin/adr new <title>`.
+System-wide decisions live there and are listed below. Create one with `bin/adr new <title>`.
+
+<Decisions />
 
 Service- or component-specific decisions live in their own `docs/decisions/` subdirectory and
 are not published on this site.

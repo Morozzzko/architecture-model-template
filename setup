@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 #
-# One-time setup: renames template placeholders and optionally installs extras.
+# One-time setup: renames template placeholders.
 #
 # Usage: ./setup
-#
-# Safe to re-run — only replaces strings that still match the current value.
 
 set -euo pipefail
 
@@ -22,7 +20,6 @@ fi
 
 say()  { printf "${CYAN}==> ${RESET}%s\n" "$*"; }
 ok()   { printf "${GREEN}    ✓ ${RESET}%s\n" "$*"; }
-warn() { printf "${YELLOW}    ! ${RESET}%s\n" "$*"; }
 err()  { printf "${RED}    ✗ ${RESET}%s\n" "$*" >&2; }
 
 # ── Prompt helper: read with a default ────────────────────────────────────────
@@ -52,27 +49,26 @@ confirm() {
 # Usage: replace "old" "new" file
 replace() {
   local old="$1" new="$2" file="$3"
-  # Escape forward slashes in old/new for use inside perl regex
-  local old_escaped new_escaped
-  old_escaped=$(printf '%s' "$old" | perl -pe 's{/}{\\/}g')
-  new_escaped=$(printf '%s' "$new" | perl -pe 's{/}{\\/}g')
-  perl -i -pe "s/\Q${old_escaped}\E/${new_escaped}/g" "$file"
+  if ! grep -qF -- "$old" "$file"; then
+    err "$old not found in $file. Has setup already been run? Edit the file directly."
+    exit 1
+  fi
+  OLD="$old" NEW="$new" perl -i -pe 's/\Q$ENV{OLD}\E/$ENV{NEW}/g' "$file"
 }
 
 # ── Banner ─────────────────────────────────────────────────────────────────────
 echo ""
 printf "${BOLD}Architecture Model Template — Setup${RESET}\n"
-echo "Customises placeholder names in the workspace and optionally installs"
-echo "recommended tooling. Safe to re-run."
+echo "Customises placeholder names in the model and the site title."
 echo ""
 
 # ── Step 1: Collect names ─────────────────────────────────────────────────────
-say "Workspace details"
+say "Project details"
 
-ask "Workspace / project name (used in the dev-container title)" "My Project"
-WORKSPACE_NAME="$REPLY"
+ask "Project name (used as the site title)" "My Project"
+PROJECT_NAME="$REPLY"
 
-ask "Main software system name" "$WORKSPACE_NAME"
+ask "Main software system name" "$PROJECT_NAME"
 SYSTEM_NAME="$REPLY"
 
 ask "Main user / actor name" "User"
@@ -81,59 +77,43 @@ USER_NAME="$REPLY"
 ask "Main container / component name" "Web App"
 WEBAPP_NAME="$REPLY"
 
+for name in "$PROJECT_NAME" "$SYSTEM_NAME" "$USER_NAME" "$WEBAPP_NAME"; do
+  if [[ "$name" == *"'"* || "$name" == *'"'* || "$name" == *\\* ]]; then
+    err "Names cannot contain quotes or backslashes: $name"
+    exit 1
+  fi
+done
+
 echo ""
 
 # ── Step 2: Apply replacements ────────────────────────────────────────────────
-say "Applying replacements to workspace.dsl"
+say "Applying replacements to model/model.c4"
 
-replace '"Software System"' "\"${SYSTEM_NAME}\"" workspace.dsl
-ok "\"Software System\" → \"${SYSTEM_NAME}\""
+replace "'Software System'" "'${SYSTEM_NAME}'" model/model.c4
+ok "'Software System' → '${SYSTEM_NAME}'"
 
-replace '"Web App"' "\"${WEBAPP_NAME}\"" workspace.dsl
-ok "\"Web App\" → \"${WEBAPP_NAME}\""
+replace "'Web App'" "'${WEBAPP_NAME}'" model/model.c4
+ok "'Web App' → '${WEBAPP_NAME}'"
 
-replace '"User"' "\"${USER_NAME}\"" workspace.dsl
-ok "\"User\" → \"${USER_NAME}\""
+replace "'User'" "'${USER_NAME}'" model/model.c4
+ok "'User' → '${USER_NAME}'"
 
-say "Applying replacements to .devcontainer/devcontainer.json"
+say "Applying replacements to astro.config.mjs"
 
-replace '"Structurizr codespace"' "\"${WORKSPACE_NAME}\"" .devcontainer/devcontainer.json
-ok "\"Structurizr codespace\" → \"${WORKSPACE_NAME}\""
-
-echo ""
-
-# ── Step 3: Optional — install structurizr-skill ──────────────────────────────
-say "Optional extras"
-echo "  fedemagnani/structurizr-skill adds Claude Code assistance for Structurizr DSL"
-echo "  (requires the Claude Code CLI — https://claude.ai/code)"
-echo ""
-
-if confirm "Install structurizr-skill for this project?"; then
-  if ! command -v claude &>/dev/null; then
-    err "The 'claude' CLI was not found. Install Claude Code first:"
-    warn "https://claude.ai/code"
-    warn "Then run:  claude mcp add --scope project -- npx -y structurizr-skill"
-  else
-    say "Installing structurizr-skill..."
-    claude mcp add --scope project -- npx -y structurizr-skill
-    ok "structurizr-skill installed for this project"
-  fi
-else
-  warn "Skipped. You can install it later with:"
-  warn "  claude mcp add --scope project -- npx -y structurizr-skill"
-fi
+replace "title: 'Architecture'" "title: '${PROJECT_NAME}'" astro.config.mjs
+ok "site title → '${PROJECT_NAME}'"
 
 # ── Done ──────────────────────────────────────────────────────────────────────
 echo ""
 printf "${GREEN}${BOLD}Setup complete!${RESET}\n"
 echo ""
 echo "Next steps:"
-echo "  1. Open this folder in VS Code and click 'Reopen in Container'"
-echo "  2. Run  ./bin/local  to start the Structurizr web server"
-echo "  3. Open  http://localhost:8080  to view your diagrams"
+echo "  1. Run  npm install"
+echo "  2. Run  npm run dev"
+echo "  3. Open  http://localhost:4321  to view the site"
 echo ""
 
-# ── Step 4: Optional — self-removal ───────────────────────────────────────────
+# ── Step 3: Optional — self-removal ───────────────────────────────────────────
 if confirm "Remove this setup script? (it's no longer needed)"; then
   rm -- "$0"
   ok "setup script removed"

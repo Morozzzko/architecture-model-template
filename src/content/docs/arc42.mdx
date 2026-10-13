@@ -1,9 +1,11 @@
 ---
-date: July 2025
-title: "![arc42](images/arc42-logo.png) Template"
+title: arc42
 ---
 
-# 
+import Decisions from '../../components/Decisions.astro'
+import Elements from '../../components/Elements.astro'
+import LikeC4View from '../../components/LikeC4View.astro'
+import Relationships from '../../components/Relationships.astro'
 
 **About arc42**
 
@@ -13,32 +15,34 @@ architecture.
 Template Version 9.0-EN. (based upon AsciiDoc version), July 2025
 
 Created, maintained and © by Dr. Peter Hruschka, Dr. Gernot Starke and
-contributors. See <https://arc42.org>.
+contributors. See [arc42.org](https://arc42.org).
 
-# Introduction and Goals
+## Introduction and Goals
 
-## Requirements Overview
+### Requirements Overview
 
-## Quality Goals
+### Quality Goals
 
-## Stakeholders
+### Stakeholders
 
 | Role/Name    | Contact         | Expectations        |
 |--------------|-----------------|---------------------|
 | *\<Role-1\>* | *\<Contact-1\>* | *\<Expectation-1\>* |
 | *\<Role-2\>* | *\<Contact-2\>* | *\<Expectation-2\>* |
 
-# Architecture Constraints
+## Architecture Constraints
 
-# Context and Scope
+## Context and Scope
 
-## Business Context
+### Business Context
 
-**\<Diagram or Table\>**
+<LikeC4View viewId="context" />
+
+<Relationships of="system" />
 
 **\<optionally: Explanation of external domain interfaces\>**
 
-## Technical Context
+### Technical Context
 
 **\<Diagram or Table\>**
 
@@ -46,24 +50,24 @@ contributors. See <https://arc42.org>.
 
 **\<Mapping Input/Output to Channels\>**
 
-# Solution Strategy
+## Solution Strategy
 
-# Building Block View
+## Building Block View
 
-## Whitebox Overall System
+### Whitebox Overall System
 
-***\<Overview Diagram\>***
+<LikeC4View viewId="containers" />
 
 Motivation  
 *\<text explanation\>*
 
 Contained Building Blocks  
-*\<Description of contained building block (black boxes)\>*
+<Elements of="system" kind="container" />
 
 Important Interfaces  
 *\<Description of important interfaces\>*
 
-### \<Name black box 1\>
+#### \<Name black box 1\>
 
 *\<Purpose/Responsibility\>*
 
@@ -77,77 +81,72 @@ Important Interfaces
 
 *\<(optional) Open Issues/Problems/Risks\>*
 
-### \<Name black box 2\>
+#### \<Name black box 2\>
 
 *\<black box template\>*
 
-### \<Name black box n\>
+#### \<Name black box n\>
 
 *\<black box template\>*
 
-### \<Name interface 1\>
+#### \<Name interface 1\>
 
 …​
 
-### \<Name interface m\>
+#### \<Name interface m\>
 
-## Level 2
+### Level 2
 
-### White Box *\<building block 1\>*
+#### White Box *\<building block 1\>*
 
 *\<white box template\>*
 
-### White Box *\<building block 2\>*
+#### White Box *\<building block 2\>*
 
 *\<white box template\>*
 
 …​
 
-### White Box *\<building block m\>*
+#### White Box *\<building block m\>*
 
 *\<white box template\>*
 
-## Level 3
+### Level 3
 
-### White Box \<\_building block x.1\_\>
-
-*\<white box template\>*
-
-### White Box \<\_building block x.2\_\>
+#### White Box \<\_building block x.1\_\>
 
 *\<white box template\>*
 
-### White Box \<\_building block y.1\_\>
+#### White Box \<\_building block x.2\_\>
 
 *\<white box template\>*
 
-# Runtime View
+#### White Box \<\_building block y.1\_\>
 
-Critical flows can be documented as dynamic views in the model; see the "User request flow" dynamic view as an example.
+*\<white box template\>*
 
-```structurizr{embed:UserRequestFlow}
-dynamic system UserRequestFlow "User request flow" {
-  user -> system.webapp "Uses"
-  autoLayout lr
-}
-```
+## Runtime View
 
-## \<Runtime Scenario 1\>
+Critical flows are documented as dynamic views in the model.
+
+<LikeC4View viewId="userRequestFlow" />
+
+### \<Runtime Scenario 1\>
 
 - *\<insert runtime diagram or textual description of the scenario\>*
 
 - *\<insert description of the notable aspects of the interactions
   between the building block instances depicted in this diagram.\>*
 
-## \<Runtime Scenario 2\>
+### \<Runtime Scenario 2\>
 
-## …​
+### …​
 
-## \<Runtime Scenario n\>
+### \<Runtime Scenario n\>
 
-# Deployment View
+## Deployment View
 
-## Infrastructure Level 1
+### Infrastructure Level 1
 
 ***\<Overview Diagram\>***
 
@@ -160,55 +159,59 @@ Quality and/or Performance Features
 Mapping of Building Blocks to Infrastructure  
 *\<description of the mapping\>*
 
-## Infrastructure Level 2
+### Infrastructure Level 2
 
-### *\<Infrastructure Element 1\>*
+#### *\<Infrastructure Element 1\>*
 
 *\<diagram + explanation\>*
 
-### *\<Infrastructure Element 2\>*
+#### *\<Infrastructure Element 2\>*
 
 *\<diagram + explanation\>*
 
 …​
 
-### *\<Infrastructure Element n\>*
+#### *\<Infrastructure Element n\>*
 
 *\<diagram + explanation\>*
 
-# Cross-cutting Concepts
+## Cross-cutting Concepts
 
-## *\<Concept 1\>*
+### *\<Concept 1\>*
 
 *\<explanation\>*
 
-## *\<Concept 2\>*
+### *\<Concept 2\>*
 
 *\<explanation\>*
 
 …​
 
-## *\<Concept n\>*
+### *\<Concept n\>*
 
 *\<explanation\>*
 
-# Architecture Decisions
+## Architecture Decisions
 
 Architecture decisions are maintained as Architecture Decision Records (ADRs)
 in `docs/decisions/`, version-controlled alongside the code.
 
-System-wide decisions live there. Service- or component-specific decisions live in their own
-`docs/decisions/` subdirectory.
+System-wide decisions live there and are listed below. Create one with `bin/adr new <title>`.
 
-# Quality Requirements
+<Decisions />
 
-## Quality Requirements Overview
+Service- or component-specific decisions live in their own `docs/decisions/` subdirectory and
+are not published on this site.
 
-## Quality Scenarios
+## Quality Requirements
 
-# Risks and Technical Debts
+### Quality Requirements Overview
 
-# Glossary
+### Quality Scenarios
+
+## Risks and Technical Debts
+
+## Glossary
 
 | Term         | Definition         |
 |--------------|--------------------|

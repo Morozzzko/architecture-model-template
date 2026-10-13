@@ -1,0 +1,47 @@
+specification {
+  element actor {
+    style {
+      shape person
+    }
+  }
+  element system
+  element container
+}
+
+model {
+  user = actor 'User' {
+    description 'A user of the system.'
+  }
+  system = system 'Software System' {
+    description 'A software system.'
+
+    webapp = container 'Web App' {
+      description 'Primary user-facing interface.'
+    }
+  }
+
+  user -> system 'Uses'
+  user -> system.webapp 'Uses'
+}
+
+views {
+  view index {
+    title 'Landscape'
+    include *
+  }
+
+  view context {
+    title 'Context'
+    include system, * -> system, system -> *
+  }
+
+  view containers of system {
+    title 'Containers'
+    include *, user
+  }
+
+  dynamic view userRequestFlow {
+    title 'User request flow'
+    user -> system.webapp 'Uses'
+  }
+}

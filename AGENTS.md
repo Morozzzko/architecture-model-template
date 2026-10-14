@@ -1,31 +1,41 @@
 # Working in this repository
 
-This repository is an architecture model and the documentation site generated from it.
+This is a monorepo of tools for documenting software architecture with LikeC4.
 
 ## Where things live
 
-- `model/model.c4`: the LikeC4 model. It is the source of truth for elements, relationships and views.
-- `src/content/docs/`: documentation pages (MDX). `arc42.mdx` follows the arc42 structure.
-- `docs/decisions/`: Architecture Decision Records, plain adr-tools markdown.
-- `src/components/`: components that render the model inside pages.
+- `template/`: the architecture repository that users copy. It is a self-contained npm project: its own `package.json`, lockfile, workflows and `AGENTS.md`. Everything in it ships to users. It is not part of the pnpm workspace.
+- `packages/create-architecture-model/`: the `npm create architecture-model` generator. It copies `template/` and writes the project's name and description over the placeholders in `model/model.c4` and `astro.config.mjs`. `pnpm pack` bundles a copy of the template into the package.
+- `plugin/`: a Claude Code plugin. Skills are in `plugin/skills/<name>/SKILL.md`.
+- `.claude-plugin/marketplace.json`: makes this repository a plugin marketplace that offers `plugin/`.
+- `addons/`: optional features for the template, one npm package per folder.
+- `.github/workflows/`: CI and releases for this repository. The workflows under `template/.github/` are for users' repositories and do not run here.
+
+## Tooling
+
+- pnpm workspaces cover `packages/*` and `addons/*`. Use `pnpm`, not `npm`, everywhere except inside `template/`.
+- Turborepo runs the `build` and `test` scripts of the workspace packages: `pnpm build`, `pnpm test`, or `pnpm turbo run test --filter <package>` for one.
+- Changesets versions and publishes the packages. See `.changeset/README.md`.
 
 ## Rules
 
-- Describe elements in the model, not in prose. Titles, descriptions, technology and tags belong in `model/model.c4`; pages pull them in through components.
-- To show model content in a page, use the existing components:
-  - `<LikeC4View viewId="..." />` for an interactive diagram.
-  - `<Elements of="..." kind="..." />` for a table of elements.
-  - `<Relationships of="..." />` for a table of an element's relationships.
-  - `<Decisions />` for a table of the ADRs with their status and date.
-- For derived content those don't cover, add a component in `src/components/` that imports `model` from `src/lib/model.ts`. It runs at build time.
-- Query the model through the `likec4` MCP server rather than reading `.c4` files by hand.
-- Create ADRs with `bin/adr new <title>`. Do not add frontmatter to ADR files; adr-tools reads the title from the first line.- LikeC4 strings use single quotes. Tags come first in an element body and must be declared in `specification`.
+- When working inside `template/`, follow `template/AGENTS.md` and run commands from `template/`.
+- Keep the template free of references to this monorepo: a copy of `template/` must work on its own.
+- The generator finds its placeholders by exact text. When changing the main system's title or description or the site title in the template, update the replacements in `packages/create-architecture-model/index.js`.
+- A change to a published package needs a changeset: run `pnpm changeset` and commit the file. The template and the plugin are not published to npm and need none.
+- When a skill is added, removed or renamed, update the skills table in `README.md` and bump `version` in `plugin/.claude-plugin/plugin.json`.
 
 ## Before finishing
 
-Run both and fix anything they report:
+For a change to the template, run from `template/` and fix anything reported:
 
     npm run validate
     npm run build
 
-A build failure naming an unknown element, kind or view means a page references something the model no longer has.
+For a change to the template or a package, from the repository root:
+
+    pnpm test
+
+For a change to the plugin or the marketplace:
+
+    claude plugin validate .

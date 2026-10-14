@@ -1,0 +1,26 @@
+{
+  "name": "create-architecture-model",
+  "version": "0.1.0",
+  "description": "Create an architecture repository: a LikeC4 model with a documentation site generated from it",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Morozzzko/architecture-model-template.git",
+    "directory": "packages/create-architecture-model"
+  },
+  "type": "module",
+  "bin": "index.js",
+  "files": [
+    "index.js",
+    "template.js",
+    "template/"
+  ],
+  "engines": {
+    "node": ">=22.22.3"
+  },
+  "scripts": {
+    "test": "node --test",
+    "prepack": "node -e \"import('./template.js').then((m) => m.bundle())\"",
+    "postpack": "node -e \"fs.rmSync('template', { recursive: true })\""
+  }
+}

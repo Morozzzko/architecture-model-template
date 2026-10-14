@@ -1,0 +1,32 @@
+---
+title: Architecture model toolkit
+---
+
+import Metadata from '@architecture-model/editable-metadata/Metadata.astro'
+import Elements from '../../components/Elements.astro'
+import LikeC4View from '../../components/LikeC4View.astro'
+
+Tools for documenting software architecture as a [LikeC4](https://likec4.dev/) model, with a documentation site generated from it. This site is built with them: its pages, diagrams and tables come from a model of the toolkit itself.
+
+```bash
+npm create @architecture-model my-architecture
+```
+
+See [Start a repository](start/) for what that gives you.
+
+<LikeC4View viewId="index" />
+
+## Parts
+
+<LikeC4View viewId="containers" />
+
+<Elements of="toolkit" kind="container" />
+
+| Part | Package | Lifecycle | Written in |
+| --- | --- | --- | --- |
+| Template | | <Metadata of="toolkit.template" name="lifecycle" /> | <Metadata of="toolkit.template" name="languages" /> |
+| Generator | <Metadata of="toolkit.generator" name="package" /> | <Metadata of="toolkit.generator" name="lifecycle" /> | <Metadata of="toolkit.generator" name="languages" /> |
+| Editable metadata | <Metadata of="toolkit.editableMetadata" name="package" /> | <Metadata of="toolkit.editableMetadata" name="lifecycle" /> | <Metadata of="toolkit.editableMetadata" name="languages" /> |
+| Claude Code plugin | | <Metadata of="toolkit.plugin" name="lifecycle" /> | <Metadata of="toolkit.plugin" name="languages" /> |
+
+The last table is written with the [editable metadata](addons/editable-metadata/) addon: every value in it is read from the model.

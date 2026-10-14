@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+#
+# Proxy to adr-tools for creating and managing Architecture Decision Records.
+#
+# Usage:
+#   bin/adr <command> [args]               # system-wide ADRs in docs/decisions/
+#   bin/adr --in <path> <command> [args]   # service/component-specific ADRs
+#
+# Examples:
+#   bin/adr new My decision title
+#   bin/adr --in services/auth init docs/decisions
+#   bin/adr --in services/auth new Auth-specific decision
+#   bin/adr generate toc -p ../decisions/
+#
+# See: https://github.com/npryce/adr-tools
+
+set -euo pipefail
+
+if ! command -v adr &>/dev/null; then
+  echo "error: adr-tools is not installed. Install with: brew install adr-tools" >&2
+  exit 1
+fi
+
+if [[ "${1:-}" == "--in" ]]; then
+  cd "$2"
+  shift 2
+fi
+
+exec adr "$@"

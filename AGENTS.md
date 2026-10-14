@@ -9,7 +9,8 @@ This is a monorepo of tools for documenting software architecture with LikeC4.
 - `plugin/`: a Claude Code plugin. Skills are in `plugin/skills/<name>/SKILL.md`.
 - `.claude-plugin/marketplace.json`: makes this repository a plugin marketplace that offers `plugin/`.
 - `addons/`: optional features for the template, one npm package per folder. Each is an Astro integration that a user adds with `astro add`; the template does not depend on any of them.
-- `.github/workflows/`: CI and releases for this repository. The workflows under `template/.github/` are for users' repositories and do not run here.
+- `site/`: the toolkit's documentation site, deployed to GitHub Pages. It is a repository made by the generator with the editable-metadata addon added, and its model describes the toolkit. Like `template/`, it is a self-contained npm project outside the pnpm workspace.
+- `.github/workflows/`: CI, releases and the site deployment for this repository. The workflows under `template/.github/` are for users' repositories and do not run here.
 
 ## Tooling
 
@@ -19,7 +20,8 @@ This is a monorepo of tools for documenting software architecture with LikeC4.
 
 ## Rules
 
-- When working inside `template/`, follow `template/AGENTS.md` and run commands from `template/`.
+- When working inside `template/` or `site/`, follow its `AGENTS.md` and run commands from that folder.
+- When a package, addon or skill changes what users do, update the matching page in `site/src/content/docs/` and, if its metadata changes, its element in `site/model/model.c4`.
 - Keep the template free of references to this monorepo: a copy of `template/` must work on its own.
 - The generator finds its placeholders by exact text. When changing the main system's title or description or the site title in the template, update the replacements in `packages/create-architecture-model/index.js`.
 - A change to a published package needs a changeset: run `pnpm changeset` and commit the file. The template and the plugin are not published to npm and need none.
@@ -33,6 +35,8 @@ For a change to the template, run from `template/` and fix anything reported:
 
     npm run validate
     npm run build
+
+For a change to the site, the same two commands from `site/`.
 
 For a change to the template or a package, from the repository root:
 

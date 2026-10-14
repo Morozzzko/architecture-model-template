@@ -8,6 +8,7 @@ Tools for documenting software architecture as a [LikeC4](https://likec4.dev/) m
 | [`packages/create-architecture-model/`](packages/create-architecture-model/) | The `npm create @architecture-model` generator, which copies the template and sets it up |
 | [`plugin/`](plugin/) | A [Claude Code](https://claude.com/claude-code) plugin with skills for working in such a repository |
 | [`addons/`](addons/) | Optional features for the template, published as npm packages |
+| [`site/`](site/) | The [documentation site](https://morozzzko.github.io/architecture-model-template/), itself a repository made with the generator |
 
 ## Start a new architecture repository
 
@@ -78,7 +79,9 @@ The generator copies `template/` when run from this repository, and a bundled co
 node packages/create-architecture-model/index.js /tmp/my-architecture
 ```
 
-CI runs both sets of commands on every pull request.
+The documentation site in `site/` is a self-contained npm project too. CI builds it with the addons from the same commit; a push to `main` that changes it deploys it to GitHub Pages with the released addons.
+
+CI runs all of these on every pull request.
 
 ### Releasing
 

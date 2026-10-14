@@ -19,7 +19,8 @@ This repository is an architecture model and the documentation site generated fr
   - `<Decisions />` for a table of the ADRs with their status and date.
 - For derived content those don't cover, add a component in `src/components/` that imports `model` from `src/lib/model.ts`. It runs at build time.
 - Query the model through the `likec4` MCP server rather than reading `.c4` files by hand.
-- Create ADRs with `bin/adr new <title>`. Do not add frontmatter to ADR files; adr-tools reads the title from the first line.- LikeC4 strings use single quotes. Tags come first in an element body and must be declared in `specification`.
+- Create ADRs with `bin/adr new <title>`. Do not add frontmatter to ADR files; adr-tools reads the title from the first line.
+- LikeC4 strings use single quotes. Tags come first in an element body and must be declared in `specification`.
 
 ## Before finishing
 

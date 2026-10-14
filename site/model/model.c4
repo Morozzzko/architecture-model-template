@@ -1,0 +1,115 @@
+specification {
+  element actor {
+    style {
+      shape person
+    }
+  }
+  element system
+  element container
+  element external {
+    style {
+      color muted
+    }
+  }
+}
+
+model {
+  architect = actor 'Architect' {
+    description 'Writes the model, the documentation and the decisions.'
+  }
+  reader = actor 'Reader' {
+    description 'Reads the published documentation site.'
+  }
+
+  toolkit = system 'Architecture model toolkit' {
+    description 'Tools for documenting software architecture as a LikeC4 model with a documentation site generated from it.'
+
+    template = container 'Template' {
+      technology 'Astro Starlight, LikeC4'
+      description 'The architecture repository that every project starts from: model, documentation site, arc42 and ADRs.'
+      metadata {
+        lifecycle 'production'
+        languages [
+          'MDX',
+          'LikeC4',
+          'TypeScript'
+        ]
+        source 'https://github.com/Morozzzko/architecture-model-template/tree/main/template'
+      }
+    }
+
+    generator = container 'Generator' {
+      technology 'Node.js'
+      description 'Copies the template and writes the project name and description into it.'
+      metadata {
+        package '@architecture-model/create'
+        lifecycle 'production'
+        languages 'JavaScript'
+        source 'https://github.com/Morozzzko/architecture-model-template/tree/main/packages/create-architecture-model'
+      }
+    }
+
+    editableMetadata = container 'Editable metadata' {
+      technology 'Astro integration'
+      description 'Shows element metadata in pages and lets the dev server edit it in place.'
+      metadata {
+        package '@architecture-model/editable-metadata'
+        lifecycle 'experimental'
+        languages [
+          'JavaScript',
+          'Astro'
+        ]
+        source 'https://github.com/Morozzzko/architecture-model-template/tree/main/addons/editable-metadata'
+      }
+    }
+
+    plugin = container 'Claude Code plugin' {
+      technology 'Claude Code skills'
+      description 'Skills that teach coding agents to work in an architecture repository.'
+      metadata {
+        lifecycle 'experimental'
+        languages 'Markdown'
+        source 'https://github.com/Morozzzko/architecture-model-template/tree/main/plugin'
+      }
+    }
+  }
+
+  npm = external 'npm registry' {
+    description 'Hosts the generator and the addons.'
+  }
+  pages = external 'GitHub Pages' {
+    description 'Hosts the built documentation site.'
+  }
+
+  architect -> toolkit.generator 'Creates a repository with'
+  architect -> toolkit.template 'Writes the model and pages in'
+  architect -> toolkit.editableMetadata 'Edits metadata with'
+  architect -> toolkit.plugin 'Delegates edits to agents with'
+  toolkit.generator -> toolkit.template 'Copies'
+  toolkit.editableMetadata -> toolkit.template 'Extends'
+  toolkit.generator -> npm 'Is installed from'
+  toolkit.editableMetadata -> npm 'Is installed from'
+  toolkit.template -> pages 'Is published to'
+  reader -> pages 'Reads the site on'
+}
+
+views {
+  view index {
+    title 'Landscape'
+    include *
+  }
+
+  view containers of toolkit {
+    title 'Containers'
+    include *, architect, npm, pages
+  }
+
+  dynamic view newRepository {
+    title 'Starting a repository'
+    architect -> toolkit.generator 'Runs npm create @architecture-model'
+    toolkit.generator -> npm 'Is downloaded from'
+    toolkit.generator -> toolkit.template 'Copies'
+    architect -> toolkit.editableMetadata 'Adds with astro add'
+    toolkit.template -> pages 'Is published to'
+  }
+}

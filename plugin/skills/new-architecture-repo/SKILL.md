@@ -5,7 +5,7 @@ description: Use when the user wants to start documenting a system's architectur
 
 # New architecture repository
 
-Use the `create-architecture-model` generator. Do not clone `Morozzzko/architecture-model-template`: it is a monorepo, and only its template belongs in the user's project.
+Use the `@architecture-model/create` generator. Do not clone `Morozzzko/architecture-model-template`: it is a monorepo, and only its template belongs in the user's project.
 
 ## Steps
 
@@ -14,7 +14,7 @@ Use the `create-architecture-model` generator. Do not clone `Morozzzko/architect
 2. Run the generator. The target directory must not exist or must be empty. It reads two answers from standard input: the name, then the description.
 
    ```bash
-   printf '%s\n' '<name>' '<description>' | npm create architecture-model <dir>
+   printf '%s\n' '<name>' '<description>' | npm create @architecture-model <dir>
    ```
 
    An empty line takes the default: the directory's name, and no description. The generator installs dependencies and initialises a git repository, unless `<dir>` is already inside one.

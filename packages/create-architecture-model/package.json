@@ -1,5 +1,5 @@
 {
-  "name": "create-architecture-model",
+  "name": "@architecture-model/create",
   "version": "0.1.0",
   "description": "Create an architecture repository: a LikeC4 model with a documentation site generated from it",
   "license": "MIT",
@@ -7,6 +7,9 @@
     "type": "git",
     "url": "git+https://github.com/Morozzzko/architecture-model-template.git",
     "directory": "packages/create-architecture-model"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "type": "module",
   "bin": "index.js",

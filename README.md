@@ -5,7 +5,7 @@ Tools for documenting software architecture as a [LikeC4](https://likec4.dev/) m
 | Folder | What it is |
 | --- | --- |
 | [`template/`](template/) | A ready-to-use architecture repository: model, [Astro Starlight](https://starlight.astro.build/) site, [arc42](https://arc42.org/) document and Architecture Decision Records |
-| [`packages/create-architecture-model/`](packages/create-architecture-model/) | The `npm create architecture-model` generator, which copies the template and sets it up |
+| [`packages/create-architecture-model/`](packages/create-architecture-model/) | The `npm create @architecture-model` generator, which copies the template and sets it up |
 | [`plugin/`](plugin/) | A [Claude Code](https://claude.com/claude-code) plugin with skills for working in such a repository |
 | `addons/` | Optional features for the template, published as npm packages. None yet |
 
@@ -14,7 +14,7 @@ Tools for documenting software architecture as a [LikeC4](https://likec4.dev/) m
 You need Node 24.
 
 ```bash
-npm create architecture-model my-architecture
+npm create @architecture-model my-architecture
 cd my-architecture
 npm run dev
 ```

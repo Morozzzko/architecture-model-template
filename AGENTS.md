@@ -5,7 +5,7 @@ This is a monorepo of tools for documenting software architecture with LikeC4.
 ## Where things live
 
 - `template/`: the architecture repository that users copy. It is a self-contained npm project: its own `package.json`, lockfile, workflows and `AGENTS.md`. Everything in it ships to users. It is not part of the pnpm workspace.
-- `packages/create-architecture-model/`: the `npm create architecture-model` generator. It copies `template/` and writes the project's name and description over the placeholders in `model/model.c4` and `astro.config.mjs`. `pnpm pack` bundles a copy of the template into the package.
+- `packages/create-architecture-model/`: the `npm create @architecture-model` generator, published as `@architecture-model/create`. It copies `template/` and writes the project's name and description over the placeholders in `model/model.c4` and `astro.config.mjs`. `pnpm pack` bundles a copy of the template into the package.
 - `plugin/`: a Claude Code plugin. Skills are in `plugin/skills/<name>/SKILL.md`.
 - `.claude-plugin/marketplace.json`: makes this repository a plugin marketplace that offers `plugin/`.
 - `addons/`: optional features for the template, one npm package per folder.

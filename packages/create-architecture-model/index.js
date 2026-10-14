@@ -18,7 +18,7 @@ const { values: flags, positionals } = parseArgs({
 })
 
 if (flags.help) {
-  console.log(`Usage: npm create architecture-model [directory] [-- options]
+  console.log(`Usage: npm create @architecture-model [directory] [-- options]
 
 Creates an architecture repository in the directory, installs its dependencies
 and initialises a git repository.

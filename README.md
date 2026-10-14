@@ -8,6 +8,7 @@ Tools for documenting software architecture as a [LikeC4](https://likec4.dev/) m
 | [`packages/create-architecture-model/`](packages/create-architecture-model/) | The `npm create @architecture-model` generator, which copies the template and sets it up |
 | [`plugin/`](plugin/) | A [Claude Code](https://claude.com/claude-code) plugin with skills for working in such a repository |
 | [`addons/`](addons/) | Optional features for the template, published as npm packages |
+| [`site/`](site/) | The [documentation site](https://morozzzko.github.io/architecture-model-template/), itself a repository made with the generator |
 
 ## Start a new architecture repository
 
@@ -21,7 +22,7 @@ npm run dev
 
 The generator asks for a name and an optional description, writes them into the model and the site, installs dependencies and initialises a git repository. The site is then at http://localhost:4321.
 
-Options go after `--`: `--yes` skips the questions and names the project after the directory, `--no-install` and `--no-git` skip those steps.
+Options go after `--`: `--yes` skips the questions and names the project after the directory, which then has to be given; `--no-install` and `--no-git` skip those steps.
 
 [`template/README.md`](template/README.md) describes the result and becomes the README of your repository.
 
@@ -78,7 +79,9 @@ The generator copies `template/` when run from this repository, and a bundled co
 node packages/create-architecture-model/index.js /tmp/my-architecture
 ```
 
-CI runs both sets of commands on every pull request.
+The documentation site in `site/` is a self-contained npm project too. CI and the deploy both build it with the addons from the same commit, so the site documents what is on `main`. A push to `main` that changes the site or an addon deploys it to GitHub Pages.
+
+CI runs all of these on every pull request.
 
 ### Releasing
 

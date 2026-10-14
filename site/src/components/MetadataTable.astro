@@ -1,0 +1,35 @@
+---
+import Metadata from '@architecture-model/editable-metadata/Metadata.astro'
+import { model } from '../lib/model'
+
+interface Props {
+  of: string
+  kind: string
+  keys: Record<string, string>
+}
+
+const { of, kind, keys } = Astro.props
+const kinds = Object.keys(model.specification.elements)
+if (!kinds.includes(kind)) {
+  throw new Error(`Unknown element kind "${kind}". Known kinds: ${kinds.join(', ')}`)
+}
+const elements = [...model.element(of).descendants()].filter((element) => element.kind === kind)
+---
+
+<table>
+  <thead>
+    <tr><th>Name</th>{Object.values(keys).map((label) => <th>{label}</th>)}</tr>
+  </thead>
+  <tbody>
+    {
+      elements.map((element) => (
+        <tr>
+          <td>{element.title}</td>
+          {Object.keys(keys).map((key) => (
+            <td><Metadata of={element.id} name={key} /></td>
+          ))}
+        </tr>
+      ))
+    }
+  </tbody>
+</table>

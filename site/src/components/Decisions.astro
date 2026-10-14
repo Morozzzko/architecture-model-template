@@ -1,0 +1,24 @@
+---
+import { decisions } from '../lib/decisions.mjs'
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+---
+
+<table>
+  <thead>
+    <tr><th>Decision</th><th>Status</th><th>Date</th></tr>
+  </thead>
+  <tbody>
+    {
+      decisions().map((decision) => (
+        <tr>
+          <td>
+            <a href={`${base}/decisions/${decision.slug}/`}>{decision.title}</a>
+          </td>
+          <td>{decision.status}</td>
+          <td>{decision.date}</td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>

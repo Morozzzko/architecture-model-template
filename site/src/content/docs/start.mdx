@@ -1,0 +1,47 @@
+---
+title: Start a repository
+---
+
+import LikeC4View from '../../components/LikeC4View.astro'
+
+You need Node 24.
+
+```bash
+npm create @architecture-model my-architecture
+cd my-architecture
+npm run dev
+```
+
+The generator asks for a name and an optional description, writes them into the model and the site, installs dependencies and initialises a git repository. The site is then at http://localhost:4321.
+
+Options go after `--`: `--yes` skips the questions and names the project after the directory, which then has to be given; `--no-install` and `--no-git` skip those steps.
+
+<LikeC4View viewId="newRepository" />
+
+## What you get
+
+- `model/model.c4`: the [LikeC4](https://likec4.dev/) model.
+- `src/content/docs/`: the documentation pages, in MDX. They embed views of the model and tables derived from it, and the build fails when a page refers to something the model doesn't have.
+- An [arc42](https://arc42.org/) document with those views and tables in place.
+- `docs/decisions/`: Architecture Decision Records, managed with [adr-tools](https://github.com/npryce/adr-tools) through `bin/adr` and listed in the site.
+- GitHub Actions workflows: one validates and builds on every pull request, the other deploys the site to GitHub Pages when you run it, or on every push to `main` once you uncomment its trigger.
+- `AGENTS.md` and a LikeC4 MCP server configuration for coding agents.
+
+The repository's README describes all of it.
+
+## Add features
+
+Addons are npm packages that add a feature to a repository made from the template. Each has a page under Addons in the sidebar, and installs with `astro add`:
+
+```bash
+npx astro add @architecture-model/editable-metadata
+```
+
+## Work with coding agents
+
+The Claude Code plugin has skills for working in such a repository. In Claude Code:
+
+```
+/plugin marketplace add Morozzzko/architecture-model-template
+/plugin install architecture-model@architecture-model
+```

@@ -1,0 +1,64 @@
+---
+title: Editable metadata
+---
+
+import Metadata from '@architecture-model/editable-metadata/Metadata.astro'
+
+`@architecture-model/editable-metadata` shows the metadata of model elements in documentation pages. The value lives in the model, so a page never disagrees with it.
+
+In `npm run dev` every value is click-to-edit: pick a new one and it is written back to `model/model.c4`. In the built site, like this one, they are read-only: plain text, and links for `url` fields.
+
+```bash
+npx astro add @architecture-model/editable-metadata
+```
+
+## A value in a sentence
+
+The generator is published as <Metadata of="toolkit.generator" name="package" />, and this addon is <Metadata of="toolkit.editableMetadata" name="lifecycle" />.
+
+```mdx
+import Metadata from '@architecture-model/editable-metadata/Metadata.astro'
+
+The generator is published as <Metadata of="toolkit.generator" name="package" />, and this addon is <Metadata of="toolkit.editableMetadata" name="lifecycle" />.
+```
+
+`of` is the element's fully qualified name and `name` is the metadata key. The values come from the model:
+
+```
+generator = container 'Generator' {
+  metadata {
+    package '@architecture-model/create'
+    lifecycle 'production'
+  }
+}
+```
+
+## Field types
+
+Without configuration every key is text. `model/metadata.json` gives keys other types, which changes the editor in the dev server and how the value is shown:
+
+```json
+{
+  "package": { "type": "text" },
+  "lifecycle": { "type": "select", "options": ["experimental", "production", "deprecated"] },
+  "languages": { "type": "multiselect", "options": ["JavaScript", "TypeScript", "Astro", "MDX", "LikeC4", "Markdown"] },
+  "source": { "type": "url" }
+}
+```
+
+| Key | Type | Value for this addon | Editor in the dev server |
+| --- | --- | --- | --- |
+| `package` | `text` | <Metadata of="toolkit.editableMetadata" name="package" /> | Text input that suggests values already used |
+| `lifecycle` | `select` | <Metadata of="toolkit.editableMetadata" name="lifecycle" /> | Dropdown |
+| `languages` | `multiselect` | <Metadata of="toolkit.editableMetadata" name="languages" /> | A checkbox per option |
+| `source` | `url` | <Metadata of="toolkit.editableMetadata" name="source" /> | URL input; a link in the built site |
+
+`number`, `date` and `boolean` are available too. The options of `select` and `multiselect` are the listed ones plus every value already in use in the model.
+
+## Editing
+
+In the dev server a value has a dashed underline. Click it, or focus it and press Enter, to edit. Enter or a click elsewhere saves, Escape cancels, and an empty value removes the key. The dev server rewrites only that element's `metadata` block and reloads the page.
+
+Editing exists only in the dev server: the endpoint that saves is not part of the built site, and it accepts requests only from the page itself.
+
+The [package README](https://github.com/Morozzzko/architecture-model-template/tree/main/addons/editable-metadata) has every option.

@@ -52,7 +52,8 @@ function replace(file, from, to) {
 
 const quote = (text) => `'${text.replace(/[\\']/g, '\\$&')}'`
 
-const directory = resolve(positionals[0] ?? ((await ask('Directory', flags.yes ? undefined : 'my-architecture')) || '.'))
+if (flags.yes && !positionals[0]) fail('--yes needs a directory: npm create @architecture-model my-architecture -- --yes')
+const directory = resolve(positionals[0] ?? ((await ask('Directory', 'my-architecture')) || '.'))
 if (existsSync(directory) && readdirSync(directory).length) fail(`${directory} exists and is not empty.`)
 
 const name = await ask('Name', basename(directory))

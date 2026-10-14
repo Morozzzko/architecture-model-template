@@ -1,0 +1,35 @@
+---
+title: Architecture model toolkit
+---
+
+import Decisions from '../../components/Decisions.astro'
+import Elements from '../../components/Elements.astro'
+import LikeC4View from '../../components/LikeC4View.astro'
+import MetadataTable from '../../components/MetadataTable.astro'
+import Relationships from '../../components/Relationships.astro'
+
+Tools for documenting software architecture as a [LikeC4](https://likec4.dev/) model, with a documentation site generated from it. This site is built with them: its pages, diagrams and tables come from a model of the toolkit itself.
+
+```bash
+npm create @architecture-model my-architecture
+```
+
+See [Start a repository](start/) for what that gives you.
+
+<LikeC4View viewId="index" />
+
+## Parts
+
+<LikeC4View viewId="containers" />
+
+<Elements of="toolkit" kind="container" />
+
+<Relationships of="toolkit" />
+
+Their package, lifecycle and languages are metadata in the model, shown with the [editable metadata](addons/editable-metadata/) addon:
+
+<MetadataTable of="toolkit" kind="container" keys={{ package: 'Package', lifecycle: 'Lifecycle', languages: 'Written in' }} />
+
+## Decisions
+
+<Decisions />

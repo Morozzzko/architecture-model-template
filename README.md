@@ -7,7 +7,7 @@ Tools for documenting software architecture as a [LikeC4](https://likec4.dev/) m
 | [`template/`](template/) | A ready-to-use architecture repository: model, [Astro Starlight](https://starlight.astro.build/) site, [arc42](https://arc42.org/) document and Architecture Decision Records |
 | [`packages/create-architecture-model/`](packages/create-architecture-model/) | The `npm create @architecture-model` generator, which copies the template and sets it up |
 | [`plugin/`](plugin/) | A [Claude Code](https://claude.com/claude-code) plugin with skills for working in such a repository |
-| `addons/` | Optional features for the template, published as npm packages. None yet |
+| [`addons/`](addons/) | Optional features for the template, published as npm packages |
 
 ## Start a new architecture repository
 
@@ -37,6 +37,21 @@ In Claude Code:
 | Skill | Use |
 | --- | --- |
 | `new-architecture-repo` | Scaffold a new repository from the template |
+| `metadata-fields` | Define, set and show element metadata with the editable-metadata addon |
+
+## Addons
+
+Addons are npm packages that add a feature to a repository made from the template.
+
+| Addon | What it adds |
+| --- | --- |
+| [`@architecture-model/editable-metadata`](addons/editable-metadata/) | Element metadata in pages, click-to-edit in the dev server and saved back to the model |
+
+Install one from inside your architecture repository:
+
+```bash
+npx astro add @architecture-model/editable-metadata
+```
 
 ## Working on this repository
 

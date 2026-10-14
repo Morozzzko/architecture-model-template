@@ -8,7 +8,7 @@ This is a monorepo of tools for documenting software architecture with LikeC4.
 - `packages/create-architecture-model/`: the `npm create @architecture-model` generator, published as `@architecture-model/create`. It copies `template/` and writes the project's name and description over the placeholders in `model/model.c4` and `astro.config.mjs`. `pnpm pack` bundles a copy of the template into the package.
 - `plugin/`: a Claude Code plugin. Skills are in `plugin/skills/<name>/SKILL.md`.
 - `.claude-plugin/marketplace.json`: makes this repository a plugin marketplace that offers `plugin/`.
-- `addons/`: optional features for the template, one npm package per folder.
+- `addons/`: optional features for the template, one npm package per folder. Each is an Astro integration that a user adds with `astro add`; the template does not depend on any of them.
 - `.github/workflows/`: CI and releases for this repository. The workflows under `template/.github/` are for users' repositories and do not run here.
 
 ## Tooling
@@ -23,6 +23,8 @@ This is a monorepo of tools for documenting software architecture with LikeC4.
 - Keep the template free of references to this monorepo: a copy of `template/` must work on its own.
 - The generator finds its placeholders by exact text. When changing the main system's title or description or the site title in the template, update the replacements in `packages/create-architecture-model/index.js`.
 - A change to a published package needs a changeset: run `pnpm changeset` and commit the file. The template and the plugin are not published to npm and need none.
+- An addon must work from its published files alone. Before finishing a change to one, pack it with `pnpm pack`, install the tarball into a project made by the generator, and run that project's `npm run build`.
+- When an addon is added, removed or renamed, update the addons table in `README.md`.
 - When a skill is added, removed or renamed, update the skills table in `README.md` and bump `version` in `plugin/.claude-plugin/plugin.json`.
 
 ## Before finishing

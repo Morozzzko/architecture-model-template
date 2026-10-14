@@ -1,7 +1,7 @@
 {
   "name": "architecture-model",
   "description": "Skills for architecture repositories built from the architecture model template: a LikeC4 model with a documentation site generated from it.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "Igor Morozov"
   },

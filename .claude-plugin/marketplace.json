@@ -1,0 +1,14 @@
+{
+  "name": "architecture-model",
+  "description": "Skills for documenting software architecture as a LikeC4 model with a generated documentation site.",
+  "owner": {
+    "name": "Igor Morozov"
+  },
+  "plugins": [
+    {
+      "name": "architecture-model",
+      "source": "./plugin",
+      "description": "Skills for architecture repositories built from the architecture model template: a LikeC4 model with a documentation site generated from it."
+    }
+  ]
+}

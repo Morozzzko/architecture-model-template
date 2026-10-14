@@ -1,0 +1,43 @@
+{
+  "name": "@architecture-model/editable-metadata",
+  "version": "0.1.0",
+  "description": "Show LikeC4 element metadata in Astro pages and edit it in place in the dev server",
+  "keywords": [
+    "astro-integration",
+    "astro-component",
+    "likec4"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Morozzzko/architecture-model-template.git",
+    "directory": "addons/editable-metadata"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./index.js",
+    "./Metadata.astro": "./Metadata.astro"
+  },
+  "files": [
+    "index.js",
+    "editor.js",
+    "model.js",
+    "Metadata.astro"
+  ],
+  "engines": {
+    "node": ">=22.22.3"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "peerDependencies": {
+    "astro": ">=7",
+    "likec4": "^1.59.4"
+  },
+  "dependencies": {
+    "likec4-mutator": "0.9.0"
+  }
+}

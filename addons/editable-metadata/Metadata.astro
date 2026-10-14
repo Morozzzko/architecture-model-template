@@ -57,6 +57,18 @@ const text = field.type === 'boolean' && values.length ? (values[0] === 'true' ?
   }
   .model-metadata label {
     margin-inline-end: 0.75em;
+    white-space: nowrap;
+  }
+  .model-metadata :is(input:not([type='checkbox']), select) {
+    font: inherit;
+    color: inherit;
+    background: transparent;
+    border: 1px solid currentColor;
+    border-radius: 0.25em;
+    padding: 0 0.25em;
+  }
+  .model-metadata input[type='checkbox'] {
+    accent-color: var(--sl-color-accent, currentColor);
   }
 </style>
 

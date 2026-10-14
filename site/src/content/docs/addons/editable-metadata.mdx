@@ -46,18 +46,34 @@ Without configuration every key is text. `model/metadata.json` gives keys other 
 }
 ```
 
-| Key | Type | Value for this addon | Editor in the dev server |
-| --- | --- | --- | --- |
-| `package` | `text` | <Metadata of="toolkit.editableMetadata" name="package" /> | Text input that suggests values already used |
-| `lifecycle` | `select` | <Metadata of="toolkit.editableMetadata" name="lifecycle" /> | Dropdown |
-| `languages` | `multiselect` | <Metadata of="toolkit.editableMetadata" name="languages" /> | A checkbox per option |
-| `source` | `url` | <Metadata of="toolkit.editableMetadata" name="source" /> | URL input; a link in the built site |
+| Key | Type | Value for this addon |
+| --- | --- | --- |
+| `package` | `text` | <Metadata of="toolkit.editableMetadata" name="package" /> |
+| `lifecycle` | `select` | <Metadata of="toolkit.editableMetadata" name="lifecycle" /> |
+| `languages` | `multiselect` | <Metadata of="toolkit.editableMetadata" name="languages" /> |
+| `source` | `url` | <Metadata of="toolkit.editableMetadata" name="source" /> |
 
 `number`, `date` and `boolean` are available too. The options of `select` and `multiselect` are the listed ones plus every value already in use in the model.
 
 ## Editing
 
-In the dev server a value has a dashed underline. Click it, or focus it and press Enter, to edit. Enter or a click elsewhere saves, Escape cancels, and an empty value removes the key. The dev server rewrites only that element's `metadata` block and reloads the page.
+In the dev server a value has a dashed underline:
+
+![The table above in the dev server, with each value underlined](../../../assets/editable-metadata/values.png)
+
+Click it, or focus it and press Enter, to edit. A `select` becomes a dropdown:
+
+![The lifecycle value as a dropdown](../../../assets/editable-metadata/select.png)
+
+a `multiselect` a checkbox per option:
+
+![The languages value as checkboxes](../../../assets/editable-metadata/multiselect.png)
+
+and `text` an input that suggests the values already used for the key:
+
+![The package value as a text input](../../../assets/editable-metadata/text.png)
+
+Enter or a click elsewhere saves, Escape cancels, and an empty value removes the key. The dev server rewrites only that element's `metadata` block and reloads the page.
 
 Editing exists only in the dev server: the endpoint that saves is not part of the built site, and it accepts requests only from the page itself.
 

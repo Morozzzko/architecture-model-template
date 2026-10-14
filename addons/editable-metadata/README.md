@@ -13,7 +13,7 @@ npx astro add @architecture-model/editable-metadata
 or by hand:
 
 ```bash
-npm install @architecture-model/editable-metadata
+npm install @architecture-model/editable-metadata @astrojs/react react react-dom
 ```
 
 ```js
@@ -47,9 +47,9 @@ Owner: <Metadata of="system" name="owner" />
 
 `of` is the element's fully qualified name, `name` is the metadata key. Keep the component on the same line as its label.
 
-Run `npm run dev` and click the value to edit it. A select saves the option you choose, a multiselect saves when its list closes, and text, number, date and url fields save with Enter. Escape closes without saving, and Clear or an empty value removes the key from the model.
+Run `npm run dev` and click the value to edit it. A select saves the option you choose, text saves the value you choose or add, and a multiselect, number, date or url saves when its editor closes. Escape closes without saving, and Clear or an empty value removes the key from the model.
 
-The editors are React components built on [Radix](https://www.radix-ui.com/) and [cmdk](https://cmdk.paco.me/), so the site needs Astro's React integration (`npx astro add react`). Repositories made with `npm create @architecture-model` have it. The built site doesn't load them.
+The editors are React components built on [Radix](https://www.radix-ui.com/) and [cmdk](https://cmdk.paco.me/). The addon adds Astro's React integration if the site doesn't have it, and the built site contains none of the editor code.
 
 ## Field types
 

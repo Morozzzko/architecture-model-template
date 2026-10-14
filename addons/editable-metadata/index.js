@@ -1,21 +1,34 @@
-import { resolve } from 'node:path'
+import react from '@astrojs/react'
+import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { editor } from './editor.js'
 
 const name = '@architecture-model/editable-metadata'
 const virtual = 'virtual:editable-metadata/config'
+const here = dirname(fileURLToPath(import.meta.url))
+const editorFile = resolve(here, 'Editor.jsx')
+
+// The editor only runs in the dev server, so the build gets an empty component instead of Radix and cmdk.
+const withoutEditor = {
+  name: 'editable-metadata-no-editor',
+  enforce: 'pre',
+  resolveId: (id, importer) => {
+    const path = id.split('?')[0]
+    const absolute = path.startsWith('.') && importer ? resolve(dirname(importer.split('?')[0]), path) : path
+    return absolute === editorFile ? resolve(here, 'NoEditor.jsx') : undefined
+  },
+}
 
 export default function editableMetadata({ model = 'model', fields = 'model/metadata.json' } = {}) {
   return {
     name,
     hooks: {
-      'astro:config:setup': ({ config, updateConfig }) => {
-        if (!config.integrations.some((integration) => integration.name === '@astrojs/react')) {
-          throw new Error(`${name} needs React in the site. Add it with: npx astro add react`)
-        }
+      'astro:config:setup': ({ config, command, updateConfig }) => {
         const root = fileURLToPath(config.root)
         const paths = { modelDir: resolve(root, model), fieldsFile: resolve(root, fields) }
+        const hasReact = config.integrations.some((integration) => integration.name === '@astrojs/react')
         updateConfig({
+          integrations: hasReact ? [] : [react()],
           vite: {
             ssr: { noExternal: [name] },
             plugins: [
@@ -25,6 +38,7 @@ export default function editableMetadata({ model = 'model', fields = 'model/meta
                 load: (id) => (id === `\0${virtual}` ? `export default ${JSON.stringify(paths)}` : undefined),
               },
               editor(paths),
+              command === 'build' && withoutEditor,
             ],
           },
         })

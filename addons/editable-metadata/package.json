@@ -27,6 +27,7 @@
     "model.js",
     "Metadata.astro",
     "Editor.jsx",
+    "NoEditor.jsx",
     "editor.css"
   ],
   "engines": {

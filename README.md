@@ -22,7 +22,7 @@ npm run dev
 
 The generator asks for a name and an optional description, writes them into the model and the site, installs dependencies and initialises a git repository. The site is then at http://localhost:4321.
 
-Options go after `--`: `--yes` skips the questions and names the project after the directory, `--no-install` and `--no-git` skip those steps.
+Options go after `--`: `--yes` skips the questions and names the project after the directory, which then has to be given; `--no-install` and `--no-git` skip those steps.
 
 [`template/README.md`](template/README.md) describes the result and becomes the README of your repository.
 
@@ -79,7 +79,7 @@ The generator copies `template/` when run from this repository, and a bundled co
 node packages/create-architecture-model/index.js /tmp/my-architecture
 ```
 
-The documentation site in `site/` is a self-contained npm project too. CI builds it with the addons from the same commit; a push to `main` that changes it deploys it to GitHub Pages with the released addons.
+The documentation site in `site/` is a self-contained npm project too. CI and the deploy both build it with the addons from the same commit, so the site documents what is on `main`. A push to `main` that changes the site or an addon deploys it to GitHub Pages.
 
 CI runs all of these on every pull request.
 

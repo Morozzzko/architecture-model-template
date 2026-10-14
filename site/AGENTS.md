@@ -19,6 +19,7 @@ This repository is an architecture model and the documentation site generated fr
   - `<Relationships of="..." />` for a table of an element's relationships.
   - `<Decisions />` for a table of the ADRs with their status and date.
   - `<Metadata of="..." name="..." />` from `@architecture-model/editable-metadata/Metadata.astro` for one metadata value of an element.
+  - `<MetadataTable of="..." kind="..." keys={{ key: 'Column' }} />` for a table of metadata, one row per element of that kind.
 - For derived content those don't cover, add a component in `src/components/` that imports `model` from `src/lib/model.ts`. It runs at build time.
 - Query the model through the `likec4` MCP server rather than reading `.c4` files by hand.
 - Create ADRs with `bin/adr new <title>`. Do not add frontmatter to ADR files; adr-tools reads the title from the first line.

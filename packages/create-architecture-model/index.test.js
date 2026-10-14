@@ -35,6 +35,12 @@ test('without answers the project is named after the directory', () => {
   assert.ok(!existsSync(join(directory, '.git')))
 })
 
+test('--yes without a directory is refused instead of asking', () => {
+  const { status, stderr } = spawnSync('node', [cli, '--yes'], { encoding: 'utf8' })
+  assert.equal(status, 1)
+  assert.match(stderr, /--yes needs a directory/)
+})
+
 test('a directory with files in it is refused', () => {
   const { directory } = create(['--yes'])
   const { status, stderr } = spawnSync('node', [cli, directory, '--yes'], { encoding: 'utf8' })

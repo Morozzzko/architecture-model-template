@@ -31,7 +31,7 @@ export default defineConfig({
       sidebar: [
         { label: 'Overview', link: '/' },
         { label: 'Start a repository', link: '/start/' },
-        { label: 'Addons', items: [{ label: 'Editable metadata', link: '/addons/editable-metadata/' }] },
+        { label: 'Addons', items: [{ autogenerate: { directory: 'addons' } }] },
         {
           label: 'Decisions',
           items: decisions().map(({ title, slug }) => ({ label: title, link: `/decisions/${slug}/` })),

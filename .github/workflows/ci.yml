@@ -69,8 +69,8 @@ jobs:
 
       - name: Install the addons from this commit
         run: |
-          pnpm --dir ../addons/editable-metadata pack --pack-destination "$RUNNER_TEMP"
-          npm install --no-save "$RUNNER_TEMP"/architecture-model-editable-metadata-*.tgz
+          pnpm --dir .. --filter "./addons/*" pack --pack-destination "$RUNNER_TEMP/addons"
+          npm install --no-save "$RUNNER_TEMP"/addons/*.tgz
 
       - name: Validate model
         run: npm run validate

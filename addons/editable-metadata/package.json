@@ -25,7 +25,9 @@
     "index.js",
     "editor.js",
     "model.js",
-    "Metadata.astro"
+    "Metadata.astro",
+    "Editor.jsx",
+    "editor.css"
   ],
   "engines": {
     "node": ">=22.22.3"
@@ -34,10 +36,16 @@
     "test": "node --test"
   },
   "peerDependencies": {
+    "@astrojs/react": ">=7",
     "astro": ">=7",
-    "likec4": "^1.59.4"
+    "likec4": "^1.59.4",
+    "react": ">=19",
+    "react-dom": ">=19"
   },
   "dependencies": {
+    "@radix-ui/react-popover": "^1.3.1",
+    "@radix-ui/react-switch": "^1.4.1",
+    "cmdk": "^1.1.1",
     "likec4-mutator": "0.9.0"
   }
 }

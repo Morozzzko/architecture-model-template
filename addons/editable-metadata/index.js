@@ -10,6 +10,9 @@ export default function editableMetadata({ model = 'model', fields = 'model/meta
     name,
     hooks: {
       'astro:config:setup': ({ config, updateConfig }) => {
+        if (!config.integrations.some((integration) => integration.name === '@astrojs/react')) {
+          throw new Error(`${name} needs React in the site. Add it with: npx astro add react`)
+        }
         const root = fileURLToPath(config.root)
         const paths = { modelDir: resolve(root, model), fieldsFile: resolve(root, fields) }
         updateConfig({

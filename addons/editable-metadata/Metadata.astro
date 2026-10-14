@@ -1,6 +1,7 @@
 ---
 import { existsSync, readFileSync } from 'node:fs'
 import config from 'virtual:editable-metadata/config'
+import Editor from './Editor.jsx'
 import { model } from './model.js'
 
 interface Props {
@@ -27,143 +28,10 @@ const text = field.type === 'boolean' && values.length ? (values[0] === 'true' ?
 
 {
   import.meta.env.DEV ? (
-    <span
-      class="model-metadata not-content"
-      tabindex="0"
-      data-fqn={of}
-      data-key={name}
-      data-type={field.type}
-      data-values={JSON.stringify(values)}
-      data-options={JSON.stringify(options)}
-    >{text}</span>
+    <Editor client:load fqn={of} name={name} type={field.type} values={values} options={options} />
   ) : field.type === 'url' && text ? (
     <a href={text}>{text}</a>
   ) : (
     text
   )
 }
-
-<style is:global>
-  .model-metadata {
-    border-bottom: 1px dashed currentColor;
-    cursor: pointer;
-  }
-  .model-metadata:empty::before {
-    content: '—';
-  }
-  .model-metadata.editing {
-    border-bottom: none;
-    cursor: auto;
-  }
-  .model-metadata label {
-    margin-inline-end: 0.75em;
-    white-space: nowrap;
-  }
-  .model-metadata :is(input:not([type='checkbox']), select) {
-    font: inherit;
-    color: inherit;
-    background: transparent;
-    border: 1px solid currentColor;
-    border-radius: 0.25em;
-    padding: 0 0.25em;
-  }
-  .model-metadata input[type='checkbox'] {
-    accent-color: var(--sl-color-accent, currentColor);
-  }
-</style>
-
-<script>
-  if (import.meta.env.DEV) {
-    const create = <K extends keyof HTMLElementTagNameMap>(tag: K, props: Partial<HTMLElementTagNameMap[K]> = {}) =>
-      Object.assign(document.createElement(tag), props)
-
-    const edit = (el: HTMLElement) => {
-      const type = el.dataset.type!
-      const values: string[] = JSON.parse(el.dataset.values!)
-      const options: string[] = JSON.parse(el.dataset.options!)
-      const display = el.textContent
-      const controls: HTMLElement[] = []
-      let read: () => string | string[]
-
-      if (type === 'multiselect') {
-        const boxes = options.map((option) =>
-          create('input', { type: 'checkbox', value: option, checked: values.includes(option) }),
-        )
-        for (const box of boxes) {
-          const label = create('label')
-          label.append(box, ` ${box.value}`)
-          controls.push(label)
-        }
-        read = () => boxes.filter((box) => box.checked).map((box) => box.value)
-      } else if (type === 'select') {
-        const select = create('select')
-        for (const option of ['', ...options]) select.append(create('option', { value: option, textContent: option }))
-        select.value = values[0] ?? ''
-        controls.push(select)
-        read = () => select.value
-      } else if (type === 'boolean') {
-        const box = create('input', { type: 'checkbox', checked: values[0] === 'true' })
-        controls.push(box)
-        read = () => String(box.checked)
-      } else {
-        const input = create('input', { type, value: values[0] ?? '' })
-        controls.push(input)
-        if (type === 'text') {
-          const list = create('datalist', { id: `model-metadata-${el.dataset.key}` })
-          for (const option of options) list.append(create('option', { value: option }))
-          input.setAttribute('list', list.id)
-          controls.push(list)
-        }
-        read = () => input.value.trim()
-      }
-
-      let dirty = false
-      let closed = false
-      // Checkboxes and labels don't reliably take focus on click, so leaving is detected by where the pointer goes.
-      const outside = (event: Event) => el.contains(event.target as Node) || close(true)
-      const close = async (save: boolean) => {
-        if (closed) return
-        closed = true
-        document.removeEventListener('pointerdown', outside)
-        const value = read()
-        el.classList.remove('editing')
-        el.textContent = display
-        if (!save || !dirty) return
-        const response = await fetch('/__model/metadata', {
-          method: 'POST',
-          body: JSON.stringify({ fqn: el.dataset.fqn, key: el.dataset.key, value }),
-        })
-        // On success the dev server sees the model change and reloads the page with the new value.
-        if (response.ok) el.textContent = [value].flat().join(', ')
-        else console.error(await response.text())
-      }
-
-      el.classList.add('editing')
-      el.replaceChildren(...controls)
-      el.querySelector<HTMLElement>('input, select')!.focus()
-      el.oninput = () => (dirty = true)
-      el.onchange = () => {
-        dirty = true
-        if (type === 'select' || type === 'boolean') close(true)
-      }
-      el.onkeydown = (event) => {
-        if (event.key === 'Enter') close(true)
-        if (event.key === 'Escape') close(false)
-      }
-      el.onfocusout = (event) => {
-        const next = event.relatedTarget as Node | null
-        if (next && !el.contains(next)) close(true)
-      }
-      document.addEventListener('pointerdown', outside)
-    }
-
-    const start = (event: Event) => {
-      const el = (event.target as HTMLElement).closest<HTMLElement>('.model-metadata:not(.editing)')
-      if (!el || (event instanceof KeyboardEvent && event.key !== 'Enter')) return
-      event.preventDefault()
-      edit(el)
-    }
-    document.addEventListener('click', start)
-    document.addEventListener('keydown', start)
-  }
-</script>

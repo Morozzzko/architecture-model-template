@@ -61,19 +61,19 @@ In the dev server a value has a dashed underline:
 
 ![The table above in the dev server, with each value underlined](../../../assets/editable-metadata/values.png)
 
-Click it, or focus it and press Enter, to edit. A `select` becomes a dropdown:
+Click it, or focus it and press Enter, to open its editor. Type to filter, use the arrow keys to move and Enter to choose. A `select` saves the option you choose:
 
-![The lifecycle value as a dropdown](../../../assets/editable-metadata/select.png)
+![The lifecycle value with its options open, the current one checked](../../../assets/editable-metadata/select.png)
 
-a `multiselect` a checkbox per option:
+A `multiselect` toggles options and saves them all when it closes:
 
-![The languages value as checkboxes](../../../assets/editable-metadata/multiselect.png)
+![The languages value with two of its options checked](../../../assets/editable-metadata/multiselect.png)
 
-and `text` an input that suggests the values already used for the key:
+`text` suggests the values already used for the key, and adds what you type as a new one:
 
-![The package value as a text input](../../../assets/editable-metadata/text.png)
+![The package value with a new value typed and the existing ones suggested](../../../assets/editable-metadata/text.png)
 
-Enter or a click elsewhere saves, Escape cancels, and an empty value removes the key. The dev server rewrites only that element's `metadata` block and reloads the page.
+`number`, `date` and `url` get an input that saves with Enter, and `boolean` a switch. Escape closes an editor without saving, and Clear, or an empty value, removes the key. The dev server rewrites only that element's `metadata` block and reloads the page.
 
 Editing exists only in the dev server: the endpoint that saves is not part of the built site, and it accepts requests only from the page itself.
 

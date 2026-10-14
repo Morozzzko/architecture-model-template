@@ -6,17 +6,20 @@ const here = fileURLToPath(new URL('.', import.meta.url))
 const bundled = join(here, 'template')
 const source = join(here, '../../template')
 const generated = ['node_modules', 'dist', '.astro']
+// npm and pnpm leave these out of published packages, so the bundled copy carries them under another name.
+const unpublishable = ['.gitignore', 'package-lock.json']
 
 const copy = (from, to) =>
   cpSync(from, to, { recursive: true, filter: (path) => !generated.includes(basename(path)) })
 
-// npm leaves .gitignore files out of published packages, so the bundled copy carries it under another name.
 export function bundle() {
   copy(source, bundled)
-  renameSync(join(bundled, '.gitignore'), join(bundled, '_gitignore'))
+  for (const file of unpublishable) renameSync(join(bundled, file), join(bundled, `_${file}`))
 }
 
 export function copyTemplate(to) {
   copy(existsSync(bundled) ? bundled : source, to)
-  if (existsSync(join(to, '_gitignore'))) renameSync(join(to, '_gitignore'), join(to, '.gitignore'))
+  for (const file of unpublishable) {
+    if (existsSync(join(to, `_${file}`))) renameSync(join(to, `_${file}`), join(to, file))
+  }
 }

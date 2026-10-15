@@ -31,6 +31,7 @@ export default defineConfig({
       sidebar: [
         { label: 'Overview', link: '/' },
         { label: 'Start a repository', link: '/start/' },
+        { label: 'Modeling', items: [{ autogenerate: { directory: 'modeling' } }] },
         { label: 'Addons', items: [{ autogenerate: { directory: 'addons' } }] },
         {
           label: 'Decisions',
@@ -42,6 +43,7 @@ export default defineConfig({
     editableMetadata(),
   ],
   vite: {
-    plugins: [LikeC4VitePlugin({ workspace: 'model' }), reloadSidebarOnDecisionChange],
+    // The workspace spans the toolkit's model and the example project in examples/.
+    plugins: [LikeC4VitePlugin({ workspace: '.' }), reloadSidebarOnDecisionChange],
   },
 })

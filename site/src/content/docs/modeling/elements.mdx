@@ -1,0 +1,53 @@
+---
+title: Systems, containers and components
+sidebar:
+  order: 2
+---
+
+import ExampleView from '../../../components/ExampleView.astro'
+
+The model follows the [C4 model](https://c4model.com/). These are the rules the plugin's `c4-modeling` skill gives agents, so you can check their work and settle arguments the same way. A repository's own decisions in `model/conventions.md` take precedence over them.
+
+## Which element is it
+
+Ask in order and stop at the first yes. An agent names the question that decided each element, so a disagreement becomes a question about facts: who owns it, and does it run on its own?
+
+| # | Question | Model it as |
+| --- | --- | --- |
+| 1 | Is it a person or role? | actor |
+| 2 | Is it owned by another team or company, or used without being configured by us? | external software system, with no internals |
+| 3 | Is it a domain, bounded context, capability, squad or tribe? | not an element: a tag, metadata or a group in a view |
+| 4 | Is it what one team builds, owns and usually deploys together? | software system |
+| 5 | Must it run, or hold data, for that system to work: a separate process (web app, SPA, mobile app, function, job) or a store we own, hosted or not? | container |
+| 6 | Is it functionality behind an interface inside one process? | component |
+| 7 | Is it a library, package, module or Docker image? | not an element: its `technology`, or a link |
+
+Size and importance never decide the level; ownership and runtime do. A big, business-critical service that the shop team builds and ships with the rest of the shop is a container. Microservices owned by one team are containers of one system; once separate teams own them, each is a system.
+
+In the example, Payments and Blockchain RPC are external because other companies run them, and everything the shop team runs is a container of the Shop:
+
+<ExampleView viewId="containers" />
+
+## Recurring cases
+
+| Case | How to model it |
+| --- | --- |
+| Database | One container per schema or store with its own purpose, inside the system that owns it, with `technology 'PostgreSQL schema'`. The database server is infrastructure and appears only in deployment. |
+| S3 bucket, blob store, CDN | One container per bucket with its own purpose, with `technology 'S3 bucket'`. "S3" itself is never an element. |
+| Queue or topic | A container per queue or topic when its ownership matters, with `technology 'Kafka topic'`; otherwise name it on the relationship. Never one box for "the message bus". Messages use a dashed `async` relationship. |
+| Interchangeable provider: blockchain RPC, email, payments | One external system named for the role, with providers in its `technology` or metadata. Which provider serves which environment, including primary and failover, is [deployment](../deployment/). Model each provider as its own system only when readers ask about that provider itself: its contract, its outages, where it keeps data. |
+| Cross-cutting service: observability, logging, feature flags | One external system named for the role with the vendor as its technology, related once from the system rather than from every container. |
+| Shared infrastructure: a cluster, a database server several teams use | Deployment only. |
+
+## Relationships
+
+- Every relationship goes one way and has a label that reads in its direction: "Submits orders to", never "Uses". A two-way exchange is two relationships.
+- Relationships between containers name the protocol in `technology`: `HTTPS/JSON`, `SQL`, `Kafka`.
+
+## Views
+
+- A context view and a container view are enough for most systems. Add a component view when a container's insides are discussed often, and a dynamic view for the one flow everyone asks about.
+- Every view title says its type and scope: "Shop: containers".
+- Colors, shapes and line styles mean the same in every view, which is why they are set on kinds in `specification`.
+
+<ExampleView viewId="context" />

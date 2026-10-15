@@ -1,0 +1,84 @@
+---
+title: Model a system with an agent
+sidebar:
+  order: 1
+---
+
+import ExampleView from '../../../components/ExampleView.astro'
+
+The toolkit expects a coding agent to write the model, pages and decisions. You bring what the agent can't know: who uses the system, who owns what, and why things are the way they are. The agent turns that into LikeC4, following the rules in [Systems, containers and components](../elements/) and [Deployment](../deployment/), and you review the diagrams it produces.
+
+This page walks through modeling a system from an empty repository, as prompts for the agent. The diagrams come from an example shop, modeled the same way.
+
+## Before you start
+
+Make a repository as described in [Start a repository](../../start/), and install the Claude Code plugin in it:
+
+```
+/plugin marketplace add Morozzzko/architecture-model-template
+/plugin install architecture-model@architecture-model
+```
+
+The agent learns the repository from `AGENTS.md` and the modeling rules from the plugin's `c4-modeling` skill. Questions your organization has settled go in `model/conventions.md`, which the agent reads first.
+
+Have at hand what the agent can read for itself: the code repositories, `docker-compose.yml`, Terraform or Kubernetes manifests, runbooks. Pointing the agent at them gets you a more accurate model than describing them from memory.
+
+## 1. The context: who and what is outside
+
+Start from the outside, and stop once the context looks right: most readers never go further.
+
+> Interview me about the Shop: who uses it, which other systems it talks to, and which team or company owns each of them. Then model the context, replacing the starter system, user and Email Provider.
+
+<ExampleView viewId="context" />
+
+Check that every box is the system itself, a person, or an external system, and that every arrow has a label saying what happens in its direction. "Uses" is not an answer.
+
+## 2. Containers: what runs inside
+
+> Read the repositories in ~/code/shop and the docker-compose file, and model the containers of the Shop: every app, function, job and data store we own. For each one, tell me which question from the skill decided it.
+
+<ExampleView viewId="containers" />
+
+Check that each database schema, bucket and topic with its own purpose is its own box, that there is no "database server" or "message bus" box, that no library appears as an element, and that every container has a technology.
+
+## 3. Settle disagreements once
+
+When you disagree with the agent, say what you know, not what you'd prefer. "The payments team owns Ledger" changes the answer. "Ledger is important" does not, because ownership and runtime decide the level. When the answer is specific to your organization, have the agent write it down:
+
+> We show observability once, at system level, and never per container. Record that in model/conventions.md.
+
+The next person who asks, or the next agent, gets the same answer.
+
+## 4. Deployment, when environments differ
+
+Skip this until an environment differs in what runs where: a provider per environment, regions, a shared database server.
+
+> Model production and development. In production the indexer reads from Alchemy with Infura as failover; in development from a local Anvil node. Staging is the same as production.
+
+<ExampleView viewId="prod" />
+
+The logical model keeps one Blockchain RPC element; the deployment view shows which provider serves it. See [Deployment](../deployment/) for the rules.
+
+## 5. Pages and decisions
+
+The model is the source of truth; pages pull from it.
+
+> Fill in sections 3 and 5 of the arc42 page from the model. Don't describe elements in prose; use the components.
+
+> Write an ADR for publishing order events to Kafka instead of calling Billing directly.
+
+## 6. Metadata, once the structure is stable
+
+> Add an owner field with the teams as options, and set it on every container.
+
+With the [editable-metadata](../../addons/editable-metadata/) addon, owners and other fields show up in pages and can be changed in the dev server.
+
+## Review before merging
+
+The build checks references; these need your eyes:
+
+- Every element has a description, and every container a technology.
+- No relationship is labeled "Uses".
+- Every view title says what it shows: "Shop: containers", not "Diagram 2".
+- Questions settled along the way are in `model/conventions.md`.
+- `npm run validate` and `npm run build` pass.

@@ -1,0 +1,146 @@
+specification {
+  element actor {
+    style {
+      shape person
+    }
+  }
+  element system
+  element container
+  element component
+  element external {
+    style {
+      color muted
+    }
+  }
+
+  relationship async {
+    line dashed
+  }
+
+  deploymentNode environment
+  deploymentNode region
+  deploymentNode cluster {
+    technology 'Kubernetes'
+  }
+}
+
+model {
+  customer = actor 'Customer' {
+    description 'Buys things in the shop.'
+  }
+
+  shop = system 'Shop' {
+    description 'Sells products online.'
+
+    web = container 'Storefront' {
+      technology 'Next.js'
+      description 'Lets customers browse and order.'
+    }
+    api = container 'Orders API' {
+      technology 'Go'
+      description 'Takes and tracks orders.'
+    }
+    orders = container 'Orders database' {
+      technology 'PostgreSQL schema'
+      description 'Orders and their state.'
+    }
+    uploads = container 'Product images' {
+      technology 'S3 bucket'
+      description 'Images uploaded by staff.'
+    }
+    orderPlaced = container 'order-placed' {
+      technology 'Kafka topic'
+      description 'One event per placed order.'
+    }
+    indexer = container 'Chain indexer' {
+      technology 'Go'
+      description 'Records on-chain payments.'
+    }
+  }
+
+  rpc = external 'Blockchain RPC' {
+    technology 'JSON-RPC'
+    description 'Any provider that serves the Ethereum JSON-RPC API.'
+    metadata {
+      providers ['Alchemy', 'Infura']
+    }
+  }
+  observability = external 'Observability' { technology 'Datadog' }
+  shop -> observability 'Sends traces and logs to'
+
+  payments = external 'Payments provider' {
+    description 'Charges cards.'
+  }
+
+  customer -> shop.web 'Places orders with'
+  shop.web -> shop.api 'Submits orders to' {
+    technology 'HTTPS/JSON'
+  }
+  shop.api -> shop.orders 'Reads and writes orders in' {
+    technology 'SQL'
+  }
+  shop.api -[async]-> shop.orderPlaced 'Publishes order events to'
+  shop.indexer -> rpc 'Reads blocks from' {
+    technology 'JSON-RPC over HTTPS'
+  }
+  shop.api -> payments 'Charges cards with'
+  payments -[async]-> shop.api 'Sends payment webhooks to'
+}
+
+deployment {
+  environment prod {
+    region eu {
+      cluster main {
+        instanceOf shop.web
+        instanceOf shop.api
+        instanceOf shop.indexer
+      }
+      instanceOf shop.orders {
+        technology 'Amazon RDS for PostgreSQL'
+      }
+      alchemy = instanceOf rpc {
+        title 'Alchemy (primary)'
+      }
+      infura = instanceOf rpc {
+        title 'Infura (failover)'
+      }
+    }
+  }
+  environment dev {
+    instanceOf shop.api
+    instanceOf shop.indexer
+    instanceOf shop.orders
+    anvil = instanceOf rpc {
+      title 'Local Anvil node'
+      technology 'Foundry Anvil'
+    }
+  }
+}
+
+views {
+  view index {
+    title 'Landscape'
+    include *
+  }
+
+  view context of shop {
+    title 'Shop: system context'
+    include shop, * -> shop, shop -> *
+  }
+
+  view containers of shop {
+    title 'Shop: containers'
+    include *
+  }
+
+  deployment view prod {
+    title 'Shop: production deployment'
+    description 'Staging is set up the same as production.'
+    include prod.**
+  }
+
+  deployment view dev {
+    title 'Shop: development deployment'
+    include dev.**
+  }
+}

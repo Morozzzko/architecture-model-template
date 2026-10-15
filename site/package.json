@@ -9,7 +9,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "validate": "likec4 validate model && likec4 format --check model",
+    "validate": "likec4 validate model && likec4 validate examples/shop && likec4 format --check .",
     "export": "likec4 export"
   },
   "dependencies": {

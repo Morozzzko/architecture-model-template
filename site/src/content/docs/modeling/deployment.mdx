@@ -1,0 +1,74 @@
+---
+title: Deployment
+sidebar:
+  order: 3
+---
+
+import ExampleView from '../../../components/ExampleView.astro'
+
+The logical model says what depends on what and who owns it. The deployment model says where each piece runs in one environment. Relationships are written once, in the logical model, and every deployment view inherits them.
+
+## What goes where
+
+| In deployment | In the logical model |
+| --- | --- |
+| Which provider fills a role in an environment: Alchemy in production, a local node in development | The role itself and what uses it |
+| Regions, zones, clusters, VMs, database servers, load balancers, DNS | Containers, stores, queues and their owners |
+| Copies of one thing: primary and standby, replicas, the same service in two regions | Relationships between containers |
+| Runtime-only links: replication, failover, sync | |
+
+An external system that is the same in every environment, such as a SaaS used everywhere, stays out of deployment. Deploy an external system only where environments differ in what fills it.
+
+## The example
+
+The Shop's indexer reads blocks from one logical element, Blockchain RPC. In production, Alchemy fills that role with Infura as failover:
+
+<ExampleView viewId="prod" />
+
+In development, a local Anvil node does, and the indexer's relationship carries over unchanged:
+
+<ExampleView viewId="dev" />
+
+```
+deployment {
+  environment prod {
+    region eu {
+      cluster main {
+        instanceOf shop.web
+        instanceOf shop.api
+        instanceOf shop.indexer
+      }
+      instanceOf shop.orders {
+        technology 'Amazon RDS for PostgreSQL'
+      }
+      alchemy = instanceOf rpc {
+        title 'Alchemy (primary)'
+      }
+      infura = instanceOf rpc {
+        title 'Infura (failover)'
+      }
+    }
+  }
+  environment dev {
+    instanceOf shop.api
+    instanceOf shop.indexer
+    instanceOf shop.orders
+    anvil = instanceOf rpc {
+      title 'Local Anvil node'
+      technology 'Foundry Anvil'
+    }
+  }
+}
+```
+
+## Organizing environments
+
+1. One deployment view per environment, never all environments in one view.
+2. Model only environments that differ in structure. If staging is production with fewer replicas, say so in the production view's description instead of copying it.
+3. Use a fixed set of node kinds from `specification`, such as `environment`, `region`, `cluster` and `vm`, with their technology and icon set there.
+4. Put shared infrastructure at the level it is shared at: a database used by every zone goes under the region, not into each zone.
+5. Deployment relationships are for runtime mechanics only, such as `vm2.db -> vm1.db 'Replicates to'`. A primary and a failover are two instances of one element, titled to say which is which; the inherited relationship already reaches both.
+6. When an environment grows, give it its own file, `model/deployment/prod.c4`, and split regions out with `extend prod.eu { ... }`.
+7. For a large environment, show regions or clusters in an overview and link to detail views with `navigateTo`.
+
+LikeC4 marks deployment views as in development: `with` styling, except `navigateTo`, and `global style` have no effect in them. Style deployment nodes through their kind in `specification`.

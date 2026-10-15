@@ -1,0 +1,18 @@
+---
+import { LikeC4View } from 'likec4:react/shop'
+import { LikeC4 } from 'likec4'
+
+interface Props {
+  viewId: string
+}
+
+const likec4 = await LikeC4.fromWorkspace('examples/shop', { throwIfInvalid: true })
+const viewIds = [...(await likec4.computedModel()).views()].map((view) => view.id as string)
+
+const { viewId } = Astro.props
+if (!viewIds.includes(viewId)) {
+  throw new Error(`Unknown example view "${viewId}". Known views: ${viewIds.join(', ')}`)
+}
+---
+
+<LikeC4View viewId={viewId} browser client:only="react" />

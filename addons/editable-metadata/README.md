@@ -13,7 +13,7 @@ npx astro add @architecture-model/editable-metadata
 or by hand:
 
 ```bash
-npm install @architecture-model/editable-metadata
+npm install @architecture-model/editable-metadata @astrojs/react react react-dom
 ```
 
 ```js
@@ -47,7 +47,9 @@ Owner: <Metadata of="system" name="owner" />
 
 `of` is the element's fully qualified name, `name` is the metadata key. Keep the component on the same line as its label.
 
-Run `npm run dev` and click the value to edit it. Enter or a click elsewhere saves, Escape cancels, and an empty value removes the key from the model.
+Run `npm run dev` and click the value to edit it. A select saves the option you choose, text saves the value you choose or add, and a multiselect, number, date or url saves when its editor closes. Escape closes without saving, and Clear or an empty value removes the key from the model.
+
+The editors are React components built on [Radix](https://www.radix-ui.com/) and [cmdk](https://cmdk.paco.me/). The addon adds Astro's React integration if the site doesn't have it, and the built site contains none of the editor code.
 
 ## Field types
 
@@ -63,11 +65,11 @@ Without configuration every key is text. To give keys other types, create `model
 
 | Type | Editor | Stored in the model as |
 | --- | --- | --- |
-| `text` | text input that suggests values already used for the key | string |
+| `text` | searchable list of the values already used for the key, and adds what you type | string |
 | `number`, `date`, `url` | the browser's input for that type | string |
-| `boolean` | checkbox | `'true'` or `'false'`, shown as Yes or No |
-| `select` | dropdown | string |
-| `multiselect` | a checkbox per option | list of strings |
+| `boolean` | switch | `'true'` or `'false'`, shown as Yes or No |
+| `select` | searchable list of the options | string |
+| `multiselect` | searchable list of the options, several can be checked | list of strings |
 
 The options of `select` and `multiselect` are the ones listed plus every value already in use in the model. A `url` is a link in the built site.
 

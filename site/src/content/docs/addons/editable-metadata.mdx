@@ -46,18 +46,36 @@ Without configuration every key is text. `model/metadata.json` gives keys other 
 }
 ```
 
-| Key | Type | Value for this addon | Editor in the dev server |
-| --- | --- | --- | --- |
-| `package` | `text` | <Metadata of="toolkit.editableMetadata" name="package" /> | Text input that suggests values already used |
-| `lifecycle` | `select` | <Metadata of="toolkit.editableMetadata" name="lifecycle" /> | Dropdown |
-| `languages` | `multiselect` | <Metadata of="toolkit.editableMetadata" name="languages" /> | A checkbox per option |
-| `source` | `url` | <Metadata of="toolkit.editableMetadata" name="source" /> | URL input; a link in the built site |
+| Key | Type | Value for this addon |
+| --- | --- | --- |
+| `package` | `text` | <Metadata of="toolkit.editableMetadata" name="package" /> |
+| `lifecycle` | `select` | <Metadata of="toolkit.editableMetadata" name="lifecycle" /> |
+| `languages` | `multiselect` | <Metadata of="toolkit.editableMetadata" name="languages" /> |
+| `source` | `url` | <Metadata of="toolkit.editableMetadata" name="source" /> |
 
 `number`, `date` and `boolean` are available too. The options of `select` and `multiselect` are the listed ones plus every value already in use in the model.
 
 ## Editing
 
-In the dev server a value has a dashed underline. Click it, or focus it and press Enter, to edit. Enter or a click elsewhere saves, Escape cancels, and an empty value removes the key. The dev server rewrites only that element's `metadata` block and reloads the page.
+In the dev server a value has a dashed underline:
+
+![The table above in the dev server, with each value underlined](../../../assets/editable-metadata/values.png)
+
+Click it, or focus it and press Enter, to open its editor. Type to filter, use the arrow keys to move and Enter to choose. A `select` saves the option you choose:
+
+![The lifecycle value with its options open, the current one checked](../../../assets/editable-metadata/select.png)
+
+A `multiselect` toggles options and saves them all when it closes:
+
+![The languages value with two of its options checked](../../../assets/editable-metadata/multiselect.png)
+
+`text` suggests the values already used for the key, and adds what you type as a new one:
+
+![The package value with a new value typed and the existing ones suggested](../../../assets/editable-metadata/text.png)
+
+`number`, `date` and `url` get an input that saves with Enter or a click outside, and `boolean` a switch. Escape closes an editor without saving, and Clear, or an empty value, removes the key.
+
+The editors are React components built on [Radix](https://www.radix-ui.com/) and [cmdk](https://cmdk.paco.me/). The addon adds Astro's React integration if the site doesn't have it, and none of the editor code reaches the built site. The dev server rewrites only that element's `metadata` block and reloads the page.
 
 Editing exists only in the dev server: the endpoint that saves is not part of the built site, and it accepts requests only from the page itself.
 

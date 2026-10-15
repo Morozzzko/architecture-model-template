@@ -4,6 +4,13 @@ title: Editable metadata
 
 import Metadata from '@architecture-model/editable-metadata/Metadata.astro'
 import Property from '@architecture-model/editable-metadata/Property.astro'
+import Derived from '@architecture-model/editable-metadata/Derived.astro'
+
+export const ours = (element, model) => element.id === 'toolkit' || element.isDescendantOf(model.element('toolkit'))
+export const usedBy = (element, model) => [
+  ...new Set([...element.incoming()].filter(({ source }) => ours(source, model)).map(({ source }) => source.title)),
+]
+export const callsBack = (element, model) => [...element.outgoing()].some(({ target }) => ours(target, model))
 
 `@architecture-model/editable-metadata` shows the metadata and properties of model elements in documentation pages. The value lives in the model, so a page never disagrees with it.
 
@@ -78,6 +85,32 @@ import Property from '@architecture-model/editable-metadata/Property.astro'
 | `links` | <Property of="toolkit.editableMetadata" name="links" /> |
 
 The title and technology get a one-line input. The summary and description get a text area that keeps line breaks and saves them as Markdown, and the built site renders that Markdown. Links get a URL and a label per row.
+
+## Derived values
+
+A derived value answers a question about the model instead of being written down. The page asks the question: it defines a function of the [element](https://likec4.dev/tooling/model-api/) and the whole model, and `Derived` shows the answer for one element.
+
+```mdx
+import Derived from '@architecture-model/editable-metadata/Derived.astro'
+
+export const ours = (element, model) => element.id === 'toolkit' || element.isDescendantOf(model.element('toolkit'))
+export const usedBy = (element, model) => [
+  ...new Set([...element.incoming()].filter(({ source }) => ours(source, model)).map(({ source }) => source.title)),
+]
+export const callsBack = (element, model) => [...element.outgoing()].some(({ target }) => ours(target, model))
+
+| External system | Used by | Calls us back |
+| --- | --- | --- |
+| npm registry | <Derived of="npm" value={usedBy} /> | <Derived of="npm" value={callsBack} /> |
+| GitHub Pages | <Derived of="pages" value={usedBy} /> | <Derived of="pages" value={callsBack} /> |
+```
+
+| External system | Used by | Calls us back |
+| --- | --- | --- |
+| npm registry | <Derived of="npm" value={usedBy} /> | <Derived of="npm" value={callsBack} /> |
+| GitHub Pages | <Derived of="pages" value={usedBy} /> | <Derived of="pages" value={callsBack} /> |
+
+A function returns a string, a number, a list, or `true` and `false`, shown as Yes and No. A derived value is never editable, and it changes as soon as the relationships in the model change.
 
 ## Editing
 

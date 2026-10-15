@@ -1,6 +1,6 @@
 ---
 name: metadata-fields
-description: Use when adding, changing or showing element metadata in this architecture model - a new metadata field such as owner or lifecycle, a new option for a select or multiselect field, a value on an element, or a metadata value embedded in a documentation page.
+description: Use when adding, changing or showing element metadata in this architecture model - a new metadata field such as owner or lifecycle, a new option for a select or multiselect field, a value on an element, a value derived from relationships, or a metadata value or element property embedded in a documentation page.
 ---
 
 # Metadata fields
@@ -11,7 +11,7 @@ This needs the `@architecture-model/editable-metadata` addon. If `astro.config.m
 npx astro add @architecture-model/editable-metadata
 ```
 
-Element metadata has three parts. Change only the ones the task needs.
+Element metadata has these parts. Change only the ones the task needs.
 
 | Part | File | Holds |
 | --- | --- | --- |
@@ -34,6 +34,7 @@ Add or edit the key in `model/metadata.json`:
 - Types: `text`, `number`, `date`, `url`, `boolean`, `select`, `multiselect`. A key that is not listed is `text`.
 - Keys are identifiers: letters, digits, `_` and `-`, not starting with a digit.
 - `options` applies to `select` and `multiselect`. To add an option, append it to the array.
+- An option that should read differently from what the model stores is `{ "value": "igor", "label": "Igor Morozov" }`. Elements store the value; pages show the label.
 - Do not remove or rename an option that elements still use. Values in use are offered as options anyway, so the old value stays selectable until every element is changed. Find the users with the `likec4` MCP tool `query-by-metadata`.
 
 ## Set a value on an element
@@ -58,6 +59,22 @@ system = system 'Software System' {
 - A `multiselect` value is a list of strings.
 - To clear a value, delete its line. Delete the `metadata` block when it becomes empty.
 
+## Derive a value
+
+When the answer follows from the model, such as whether an external system calls us back, derive it in the page instead of storing it in the model. Export a function of the element and the model, using the [LikeC4 model API](https://likec4.dev/tooling/model-api/), and show it with `Derived`:
+
+```mdx
+import Derived from '@architecture-model/editable-metadata/Derived.astro'
+
+export const ours = (element, model) => element.id === 'system' || element.isDescendantOf(model.element('system'))
+export const callsBack = (element, model) => [...element.outgoing()].some(({ target }) => ours(target, model))
+
+Calls us back: <Derived of="payments" value={callsBack} />
+```
+
+- Return a string, a number, a list, or a boolean (shown as Yes or No).
+- A derived value is never editable. Don't also store it as metadata.
+
 ## Show a value in a page
 
 ```mdx
@@ -69,6 +86,14 @@ Owner: <Metadata of="system" name="owner" />
 - `of` is the element's fully qualified name (`system.webapp`), `name` is the metadata key.
 - Keep the component on the same line as its label. On a line of its own it renders outside the paragraph.
 - An unknown element or type fails the build; an unset value renders empty.
+
+An element's own `title`, `summary`, `description`, `technology` or `links` is shown with `Property`:
+
+```mdx
+import Property from '@architecture-model/editable-metadata/Property.astro'
+
+<Property of="system" name="description" />
+```
 
 In `npm run dev` the rendered value is click-to-edit and saves to `model/model.c4`. That is for people using the browser. As an agent, edit the files.
 

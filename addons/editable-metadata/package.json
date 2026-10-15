@@ -20,7 +20,8 @@
   "exports": {
     ".": "./index.js",
     "./Metadata.astro": "./Metadata.astro",
-    "./Property.astro": "./Property.astro"
+    "./Property.astro": "./Property.astro",
+    "./Derived.astro": "./Derived.astro"
   },
   "files": [
     "index.js",
@@ -28,6 +29,7 @@
     "model.js",
     "Metadata.astro",
     "Property.astro",
+    "Derived.astro",
     "Editor.jsx",
     "NoEditor.jsx",
     "editor.css"

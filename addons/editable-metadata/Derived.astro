@@ -1,0 +1,17 @@
+---
+import type { LikeC4Model } from 'likec4/model'
+import { model } from './model.js'
+
+type Value = string | number | boolean | null | undefined | Array<string | number>
+
+interface Props {
+  of: string
+  value: (element: LikeC4Model.Element, model: LikeC4Model) => Value
+}
+
+const { of, value } = Astro.props
+const result = value(model.element(of), model)
+const text = typeof result === 'boolean' ? (result ? 'Yes' : 'No') : [result ?? []].flat().join(', ')
+---
+
+{text}

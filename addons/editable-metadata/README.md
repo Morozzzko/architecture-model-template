@@ -81,6 +81,21 @@ An option can have a label that pages and editors show in place of the stored va
 }
 ```
 
+## Derived values
+
+A value that follows from the model, such as whether an external system calls you back, is asked in the page instead of stored in the model. Define a function of the [element](https://likec4.dev/tooling/model-api/) and the model, and show its answer with `Derived`:
+
+```mdx
+import Derived from '@architecture-model/editable-metadata/Derived.astro'
+
+export const ours = (element, model) => element.id === 'shop' || element.isDescendantOf(model.element('shop'))
+export const callsBack = (element, model) => [...element.outgoing()].some(({ target }) => ours(target, model))
+
+Payments calls us back: <Derived of="payments" value={callsBack} />
+```
+
+A function returns a string, a number, a list, or a boolean, shown as Yes or No. A derived value is never editable.
+
 ## Properties
 
 `Property` shows and edits an element's own `title`, `summary`, `description`, `technology` or `links`:

@@ -6,6 +6,11 @@ specification {
   }
   element system
   element container
+  element external {
+    style {
+      color muted
+    }
+  }
 }
 
 model {
@@ -16,12 +21,18 @@ model {
     description 'A software system.'
 
     webapp = container 'Web App' {
+      technology 'Web application'
       description 'Primary user-facing interface.'
     }
   }
+  email = external 'Email Provider' {
+    description 'Sends email on behalf of the system.'
+  }
 
-  user -> system 'Uses'
-  user -> system.webapp 'Uses'
+  user -> system.webapp 'Signs in and works with'
+  system.webapp -> email 'Sends notifications through' {
+    technology 'HTTPS'
+  }
 }
 
 views {
@@ -37,11 +48,12 @@ views {
 
   view containers of system {
     title 'Containers'
-    include *, user
+    include *, user, email
   }
 
   dynamic view userRequestFlow {
     title 'User request flow'
-    user -> system.webapp 'Uses'
+    user -> system.webapp 'Signs in and works with'
+    system.webapp -> email 'Sends notifications through'
   }
 }

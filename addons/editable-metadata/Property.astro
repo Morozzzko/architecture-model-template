@@ -1,0 +1,38 @@
+---
+import Editor from './Editor.jsx'
+import { model } from './model.js'
+
+interface Props {
+  of: string
+  name: 'title' | 'summary' | 'description' | 'technology' | 'links'
+}
+
+const types = { title: 'line', technology: 'line', summary: 'textarea', description: 'textarea', links: 'links' }
+
+const { of, name } = Astro.props
+const type = types[name]
+if (!type) throw new Error(`Unknown property "${name}". Known properties: ${Object.keys(types).join(', ')}`)
+
+const element = model.element(of)
+const rich = name === 'summary' || name === 'description' ? element[name] : null
+const links = element.links.map(({ url, title }) => (title ? { url, label: title } : { url }))
+const values =
+  name === 'links' ? links : [rich ? (rich.$source?.md ?? rich.$source?.txt ?? '') : (element[name] ?? '')].filter(Boolean)
+---
+
+{
+  import.meta.env.DEV ? (
+    <Editor client:load fqn={of} name={name} property type={type} values={values} />
+  ) : name === 'links' ? (
+    links.map((link, index) => (
+      <>
+        {index > 0 && ', '}
+        <a href={link.url}>{link.label ?? link.url}</a>
+      </>
+    ))
+  ) : rich?.isMarkdown ? (
+    <Fragment set:html={rich.html} />
+  ) : (
+    values.join('')
+  )
+}

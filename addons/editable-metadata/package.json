@@ -1,7 +1,7 @@
 {
   "name": "@architecture-model/editable-metadata",
   "version": "0.2.0",
-  "description": "Show LikeC4 element metadata in Astro pages and edit it in place in the dev server",
+  "description": "Show LikeC4 element metadata and properties in Astro pages and edit them in place in the dev server",
   "keywords": [
     "astro-integration",
     "astro-component",
@@ -19,13 +19,15 @@
   "type": "module",
   "exports": {
     ".": "./index.js",
-    "./Metadata.astro": "./Metadata.astro"
+    "./Metadata.astro": "./Metadata.astro",
+    "./Property.astro": "./Property.astro"
   },
   "files": [
     "index.js",
     "editor.js",
     "model.js",
     "Metadata.astro",
+    "Property.astro",
     "Editor.jsx",
     "NoEditor.jsx",
     "editor.css"

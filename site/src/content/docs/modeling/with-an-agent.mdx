@@ -6,9 +6,9 @@ sidebar:
 
 import ExampleView from '../../../components/ExampleView.astro'
 
-The toolkit expects a coding agent to write the model, pages and decisions. You bring what the agent can't know: who uses the system, who owns what, and why things are the way they are. The agent turns that into LikeC4, following the rules in [Systems, containers and components](../elements/) and [Deployment](../deployment/), and you review the diagrams it produces.
+ISO/IEC/IEEE 42010 separates a system's architecture, its fundamental concepts and properties and the principles behind them, from the architecture description that expresses it. This repository is the description. A good one says both why the system exists and what parts it has, and stays true as the system changes.
 
-This page walks through modeling a system from an empty repository, as prompts for the agent. The diagrams come from an example shop, modeled the same way.
+A coding agent writes most of it. It can read code, compose files and infrastructure manifests to find the parts. Only you know why they are there. This page is the order to work in, as prompts for the agent; the diagrams come from an example shop modeled the same way.
 
 ## Before you start
 
@@ -19,66 +19,130 @@ Make a repository as described in [Start a repository](../../start/), and instal
 /plugin install architecture-model@architecture-model
 ```
 
-The agent learns the repository from `AGENTS.md` and the modeling rules from the plugin's `c4-modeling` skill. Questions your organization has settled go in `model/conventions.md`, which the agent reads first.
+The agent learns the repository from `AGENTS.md` and the modeling rules from the plugin's `c4-modeling` skill. Have at hand what it can read for itself: repositories, `docker-compose.yml`, Terraform or Kubernetes manifests, runbooks.
 
-Have at hand what the agent can read for itself: the code repositories, `docker-compose.yml`, Terraform or Kubernetes manifests, runbooks. Pointing the agent at them gets you a more accurate model than describing them from memory.
+## What ages and what doesn't
 
-## 1. The context: who and what is outside
+Documentation goes stale where it copies something that changes. Each kind of content has one home:
 
-Start from the outside, and stop once the context looks right: most readers never go further.
+| Content | Changes | Lives in |
+| --- | --- | --- |
+| Purpose, stakeholders, quality goals, key concepts | Rarely | Prose in arc42: Introduction and Goals, Glossary |
+| Principles and the reasons for decisions | Rarely, and then by a new decision | ADRs and Solution Strategy; an ADR is superseded, never rewritten |
+| Systems, containers, relationships | With the code | The model; pages pull it in through components, and the build fails when a page names something the model lacks |
+| Providers, regions, owners, lifecycle | Often | Deployment and metadata in the model, refreshed by the agent from their sources |
+| Anything computable from the model | Never by hand | A derived value, computed at build time |
 
-> Interview me about the Shop: who uses it, which other systems it talks to, and which team or company owns each of them. Then model the context, replacing the starter system, user and Email Provider.
+Never restate the model in prose. "The Orders API writes to the orders database" in a paragraph goes stale; the same sentence as a relationship stays checked.
+
+## Why the system exists
+
+Start here, before any box. It's the part an agent can't read from code, and the part readers need first.
+
+### 1. Purpose and stakeholders
+
+> Interview me about the Shop: what it is for, and who depends on it and what each of them cares about. Write the answers into Introduction and Goals of the arc42 page.
+
+### 2. Quality goals
+
+Every system trades qualities against each other: a payment system gives up speed for correctness, a prototype gives up maintainability for speed of delivery. The quality goals say which trade-offs this system makes, and they explain more of its structure than any diagram.
+
+The interview follows the ISO/IEC 25010 quality model without asking you to learn it. Pick the three kinds of quality that matter most, then the specific qualities within them, then a scenario someone could check, and who needs it:
+
+| Kind of quality | The question it answers |
+| --- | --- |
+| Functional suitability | Does it do the right thing, completely and correctly? |
+| Performance efficiency | Is it fast enough, and does it use resources sensibly? |
+| Compatibility | Does it work alongside and exchange data with other systems? |
+| Interaction capability | Can its users learn and use it, including users with disabilities? |
+| Reliability | Does it keep working, and recover when something fails? |
+| Security | Does it protect data and actions from people who shouldn't have them? |
+| Maintainability | Can the team understand, change and test it safely? |
+| Flexibility | Can it move to other environments, scale or adapt? |
+| Safety | Can it avoid harming people, property or the environment? |
+
+> Interview me about the Shop's quality goals: help me pick the top three kinds of quality, then the specific qualities, then a checkable scenario and who needs each one. Write them into Introduction and Goals and Quality Requirements.
+
+A goal is useful when someone could check it: "a placed order is confirmed to the customer within two seconds at peak load, because customers abandon slow checkouts", not "fast".
+
+### 3. Key concepts
+
+> Ask me for the handful of concepts the Shop is built around, and put them in the Glossary and Cross-cutting Concepts sections.
+
+For example, in the shop: an order is a sequence of events, and a payment counts only once the chain confirms it. Concepts like these explain the boxes that follow, and they rarely change.
+
+## What parts it has
+
+### 4. The environment
+
+> Model the Shop's context: the people who use it and the systems it talks to, with who owns each. Replace the starter system, user and Email Provider.
 
 <ExampleView viewId="context" />
 
-Check that every box is the system itself, a person, or an external system, and that every arrow has a label saying what happens in its direction. "Uses" is not an answer.
+Check that every box is the Shop, a person or an external system, and that every arrow says what happens in its direction.
 
-## 2. Containers: what runs inside
+### 5. Containers
 
-> Read the repositories in ~/code/shop and the docker-compose file, and model the containers of the Shop: every app, function, job and data store we own. For each one, tell me which question from the skill decided it.
+> Read the repositories in ~/code/shop and the docker-compose file, and model the containers of the Shop: every app, function, job and data store we own. Tie each description to the concepts from step 3, and tell me which question from the skill decided each element.
 
 <ExampleView viewId="containers" />
 
-Check that each database schema, bucket and topic with its own purpose is its own box, that there is no "database server" or "message bus" box, that no library appears as an element, and that every container has a technology.
+The rules the agent follows are in [Systems, containers and components](../elements/). Check that each schema, bucket and topic with its own purpose is its own box, that no server, cluster or library is, and that every container has a technology.
 
-## 3. Settle disagreements once
-
-When you disagree with the agent, say what you know, not what you'd prefer. "The payments team owns Ledger" changes the answer. "Ledger is important" does not, because ownership and runtime decide the level. When the answer is specific to your organization, have the agent write it down:
-
-> We show observability once, at system level, and never per container. Record that in model/conventions.md.
-
-The next person who asks, or the next agent, gets the same answer.
-
-## 4. Deployment, when environments differ
-
-Skip this until an environment differs in what runs where: a provider per environment, regions, a shared database server.
+### 6. Deployment, when environments differ
 
 > Model production and development. In production the indexer reads from Alchemy with Infura as failover; in development from a local Anvil node. Staging is the same as production.
 
 <ExampleView viewId="prod" />
 
-The logical model keeps one Blockchain RPC element; the deployment view shows which provider serves it. See [Deployment](../deployment/) for the rules.
+Skip this until an environment differs in what runs where. See [Deployment](../deployment/).
 
-## 5. Pages and decisions
+## How the why and the what meet
 
-The model is the source of truth; pages pull from it.
+### 7. Principles and decisions
 
-> Fill in sections 3 and 5 of the arc42 page from the model. Don't describe elements in prose; use the components.
+Every structural choice in the model has a reason, and the reason is what outlives the choice.
 
-> Write an ADR for publishing order events to Kafka instead of calling Billing directly.
+> Go through the containers view and ask me why each significant choice was made. Record each answer as an ADR with bin/adr, and summarize the principles in Solution Strategy.
 
-## 6. Metadata, once the structure is stable
+For the example: "Order events go through Kafka so Billing never calls the Orders API" is a principle; the `order-placed` topic is how it shows in the model.
 
-> Add an owner field with the teams as options, and set it on every container.
+### 8. Conventions
 
-With the [editable-metadata](../../addons/editable-metadata/) addon, owners and other fields show up in pages and can be changed in the dev server.
+Some questions have more than one reasonable C4 answer, and the agent would answer them differently from one session to the next. Settle each once in `model/conventions.md`, which the agent reads first:
 
-## Review before merging
+| Kind of question | Example convention |
+| --- | --- |
+| Where the line is | Caches are containers of the system that owns them. |
+| How much detail | Topics are containers only when another team consumes them. |
+| Cross-cutting services | Observability is drawn once, at system level. |
+| Other teams' systems | Another team's system is one external box. |
+| Providers | Payment providers are separate systems, because we route by country. |
+| Environments | Only production and development are modeled. |
+| Naming | Titles are product names; repository names go in links. |
+| People | Actors are roles with different access, not job titles. |
 
-The build checks references; these need your eyes:
+> Record in model/conventions.md that observability is drawn once, at system level.
 
+### 9. Where it's heading
+
+A description that only shows the present can't explain the past or warn about the future.
+
+> Mark the Payments v1 integration as being replaced, and add the planned Payments v2 with a note on why, linking the ADR.
+
+With the [editable-metadata](../../addons/editable-metadata/) addon, a lifecycle field shows this in tables and can be changed in the dev server.
+
+## Keeping it true
+
+Run this whenever the system changes noticeably, and before you rely on the description:
+
+> Compare the model with the repositories and infrastructure. List what is missing, gone or different, and fix the model. Don't change the why sections; ask me if something there looks wrong.
+
+Then review what the build can't check:
+
+- The why sections still describe the system's purpose and goals.
 - Every element has a description, and every container a technology.
 - No relationship is labeled "Uses".
-- Every view title says what it shows: "Shop: containers", not "Diagram 2".
-- Questions settled along the way are in `model/conventions.md`.
+- Every view title says what it shows.
+- Decisions made since the last review have ADRs.
 - `npm run validate` and `npm run build` pass.

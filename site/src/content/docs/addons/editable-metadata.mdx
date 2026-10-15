@@ -3,8 +3,9 @@ title: Editable metadata
 ---
 
 import Metadata from '@architecture-model/editable-metadata/Metadata.astro'
+import Property from '@architecture-model/editable-metadata/Property.astro'
 
-`@architecture-model/editable-metadata` shows the metadata of model elements in documentation pages. The value lives in the model, so a page never disagrees with it.
+`@architecture-model/editable-metadata` shows the metadata and properties of model elements in documentation pages. The value lives in the model, so a page never disagrees with it.
 
 In `npm run dev` every value is click-to-edit: pick a new one and it is written back to `model/model.c4`. In the built site, like this one, they are read-only: plain text, and links for `url` fields.
 
@@ -42,7 +43,8 @@ Without configuration every key is text. `model/metadata.json` gives keys other 
   "package": { "type": "text" },
   "lifecycle": { "type": "select", "options": ["experimental", "production", "deprecated"] },
   "languages": { "type": "multiselect", "options": ["JavaScript", "TypeScript", "Astro", "MDX", "LikeC4", "Markdown"] },
-  "source": { "type": "url" }
+  "source": { "type": "url" },
+  "maintainers": { "type": "multiselect", "options": [{ "value": "morozzzko", "label": "Igor Morozov" }] }
 }
 ```
 
@@ -52,8 +54,30 @@ Without configuration every key is text. `model/metadata.json` gives keys other 
 | `lifecycle` | `select` | <Metadata of="toolkit.editableMetadata" name="lifecycle" /> |
 | `languages` | `multiselect` | <Metadata of="toolkit.editableMetadata" name="languages" /> |
 | `source` | `url` | <Metadata of="toolkit.editableMetadata" name="source" /> |
+| `maintainers` | `multiselect` | <Metadata of="toolkit.editableMetadata" name="maintainers" /> |
 
 `number`, `date` and `boolean` are available too. The options of `select` and `multiselect` are the listed ones plus every value already in use in the model.
+
+An option is a string, or a value with a label: the model stores `morozzzko`, and pages and editors show Igor Morozov.
+
+## Properties
+
+`Property` shows an element's own properties the same way: `title`, `summary`, `description`, `technology` and `links`.
+
+```mdx
+import Property from '@architecture-model/editable-metadata/Property.astro'
+
+<Property of="toolkit.editableMetadata" name="description" />
+```
+
+| Property | Value for this addon |
+| --- | --- |
+| `title` | <Property of="toolkit.editableMetadata" name="title" /> |
+| `technology` | <Property of="toolkit.editableMetadata" name="technology" /> |
+| `description` | <Property of="toolkit.editableMetadata" name="description" /> |
+| `links` | <Property of="toolkit.editableMetadata" name="links" /> |
+
+The title and technology get a one-line input. The summary and description get a text area that keeps line breaks and saves them as Markdown, and the built site renders that Markdown. Links get a URL and a label per row.
 
 ## Editing
 
@@ -75,7 +99,15 @@ A `multiselect` toggles options and saves them all when it closes:
 
 `number`, `date` and `url` get an input that saves with Enter or a click outside, and `boolean` a switch. Escape closes an editor without saving, and Clear, or an empty value, removes the key.
 
-The editors are React components built on [Radix](https://www.radix-ui.com/) and [cmdk](https://cmdk.paco.me/). The addon adds Astro's React integration if the site doesn't have it, and none of the editor code reaches the built site. The dev server rewrites only that element's `metadata` block and reloads the page.
+A description's text area saves with ⌘ or Ctrl + Enter or a click outside:
+
+![The description with its text area open, holding two paragraphs of Markdown](../../../assets/editable-metadata/description.png)
+
+Links save when their editor closes, and a row without a URL is dropped:
+
+![The links with their editor open: one row per link with a URL and a label](../../../assets/editable-metadata/links.png)
+
+The editors are React components built on [Radix](https://www.radix-ui.com/) and [cmdk](https://cmdk.paco.me/). The addon adds Astro's React integration if the site doesn't have it, and none of the editor code reaches the built site. The dev server rewrites only what was edited in that element and reloads the page.
 
 Editing exists only in the dev server: the endpoint that saves is not part of the built site, and it accepts requests only from the page itself.
 

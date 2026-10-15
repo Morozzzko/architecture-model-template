@@ -2,5 +2,6 @@
   "package": { "type": "text" },
   "lifecycle": { "type": "select", "options": ["experimental", "production", "deprecated"] },
   "languages": { "type": "multiselect", "options": ["JavaScript", "TypeScript", "Astro", "MDX", "LikeC4", "Markdown"] },
-  "source": { "type": "url" }
+  "source": { "type": "url" },
+  "maintainers": { "type": "multiselect", "options": [{ "value": "morozzzko", "label": "Igor Morozov" }] }
 }

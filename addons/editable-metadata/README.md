@@ -1,6 +1,6 @@
 # @architecture-model/editable-metadata
 
-Shows the metadata of [LikeC4](https://likec4.dev/) elements in [Astro](https://astro.build/) pages. In the dev server the values are click-to-edit and save back to the model; in the built site they are plain text.
+Shows the metadata and properties of [LikeC4](https://likec4.dev/) elements in [Astro](https://astro.build/) pages. In the dev server the values are click-to-edit and save back to the model; in the built site they are plain text.
 
 Made for repositories created with `npm create @architecture-model`, and works in any Astro site that has a LikeC4 model.
 
@@ -73,6 +73,32 @@ Without configuration every key is text. To give keys other types, create `model
 
 The options of `select` and `multiselect` are the ones listed plus every value already in use in the model. A `url` is a link in the built site.
 
+An option can have a label that pages and editors show in place of the stored value:
+
+```json
+{
+  "owners": { "type": "multiselect", "options": [{ "value": "igor", "label": "Igor Morozov" }, "platform-team"] }
+}
+```
+
+## Properties
+
+`Property` shows and edits an element's own `title`, `summary`, `description`, `technology` or `links`:
+
+```mdx
+import Property from '@architecture-model/editable-metadata/Property.astro'
+
+<Property of="system" name="description" />
+```
+
+| Property | Editor | In the built site |
+| --- | --- | --- |
+| `title`, `technology` | one-line input | text |
+| `summary`, `description` | text area; ⌘ or Ctrl + Enter saves, line breaks are saved as a Markdown string | Markdown rendered as HTML |
+| `links` | a URL and a label per row | links |
+
+A title can't be emptied. Links replace the element's own links, and a row without a URL is dropped.
+
 ## Options
 
 ```js
@@ -86,4 +112,4 @@ Both paths are relative to the Astro project root.
 
 ## How it saves
 
-The dev server gets an endpoint that rewrites the element's `metadata` block with [likec4-mutator](https://github.com/rebaseandpanic/likec4-mutator), leaving the rest of the file as it was. It only accepts requests from the page itself, and it does not exist in the built site.
+The dev server gets an endpoint that rewrites the edited metadata key or property of the element with [likec4-mutator](https://github.com/rebaseandpanic/likec4-mutator), leaving the rest of the file as it was. It only accepts requests from the page itself, and it does not exist in the built site.

@@ -51,7 +51,8 @@ model {
 
     editableMetadata = container 'Editable metadata' {
       technology 'Astro integration'
-      description 'Shows element metadata in pages and lets the dev server edit it in place.'
+      description 'Shows element metadata and properties in pages and lets the dev server edit them in place.'
+      link https://www.npmjs.com/package/@architecture-model/editable-metadata 'npm'
       metadata {
         package '@architecture-model/editable-metadata'
         lifecycle 'experimental'
@@ -60,6 +61,7 @@ model {
           'Astro'
         ]
         source 'https://github.com/Morozzzko/architecture-model-template/tree/main/addons/editable-metadata'
+        maintainers 'morozzzko'
       }
     }
 

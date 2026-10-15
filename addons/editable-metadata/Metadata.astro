@@ -9,21 +9,32 @@ interface Props {
   name: string
 }
 
+type Option = string | { value: string; label?: string }
+
 const types = ['text', 'number', 'date', 'url', 'boolean', 'select', 'multiselect']
 
 const { of, name } = Astro.props
 const fields = existsSync(config.fieldsFile) ? JSON.parse(readFileSync(config.fieldsFile, 'utf8')) : {}
-const field: { type: string; options?: string[] } = fields[name] ?? { type: 'text' }
+const field: { type: string; options?: Option[] } = fields[name] ?? { type: 'text' }
 if (!types.includes(field.type)) {
   throw new Error(`Unknown type "${field.type}" for metadata "${name}". Known types: ${types.join(', ')}`)
 }
 
 const valuesOf = (fqn: string) => [model.element(fqn).getMetadata(name) ?? []].flat()
 const values = valuesOf(of)
-const inUse = [...model.elements()].flatMap((element) => valuesOf(element.id))
-const options = [...new Set([...(field.options ?? []), ...inUse])]
+const listed = (field.options ?? []).map((option) =>
+  typeof option === 'string' ? { value: option, label: option } : { value: option.value, label: option.label ?? option.value },
+)
+const labels = new Map(listed.map((option) => [option.value, option.label]))
+const inUse = [...new Set([...model.elements()].flatMap((element) => valuesOf(element.id)))]
+const options = [...listed, ...inUse.filter((value) => !labels.has(value)).map((value) => ({ value, label: value }))]
 
-const text = field.type === 'boolean' && values.length ? (values[0] === 'true' ? 'Yes' : 'No') : values.join(', ')
+const text =
+  field.type === 'boolean' && values.length
+    ? values[0] === 'true'
+      ? 'Yes'
+      : 'No'
+    : values.map((value) => labels.get(value) ?? value).join(', ')
 ---
 
 {

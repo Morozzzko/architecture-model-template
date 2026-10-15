@@ -3,6 +3,9 @@
   cursor: pointer;
   border-bottom: 1px dashed currentColor;
 }
+.em-multiline {
+  white-space: pre-line;
+}
 .em-value:focus-visible {
   outline: 2px solid var(--sl-color-accent, Highlight);
   outline-offset: 2px;
@@ -26,6 +29,35 @@
   font-family: var(--sl-font, system-ui, sans-serif);
   font-size: var(--sl-text-sm, 0.875rem);
   line-height: 1.4;
+}
+
+.em-wide {
+  width: min(32rem, calc(100vw - 2rem));
+  max-width: none;
+}
+
+.em-textarea {
+  min-height: 8rem;
+  resize: vertical;
+}
+
+.em-link {
+  display: grid;
+  grid-template-columns: 3fr 2fr auto;
+  align-items: center;
+}
+.em-link .em-input {
+  min-width: 0;
+}
+.em-remove {
+  all: unset;
+  padding: 0 0.5rem;
+  cursor: pointer;
+  color: var(--em-muted);
+}
+.em-remove:hover,
+.em-remove:focus-visible {
+  color: inherit;
 }
 
 .em-command {

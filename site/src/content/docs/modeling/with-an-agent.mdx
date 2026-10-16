@@ -21,6 +21,14 @@ Make a repository as described in [Start a repository](../../start/), and instal
 /plugin install architecture-model@architecture-model
 ```
 
+Then say:
+
+> Help me document Payments.
+
+The plugin's `document-a-system` skill takes it from there: one topic at a time, with a sentence on why each matters and an example of a good answer, mostly as multiple-choice questions. It aims first for a small "done for now" that is worth publishing: the purpose, the top three quality goals and the context. Containers, concepts, decisions and the rest come in later sessions. Whatever you can't answer goes into `docs/questions/payments.md` with who might know, and the next session, even weeks later, starts by telling you where you got to and asking whether any of those were answered.
+
+The rest of this page is what happens in those sessions, and how to steer them.
+
 The agent learns the repository from `AGENTS.md` and the modeling rules from the plugin's `c4-modeling` skill. Have at hand what it can read for itself: repositories, `docker-compose.yml`, Terraform or Kubernetes manifests, runbooks.
 
 ## What ages and what doesn't

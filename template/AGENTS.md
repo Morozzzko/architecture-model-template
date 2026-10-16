@@ -9,6 +9,7 @@ This repository is an architecture model of an organization's systems and the do
 - `src/content/docs/`: documentation pages (MDX). `index.mdx` is the overview of all systems.
 - `src/content/docs/systems/`: one page per software system in the model, named after its element id (`systems/payments.mdx` for `payments`). Each page follows the outline of `systems/system.mdx`: why the system exists (purpose, quality goals and scenarios, key concepts) in prose, then what it is made of through components, then its principles, decisions and direction.
 - `docs/decisions/`: Architecture Decision Records, plain adr-tools markdown.
+- `docs/questions/<id>.md`: a system's open questions, one table row each (question, section, who might know, date asked). Not published. A question nobody could answer goes here, never into a page; when it is answered, write the answer where it belongs and remove the row.
 - `src/components/`: components that render the model inside pages.
 
 ## Rules

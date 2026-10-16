@@ -1,12 +1,13 @@
 # Working in this repository
 
-This repository is an architecture model and the documentation site generated from it.
+This repository is an architecture model of an organization's systems and the documentation site generated from it. It says why each system exists and what parts it has.
 
 ## Where things live
 
 - `model/model.c4`: the LikeC4 model. It is the source of truth for elements, relationships and views.
 - `model/conventions.md`: how this repository settled modeling questions the rules below leave open.
-- `src/content/docs/`: documentation pages (MDX). `arc42.mdx` follows the arc42 structure.
+- `src/content/docs/`: documentation pages (MDX). `index.mdx` is the overview of all systems.
+- `src/content/docs/systems/`: one page per software system in the model, named after its element id (`systems/payments.mdx` for `payments`). Each page follows the outline of `systems/system.mdx`: why the system exists (purpose, quality goals and scenarios, key concepts) in prose, then what it is made of through components, then its principles, decisions and direction.
 - `docs/decisions/`: Architecture Decision Records, plain adr-tools markdown.
 - `src/components/`: components that render the model inside pages.
 
@@ -18,6 +19,9 @@ This repository is an architecture model and the documentation site generated fr
   - `<Elements of="..." kind="..." />` for a table of elements.
   - `<Relationships of="..." />` for a table of an element's relationships.
   - `<Decisions />` for a table of the ADRs with their status and date.
+  - `<Systems />` for a table of all systems with links to their pages.
+- When you add a system to the model, add its page. The build fails while a system has none.
+- A system page's prose explains why; it never restates what the model already says.
 - For derived content those don't cover, add a component in `src/components/` that imports `model` from `src/lib/model.ts`. It runs at build time.
 - Query the model through the `likec4` MCP server rather than reading `.c4` files by hand.
 - Create ADRs with `bin/adr new <title>`. Do not add frontmatter to ADR files; adr-tools reads the title from the first line.
@@ -28,7 +32,7 @@ This repository is an architecture model and the documentation site generated fr
 The model follows the C4 model (c4model.com).
 
 - Read `model/conventions.md` before modeling; its answers win. When you settle a case it doesn't cover, add a row to it.
-- Ownership and runtime decide what an element is, never size or importance: what another team or company owns is an `external` system with no internals; what this team builds and deploys together is a `system`; each process or data store of it that must run is a `container`. Domains, bounded contexts and libraries are not elements.
+- Ownership and runtime decide what an element is, never size or importance: what another team or company owns is an `external` system with no internals; what one team builds and deploys together is a `system`; each process or data store of it that must run is a `container`. Domains, bounded contexts and libraries are not elements.
 - One container per database schema, bucket or topic with its own purpose, not one per server or cluster. Servers, clusters and which provider serves which environment belong in a `deployment` block.
 - Every element has a description, and every container a `technology`.
 - Every relationship goes one way and has a label that reads in that direction (`'Submits orders to'`, never `'Uses'`). Relationships between containers name the protocol in `technology`.

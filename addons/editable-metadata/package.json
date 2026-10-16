@@ -1,6 +1,6 @@
 {
   "name": "@architecture-model/editable-metadata",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Show LikeC4 element metadata and properties in Astro pages and edit them in place in the dev server",
   "keywords": [
     "astro-integration",

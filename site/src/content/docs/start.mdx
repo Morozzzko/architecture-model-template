@@ -24,6 +24,7 @@ Options go after `--`: `--yes` skips the questions and names the project after t
 - `src/content/docs/`: the documentation pages, in MDX. They embed views of the model and tables derived from it, and the build fails when a page refers to something the model doesn't have.
 - `src/content/docs/systems/`: a page per system in the model, saying why it exists and what it's made of. The build fails when a system has no page.
 - `model/conventions.md`: where the repository records how it settled modeling questions.
+- LikeC4's diagram viewer at `/diagrams/` in the built site, for browsing every view, with a link back to the documentation.
 - `docs/decisions/`: Architecture Decision Records, managed with [adr-tools](https://github.com/npryce/adr-tools) through `bin/adr` and listed in the site.
 - GitHub Actions workflows: one validates and builds on every pull request, the other deploys the site to GitHub Pages when you run it, or on every push to `main` once you uncomment its trigger.
 - `AGENTS.md` and a LikeC4 MCP server configuration for coding agents.

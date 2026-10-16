@@ -18,7 +18,9 @@ The site is then at http://localhost:4321.
 ## Commands
 
 * `npm run dev` – serve the site locally with live reload
-* `npm run build` – build the static site into `dist/`
+* `npm run build` – build the static site into `dist/`, with LikeC4's diagram viewer at `dist/diagrams/`
+* `npm run preview` – serve the built site, including the diagram viewer, which `npm run dev` doesn't serve
+* `npm test` – test the scripts in `bin/`
 * `npm run validate` – check the model for errors and formatting
 * `npm run export -- json -o output/model.json` – export the model; `npx likec4 export --help` lists formats
 * `bin/adr new <title>` – create an Architecture Decision Record (requires [adr-tools](https://github.com/npryce/adr-tools): `brew install adr-tools`)
@@ -39,6 +41,9 @@ PNG export needs Playwright, which is not installed by default; `likec4` prints 
 │   └── lib/model.ts        # loads the model at build time
 ├── docs
 │   └── decisions           # ADRs, plain adr-tools markdown
+├── bin
+│   ├── adr                 # adr-tools wrapper
+│   └── add-documentation-link.js  # adds a link back to the docs to the diagram viewer
 └── astro.config.mjs
 ```
 

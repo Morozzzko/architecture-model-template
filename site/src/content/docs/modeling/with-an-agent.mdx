@@ -140,6 +140,12 @@ Run this whenever the system changes noticeably, and before you rely on the desc
 
 > Compare the model with the repositories and infrastructure. List what is missing, gone or different, and fix the model. Don't change the why sections; ask me if something there looks wrong.
 
+An agent that writes from code tends to write about the code: ports, libraries, class names, "highly scalable". Before merging what it wrote, have critics read it:
+
+> Review the Shop's page and model with the architecture-review skill.
+
+The plugin's `architecture-review` skill runs five critics, each seeing only the documentation: a newcomer who must answer questions from it, a noise auditor, a rationale skeptic, a C4 inspector and a quality examiner. It deletes and rewords what they flag, and brings everything new back to you as questions instead of inventing it.
+
 Then review what the build can't check:
 
 - The why sections still describe the system's purpose and goals.

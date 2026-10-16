@@ -76,3 +76,14 @@ npm run build
 ```
 
 Then check each changed view: does every element and relationship pass the rules above?
+
+## References
+
+- The element questions: c4model.com on [software systems](https://c4model.com/abstractions/software-system), [containers](https://c4model.com/abstractions/container) and [components](https://c4model.com/abstractions/component)
+- Queues and topics: [c4model.com](https://c4model.com/abstractions/queues-and-topics)
+- Microservices as containers or systems: [c4model.com](https://c4model.com/abstractions/microservices)
+- Relationships, titles and colours: [notation](https://c4model.com/diagrams/notation) and the [review checklist](https://c4model.com/diagrams/checklist)
+- Which views to draw: [c4model.com diagrams](https://c4model.com/diagrams)
+- Domains and contexts are not levels: the [C4 FAQ](https://c4model.com/abstractions/faq)
+- Other teams' systems as single boxes: [Structurizr, enterprise usage](https://docs.structurizr.com/workspaces/enterprise)
+- Element properties and kinds in LikeC4: the [model DSL](https://likec4.dev/dsl/model/)

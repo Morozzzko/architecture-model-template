@@ -33,3 +33,8 @@ Use the `@architecture-model/create` generator. Do not clone `Morozzzko/architec
 `AGENTS.md` in the new repository says how to work in it: where the model, pages and ADRs live, and which components render the model. Read it before changing anything.
 
 Tell the user that `npm run dev` serves the site at http://localhost:4321 and that `.github/workflows/deploy.yml` publishes it to GitHub Pages once Pages is enabled with "GitHub Actions" as the source.
+
+## References
+
+- The generator, its questions and options: [Start a repository](https://arch.morozov.is/start/)
+- What a new repository contains and how to work in it: the [template README](https://github.com/Morozzzko/architecture-model-template/tree/main/template)

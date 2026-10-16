@@ -103,3 +103,9 @@ In `npm run dev` the rendered value is click-to-edit and saves to `model/model.c
 npm run validate
 npm run build
 ```
+
+## References
+
+- Metadata, links and Markdown descriptions in LikeC4: the [model DSL](https://likec4.dev/dsl/model/)
+- The element and model objects a derived value receives: the [LikeC4 model API](https://likec4.dev/tooling/model-api/)
+- Field types, `Property` and `Derived`: the [editable-metadata README](https://github.com/Morozzzko/architecture-model-template/tree/main/addons/editable-metadata)

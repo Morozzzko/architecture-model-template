@@ -24,11 +24,13 @@ This is a monorepo of tools for documenting software architecture with LikeC4.
 - When a package, addon or skill changes what users do, update the matching page in `site/src/content/docs/` and, if its metadata changes, its element in `site/model/model.c4`.
 - Keep the template free of references to this monorepo: a copy of `template/` must work on its own.
 - The generator finds its placeholders by exact text. When changing the main system's title or description or the site title in the template, update the replacements in `packages/create-architecture-model/index.js`.
-- A change to a published package needs a changeset: run `pnpm changeset` and commit the file. The template and the plugin are not published to npm and need none.
+- A change to a published package needs a changeset: run `pnpm changeset` and commit the file. The generator ships the template, so a change to `template/` needs a changeset for `@architecture-model/create`. The plugin is not published to npm and needs none.
 - An addon must work from its published files alone. Before finishing a change to one, pack it with `pnpm pack`, install the tarball into a project made by the generator, and run that project's `npm run build`.
 - When an addon is added, removed or renamed, update the addons table in `README.md`.
 - The pages under `site/src/content/docs/modeling/` publish the rules of the `c4-modeling` skill. When one changes, change the other to match.
 - When a skill is added, removed or renamed, update the skills table in `README.md` and bump `version` in `plugin/.claude-plugin/plugin.json`.
+- A skill ends with a References section listing the sources its rules come from. When you add a rule, add its source; when a rule rests on memory rather than a source you checked, say so.
+- arc42 (by Gernot Starke and Peter Hruschka) and its Q42 quality model (by Gernot Starke) are licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Link to them and paraphrase in your own words. Copy their text into the template, a skill or the site only with credit to the authors, a link to the license, a note of what changed, and the copied part kept under CC BY-SA 4.0.
 
 ## Before finishing
 

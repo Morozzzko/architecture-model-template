@@ -26,6 +26,7 @@ export default defineConfig({
       title: 'Architecture',
       sidebar: [
         { label: 'Overview', link: '/' },
+        { label: 'Diagram viewer', link: '/diagrams/' },
         { label: 'Systems', items: [{ autogenerate: { directory: 'systems' } }] },
         {
           label: 'Decisions',

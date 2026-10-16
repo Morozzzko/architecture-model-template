@@ -35,9 +35,10 @@ This is a monorepo of tools for documenting software architecture with LikeC4.
 For a change to the template, run from `template/` and fix anything reported:
 
     npm run validate
+    npm test
     npm run build
 
-For a change to the site, the same two commands from `site/`.
+For a change to the site, the same commands from `site/`.
 
 For a change to the template or a package, from the repository root:
 

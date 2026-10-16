@@ -30,6 +30,7 @@ export default defineConfig({
       ],
       sidebar: [
         { label: 'Overview', link: '/' },
+        { label: 'Diagram viewer', link: '/diagrams/' },
         { label: 'Start a repository', link: '/start/' },
         { label: 'Modeling', items: [{ autogenerate: { directory: 'modeling' } }] },
         { label: 'Addons', items: [{ autogenerate: { directory: 'addons' } }] },

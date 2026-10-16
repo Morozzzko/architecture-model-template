@@ -28,9 +28,10 @@ This repository is an architecture model and the documentation site generated fr
 
 ## Before finishing
 
-Run both and fix anything they report:
+Run these and fix anything they report:
 
     npm run validate
+    npm test
     npm run build
 
 A build failure naming an unknown element, kind or view means a page references something the model no longer has.

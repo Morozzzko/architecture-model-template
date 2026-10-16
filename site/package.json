@@ -8,7 +8,9 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "postbuild": "likec4 build model --output dist/diagrams --base ./ --use-hash-history && node bin/add-documentation-link.js",
     "preview": "astro preview",
+    "test": "node --test bin/*.test.js",
     "validate": "likec4 validate model && likec4 validate examples/shop && likec4 format --check .",
     "export": "likec4 export"
   },

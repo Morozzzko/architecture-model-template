@@ -26,7 +26,7 @@ export default defineConfig({
       title: 'Architecture',
       sidebar: [
         { label: 'Overview', link: '/' },
-        { label: 'arc42', link: '/arc42/' },
+        { label: 'Systems', items: [{ autogenerate: { directory: 'systems' } }] },
         {
           label: 'Decisions',
           items: decisions().map(({ title, slug }) => ({ label: title, link: `/decisions/${slug}/` })),

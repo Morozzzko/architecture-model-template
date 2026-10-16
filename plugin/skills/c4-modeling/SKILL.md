@@ -64,6 +64,10 @@ Size and importance never decide the level; ownership and runtime do. Microservi
 
 When something varies by environment or is about infrastructure (regions, clusters, replicas, which provider runs where), it belongs in the deployment model. See `deployment.md` in this skill.
 
+## System pages
+
+Every `system` in the model has a page, `src/content/docs/systems/<id>.mdx`, following the outline of the starter page. When you add a system, add its page; when you rename one, rename its page. Fill in what the model says through components, and leave the why sections (purpose, quality goals, key concepts, principles) for the people who know: ask them, or use the `quality-goals` skill for the goals.
+
 ## Finish
 
 ```bash

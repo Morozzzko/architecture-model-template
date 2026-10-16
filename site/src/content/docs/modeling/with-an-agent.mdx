@@ -8,6 +8,8 @@ import ExampleView from '../../../components/ExampleView.astro'
 
 ISO/IEC/IEEE 42010 separates a system's architecture, its fundamental concepts and properties and the principles behind them, from the architecture description that expresses it. This repository is the description. A good one says both why the system exists and what parts it has, and stays true as the system changes.
 
+One repository describes all of an organization's systems: the model holds every one of them, and each has its own page that says why it exists and what it's made of. The steps below are for one system; repeat them for the next.
+
 A coding agent writes most of it. It can read code, compose files and infrastructure manifests to find the parts. Only you know why they are there. This page is the order to work in, as prompts for the agent; the diagrams come from an example shop modeled the same way.
 
 ## Before you start
@@ -27,8 +29,8 @@ Documentation goes stale where it copies something that changes. Each kind of co
 
 | Content | Changes | Lives in |
 | --- | --- | --- |
-| Purpose, stakeholders, quality goals, key concepts | Rarely | Prose in arc42: Introduction and Goals, Glossary |
-| Principles and the reasons for decisions | Rarely, and then by a new decision | ADRs and Solution Strategy; an ADR is superseded, never rewritten |
+| Purpose, stakeholders, quality goals, key concepts | Rarely | Prose on the system's page in `src/content/docs/systems/` |
+| Principles and the reasons for decisions | Rarely, and then by a new decision | ADRs, summarized on the system's page; an ADR is superseded, never rewritten |
 | Systems, containers, relationships | With the code | The model; pages pull it in through components, and the build fails when a page names something the model lacks |
 | Providers, regions, owners, lifecycle | Often | Deployment and metadata in the model, refreshed by the agent from their sources |
 | Anything computable from the model | Never by hand | A derived value, computed at build time |
@@ -41,7 +43,7 @@ Start here, before any box. It's the part an agent can't read from code, and the
 
 ### 1. Purpose and stakeholders
 
-> Interview me about the Shop: what it is for, and who depends on it and what each of them cares about. Write the answers into Introduction and Goals of the arc42 page.
+> Interview me about the Shop: what it is for, and who depends on it and what each of them cares about. Write the answers under Purpose on the Shop's system page.
 
 ### 2. Quality goals
 
@@ -61,13 +63,13 @@ The interview follows the ISO/IEC 25010 quality model without asking you to lear
 | Flexibility | Can it move to other environments, scale or adapt? |
 | Safety | Can it avoid harming people, property or the environment? |
 
-> Interview me about the Shop's quality goals: help me pick the top three kinds of quality, then the specific qualities, then a checkable scenario and who needs each one. Write them into Introduction and Goals and Quality Requirements.
+> Interview me about the Shop's quality goals: help me pick the top three kinds of quality, then the specific qualities, then a checkable scenario and who needs each one. Write them into Quality goals and Quality scenarios on its page.
 
 A goal is useful when someone could check it: "a placed order is confirmed to the customer within two seconds at peak load, because customers abandon slow checkouts", not "fast".
 
 ### 3. Key concepts
 
-> Ask me for the handful of concepts the Shop is built around, and put them in the Glossary and Cross-cutting Concepts sections.
+> Ask me for the handful of concepts the Shop is built around, and put them under Key concepts on its page.
 
 For example, in the shop: an order is a sequence of events, and a payment counts only once the chain confirms it. Concepts like these explain the boxes that follow, and they rarely change.
 
@@ -75,7 +77,7 @@ For example, in the shop: an order is a sequence of events, and a payment counts
 
 ### 4. The environment
 
-> Model the Shop's context: the people who use it and the systems it talks to, with who owns each. Replace the starter system, user and Email Provider.
+> Model the Shop's context: the people who use it and the systems it talks to, with who owns each. Replace the starter system, user and Email Provider, and rename the system's page to match its new id.
 
 <ExampleView viewId="context" />
 
@@ -103,7 +105,7 @@ Skip this until an environment differs in what runs where. See [Deployment](../d
 
 Every structural choice in the model has a reason, and the reason is what outlives the choice.
 
-> Go through the containers view and ask me why each significant choice was made. Record each answer as an ADR with bin/adr, and summarize the principles in Solution Strategy.
+> Go through the containers view and ask me why each significant choice was made. Record each answer as an ADR with bin/adr, and summarize the principles under Principles and decisions on the Shop's page.
 
 For the example: "Order events go through Kafka so Billing never calls the Orders API" is a principle; the `order-placed` topic is how it shows in the model.
 

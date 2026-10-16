@@ -1,6 +1,6 @@
 ---
 name: new-architecture-repo
-description: Use when the user wants to start documenting a system's architecture in a new repository or folder - a LikeC4 model with a generated documentation site, arc42 and ADRs - and no such repository exists yet.
+description: Use when the user wants to start documenting a system's architecture in a new repository or folder - a LikeC4 model with a generated documentation site, a page per system and ADRs - and no such repository exists yet.
 ---
 
 # New architecture repository

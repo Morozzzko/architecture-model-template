@@ -1,0 +1,47 @@
+---
+title: Software System
+---
+
+import Elements from '../../../components/Elements.astro'
+import LikeC4View from '../../../components/LikeC4View.astro'
+import Relationships from '../../../components/Relationships.astro'
+
+## Purpose
+
+*Why the system exists, who depends on it, and what each of them needs from it.*
+
+## Quality goals
+
+*The three qualities the system is optimized for, in order, each with who needs it and why. When two conflict, the higher one wins.*
+
+## Quality scenarios
+
+*For each goal, a check: when \<event\> under \<conditions\>, the system \<response\> within \<measure\>.*
+
+## Key concepts
+
+*The few ideas the system is built around, which explain the structure below.*
+
+## Context
+
+<LikeC4View viewId="context" />
+
+<Relationships of="system" />
+
+## Containers
+
+<LikeC4View viewId="containers" />
+
+<Elements of="system" kind="container" />
+
+## Key flows
+
+<LikeC4View viewId="userRequestFlow" />
+
+## Principles and decisions
+
+*The principles behind the structure above, with links to the decisions in `docs/decisions/` that record them.*
+
+## Where it's heading
+
+*What is being added, replaced or retired, and why.*

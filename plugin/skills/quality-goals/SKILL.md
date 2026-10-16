@@ -9,13 +9,13 @@ Quality goals say which trade-offs a system makes: what wins when speed and corr
 
 ## Where they go
 
-Write to the page of the system the goals are for, under "Quality goals" and "Quality scenarios". If the repository has no page per system but has an arc42 document, use its Quality Goals and Quality Scenarios sections, and make its Quality Requirements Overview point to the goals instead of repeating them. Read what is already there first: an interview revises goals, it doesn't start over.
+Write to the page of the system the goals are for, `src/content/docs/systems/<id>.mdx`, under "Quality goals" and "Quality scenarios". If the repository predates system pages and has an arc42 document instead, use its Quality Goals and Quality Scenarios sections, and make its Quality Requirements Overview point to the goals instead of repeating them. Read what is already there first: an interview revises goals, it doesn't start over.
 
 ## The interview
 
 Use multiple-choice questions for choices and plain conversation for reasons and numbers. In Claude Code, ask multiple-choice questions with AskUserQuestion: up to four questions at once, two to four options each, and the user can always answer something else.
 
-1. **Context.** Ask what the system is for and who depends on it, unless its page already says. Keep it to two or three questions, and write the answers where the page describes the system's purpose and stakeholders (in arc42: Requirements Overview and Stakeholders).
+1. **Context.** Ask what the system is for and who depends on it, unless its page already says. Keep it to two or three questions, and write the answers under the page's "Purpose" (in arc42: Requirements Overview and Stakeholders).
 
 2. **The top three kinds of quality.** Ask one round of three multi-select questions covering all nine kinds, so no kind is left out because you didn't think of it. Label each option with its plain question from `qualities.md` and put the ISO name in the option's description:
    - What it does: functional suitability, interaction capability, compatibility

@@ -1,0 +1,33 @@
+---
+import { getCollection } from 'astro:content'
+import { model } from '../lib/model'
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+const pages = new Set((await getCollection('docs')).map((entry) => entry.id))
+const pageOf = (id: string) => `systems/${id.toLowerCase()}`
+
+const systems = [...model.elements()].filter((element) => element.kind === 'system')
+const missing = systems.filter((system) => !pages.has(pageOf(system.id)))
+if (missing.length) {
+  const files = missing.map((system) => `src/content/docs/${pageOf(system.id)}.mdx`)
+  throw new Error(`Every system needs a page. Missing: ${files.join(', ')}`)
+}
+---
+
+<table>
+  <thead>
+    <tr><th>System</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    {
+      systems.map((system) => (
+        <tr>
+          <td>
+            <a href={`${base}/${pageOf(system.id)}/`}>{system.title}</a>
+          </td>
+          <td>{system.description.text}</td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>

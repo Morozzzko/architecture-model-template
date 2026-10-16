@@ -20,6 +20,7 @@ test('the name and description are written into the model and the site', () => {
 
   assert.match(read('model/model.c4'), /system = system 'Shop' \{\n\s+description 'Igor\\'s online shop'/)
   assert.match(read('astro.config.mjs'), /title: 'Shop',\n\s+description: 'Igor\\'s online shop',/)
+  assert.match(read('src/content/docs/systems/system.mdx'), /^---\ntitle: "Shop"\n---/)
 
   assert.ok(existsSync(join(directory, '.gitignore')))
   assert.ok(existsSync(join(directory, '.github/workflows/ci.yml')))
@@ -32,6 +33,7 @@ test('without answers the project is named after the directory', () => {
 
   assert.match(read('model/model.c4'), /system = system 'shop' \{\n\s+description 'A software system.'/)
   assert.match(read('astro.config.mjs'), /title: 'shop',\n\s+sidebar/)
+  assert.match(read('src/content/docs/systems/system.mdx'), /^---\ntitle: "shop"\n---/)
   assert.ok(!existsSync(join(directory, '.git')))
 })
 

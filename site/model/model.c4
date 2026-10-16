@@ -26,7 +26,7 @@ model {
 
     template = container 'Template' {
       technology 'Astro Starlight, LikeC4'
-      description 'The architecture repository that every project starts from: model, documentation site, arc42 and ADRs.'
+      description 'The architecture repository that every project starts from: model, documentation site with a page per system, and ADRs.'
       metadata {
         lifecycle 'production'
         languages [

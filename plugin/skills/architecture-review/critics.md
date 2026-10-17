@@ -45,7 +45,7 @@ Check that each quality goal shows up in the structure (a goal of never losing o
 ## C4 inspector
 
 - Every element is at one C4 level: no libraries, classes, modules, servers or clusters posing as containers.
-- Every element has a description saying what it does; every container a technology.
+- Every element has a description saying what it does; every container a technology, unless its questions file already asks for it.
 - Every relationship goes one way with a label that reads in that direction; no "Uses".
 - The prose agrees with the model: names, owners and relationships match, and nothing in the prose is missing from the model or contradicts it.
 - Every view title says what it shows.

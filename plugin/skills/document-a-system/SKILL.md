@@ -35,7 +35,7 @@ Walk a person through documenting one system as a conversation. They bring what 
   | Why was Stripe chosen to charge cards? | Principles and decisions | The previous tech lead of the payments team | 2026-10-10 |
   ```
 
-Open questions go in that file and nowhere else: not as notes on the page, not in `model/conventions.md`, not in `AGENTS.md`. On the page, an unknown value is just the word "open" where the value would be, in prose and in table cells alike ("paid by: open"). Ask who might know as a multiple-choice question, offering the people and teams the person has already mentioned; write exactly "Not known" only when none of them fits. Before adding a row, check the file: if the question is already there, leave it.
+Open questions go in that file and nowhere else: not as notes on the page, not in `model/conventions.md`, not in `AGENTS.md`. On the page, an unknown value, such as a number, a date or a name, is just the word "open" where the value would be, in prose and in table cells alike ("paid by: open"). Never restate a question on the page as "<question>: open". Ask who might know as a multiple-choice question, offering the people and teams the person has already mentioned; write exactly "Not known" only when none of them fits. Before adding a row, check the file: if the question is already there, leave it.
 
 Nothing else needs recording between sessions: the page, the model and the questions file are the state. When the person gives the URL of the system's repository, add it as a `link` on the system in the model; a path on their machine is only for this session.
 
@@ -44,8 +44,8 @@ Nothing else needs recording between sessions: the page, the model and the quest
 1. Settle which system. The starter's sample "Software System" is not one to document: in a fresh repository, ask which system the person wants to start with. Otherwise, if one real system's page is unfinished, propose it; if not, ask, offering the systems in the model and "a new one".
 2. Read its page, its part of the model, its questions file and the decisions in `docs/decisions/` that mention it. Each section is in one of three states:
    - **not started:** it still has its italic placeholder, or shows a view the model doesn't have;
-   - **written, with open questions:** its main point is written and the questions file still has rows for it;
-   - **done:** written, with no rows left, and complete by its own skill's standard: Quality goals has three ranked goals, each with who needs it and why, as `quality-goals` asks.
+   - **written, still open:** its main point is written, but the questions file still has rows for it, or it falls short of what its skill asks (Quality goals with fewer than three ranked goals, each with who needs it and why, as `quality-goals` asks);
+   - **done:** written, with no rows left and nothing short.
 3. Tell the person in two or three sentences what is done, what is waiting on whom (from the questions file, with dates), and what comes next. Mention anything that won't build, such as a view the page uses that the model doesn't have.
 4. If there are open questions, ask first whether any were answered, as a multi-select question listing them. Write each answer where it belongs and remove its row.
 5. Ask how much time they have, and plan to stop at a natural point within it.

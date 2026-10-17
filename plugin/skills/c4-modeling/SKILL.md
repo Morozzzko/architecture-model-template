@@ -48,7 +48,7 @@ Size and importance never decide the level; ownership and runtime do. Microservi
 
 ## Writing elements and relationships
 
-- Every element has a description saying what it does; every container and component has a `technology`.
+- Every element has a description saying what it does; every container and component has a `technology`, what it is built with, or while nobody knows it, a question in the system's questions file.
 - Who owns a system goes in its metadata as `owner` (`owner 'payments-team'`), for internal and external systems alike.
 - Every relationship goes one way and has a label that reads in that direction: `'Submits orders to'`, never `'Uses'`.
 - Relationships between containers name the protocol: `technology 'HTTPS/JSON'`.

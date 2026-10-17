@@ -1,6 +1,6 @@
 {
   "name": "@architecture-model/create",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Create an architecture repository: a LikeC4 model with a documentation site generated from it",
   "license": "MIT",
   "repository": {

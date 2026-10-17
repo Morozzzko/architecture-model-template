@@ -41,7 +41,7 @@ PNG export needs Playwright, which is not installed by default; `likec4` prints 
 │   └── lib/model.ts        # loads the model at build time
 ├── docs
 │   ├── decisions           # ADRs, plain adr-tools markdown
-│   └── questions           # each system's open questions, not published
+│   └── questions           # each system's open questions, created on first use, not published
 ├── bin
 │   ├── adr                 # adr-tools wrapper
 │   └── add-documentation-link.js  # adds a link back to the docs to the diagram viewer

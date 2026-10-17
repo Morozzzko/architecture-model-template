@@ -1,6 +1,6 @@
 # Critic briefs
 
-Give each critic its brief, the paths of the pages and model files under review, and the output format at the end of this file. Tell it to read only those files: a critic that reads the code inherits the author's blind spots.
+Give each critic its brief, the paths of the pages and model files under review and of their questions files (`docs/questions/<id>.md`), and the output format at the end of this file. A question already in a questions file is known and waiting: don't raise it again. Tell it to read only those files: a critic that reads the code inherits the author's blind spots.
 
 ## Newcomer
 

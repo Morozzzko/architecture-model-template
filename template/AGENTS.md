@@ -7,7 +7,7 @@ This repository is an architecture model of an organization's systems and the do
 - `model/model.c4`: the LikeC4 model. It is the source of truth for elements, relationships and views.
 - `model/conventions.md`: how this repository settled modeling questions the rules below leave open.
 - `src/content/docs/`: documentation pages (MDX). `index.mdx` is the overview of all systems.
-- `src/content/docs/systems/`: one page per software system in the model, named after its element id (`systems/payments.mdx` for `payments`). Each page follows the outline of `systems/system.mdx`: why the system exists (purpose, quality goals and scenarios, key concepts) in prose, then what it is made of through components, then its principles, decisions and direction.
+- `src/content/docs/systems/`: one page per software system in the model, named after its element id (`systems/payments.mdx` for `payments`). Every page has the same sections, in this order: Purpose, Quality goals, Quality scenarios, Key concepts, Context, Containers, Key flows, Principles and decisions, Where it's heading. Why the system exists is prose; what it is made of comes from the model through components. Each section starts with an italic placeholder line, as in the starter page `systems/system.mdx`, which stays until the section's main point is written. The starter page describes the sample "Software System"; rename it for the first real system.
 - `docs/decisions/`: Architecture Decision Records, plain adr-tools markdown.
 - `docs/questions/<id>.md`: a system's open questions, one table row each (question, section, who might know, date asked). Not published. A question nobody could answer goes here, never into a page; when it is answered, write the answer where it belongs and remove the row.
 - `src/components/`: components that render the model inside pages.
@@ -35,7 +35,8 @@ The model follows the C4 model (c4model.com).
 - Read `model/conventions.md` before modeling; its answers win. When you settle a case it doesn't cover, add a row to it.
 - Ownership and runtime decide what an element is, never size or importance: what another team or company owns is an `external` system with no internals; what one team builds and deploys together is a `system`; each process or data store of it that must run is a `container`. Domains, bounded contexts and libraries are not elements.
 - One container per database schema, bucket or topic with its own purpose, not one per server or cluster. Servers, clusters and which provider serves which environment belong in a `deployment` block.
-- Every element has a description, and every container a `technology`.
+- Every element has a description, and every container a `technology`: what it is built with, not how it is deployed. While nobody knows a container's technology, leave it out and keep the question in the system's questions file.
+- Name views after their system (`paymentsContext`, `paymentsContainers`) so systems can't clash.
 - Every relationship goes one way and has a label that reads in that direction (`'Submits orders to'`, never `'Uses'`). Relationships between containers name the protocol in `technology`.
 - An external service that every container uses, such as observability, is related once, from the system.
 

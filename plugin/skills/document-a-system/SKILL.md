@@ -9,7 +9,21 @@ Walk a person through documenting one system as a conversation. They bring what 
 
 ## Where things live
 
-- The system's page: `src/content/docs/systems/<id>.mdx`. For the first system in a new repository, rename the starter page `systems/system.mdx` to the system's id, as `AGENTS.md` says, and replace the starter's sample elements and views with the real ones. Name each view after its system (`payments_context`, `payments_containers`) so a second system can't clash, and keep the page's diagrams pointing at views that exist.
+- The system's page: `src/content/docs/systems/<id>.mdx`, with the sections and order `AGENTS.md` lists. For the first system in a new repository, rename the starter page `systems/system.mdx`, which describes the sample "Software System", to the real system's id, and replace the sample elements and views in the model with the real ones. For later systems, start from a copy of an existing page with its sections reset to their placeholders. Name each view after its system (`paymentsContext`, `paymentsContainers`), and keep the page's diagrams pointing at views that exist.
+- The sections' placeholders, which a section keeps until its main point is written and gets back if it is emptied:
+
+  | Section | Placeholder |
+  | --- | --- |
+  | Purpose | *Why the system exists, who depends on it, and what each of them needs from it.* |
+  | Quality goals | *The three qualities the system is optimized for, in order, each with who needs it and why. When two conflict, the higher one wins.* |
+  | Quality scenarios | *For each goal, a check: when \<event\> under \<conditions\>, the system \<response\> within \<measure\>.* |
+  | Key concepts | *The few ideas the system is built around, which explain the structure below.* |
+  | Context | *Who uses the system and which systems it talks to, with who owns each.* |
+  | Containers | *The apps, jobs and data stores the system runs, and why it is split this way.* |
+  | Key flows | *The one or two flows people ask about most, step by step.* |
+  | Principles and decisions | *The principles behind the structure above, with links to the decisions in `docs/decisions/` that record them.* |
+  | Where it's heading | *What is being added, replaced or retired, and why.* |
+
 - The system in the model: `model/model.c4`, following the `c4-modeling` skill.
 - Its open questions: `docs/questions/<id>.md`, created when the first question comes up. It is not published. Keep exactly this shape:
 
@@ -21,14 +35,17 @@ Walk a person through documenting one system as a conversation. They bring what 
   | Why was Stripe chosen to charge cards? | Principles and decisions | The previous tech lead of the payments team | 2026-10-10 |
   ```
 
-Open questions go in that file and nowhere else: not as notes on the page, not in `model/conventions.md`, not in `AGENTS.md`. On the page, an unknown value is just the word "open" where the value would be ("paid by: open"). When nobody knows who could answer, write "Not known" under who might know.
+Open questions go in that file and nowhere else: not as notes on the page, not in `model/conventions.md`, not in `AGENTS.md`. On the page, an unknown value is just the word "open" where the value would be, in prose and in table cells alike ("paid by: open"). Ask who might know as a multiple-choice question, offering the people and teams the person has already mentioned; write exactly "Not known" only when none of them fits. Before adding a row, check the file: if the question is already there, leave it.
 
-Nothing else needs recording between sessions: the page, the model and the questions file are the state. When the person mentions where the code lives, add it as a `link` on the system in the model.
+Nothing else needs recording between sessions: the page, the model and the questions file are the state. When the person gives the URL of the system's repository, add it as a `link` on the system in the model; a path on their machine is only for this session.
 
 ## Start every session by finding where they are
 
-1. Settle which system. If one system page is unfinished, propose it; otherwise ask, offering the systems in the model and "a new one".
-2. Read its page, its part of the model, its questions file and the decisions in `docs/decisions/` that mention it. A section is open while it still has its italic placeholder, has a row in the questions file, or shows a view the model doesn't have; otherwise it is done.
+1. Settle which system. The starter's sample "Software System" is not one to document: in a fresh repository, ask which system the person wants to start with. Otherwise, if one real system's page is unfinished, propose it; if not, ask, offering the systems in the model and "a new one".
+2. Read its page, its part of the model, its questions file and the decisions in `docs/decisions/` that mention it. Each section is in one of three states:
+   - **not started:** it still has its italic placeholder, or shows a view the model doesn't have;
+   - **written, with open questions:** its main point is written and the questions file still has rows for it;
+   - **done:** written, with no rows left, and complete by its own skill's standard: Quality goals has three ranked goals, each with who needs it and why, as `quality-goals` asks.
 3. Tell the person in two or three sentences what is done, what is waiting on whom (from the questions file, with dates), and what comes next. Mention anything that won't build, such as a view the page uses that the model doesn't have.
 4. If there are open questions, ask first whether any were answered, as a multi-select question listing them. Write each answer where it belongs and remove its row.
 5. Ask how much time they have, and plan to stop at a natural point within it.
@@ -41,11 +58,11 @@ Nothing else needs recording between sessions: the page, the model and the quest
 2. **Quality goals.** Follow the `quality-goals` skill: the top three, ranked, with scenarios.
 3. **Context.** The people who use the system and the systems it talks to, with who owns each, following `c4-modeling`. No internals yet.
 
-The first pass is done when all three are written, even with open questions left in the file: done for now means worth publishing, not complete. Two goals the person can't order between are written as tied, with the order as a question; don't decide it for them. Then say plainly: "This is done for now: Payments has a purpose, its goals and its context, and it's worth publishing." Offer to review it with the `architecture-review` skill, and to stop or go on.
+The first pass is done for now when all three are at least written, with open questions allowed: done for now means worth publishing, not complete. Two goals the person can't order between are written as tied, with the order as a question; don't decide it for them. Then say plainly: "This is done for now: Payments has a purpose, its goals and its context, and it's worth publishing." Offer to review it with the `architecture-review` skill, and to stop or go on.
 
 **Second pass: the rest.** These are a menu, not an order: take whichever the person has answers for, each a short session of its own. A question from another topic that comes up naturally can be asked when it does.
 
-4. **Containers.** Ask them to point at the code, compose files or manifests and read those; if there is nothing to read, their description is enough. Confirm with them what code can't say: who owns what, and why it is split that way. A container's `technology` is what it is built with; when nobody knows, leave it out and add a question rather than writing how it is deployed.
+4. **Containers.** Ask them to point at the code, compose files or manifests and read those; if there is nothing to read, their description is enough. Confirm with them what code can't say: who owns what, and why it is split that way. A container's `technology` is what it is built with; when nobody knows, leave it out and add a question rather than writing how it is deployed. How it runs, when that matters to a reader ("runs every Friday"), goes in its description. A link that is all but certain, such as a service and its own database, is one quick yes-or-no question, not a row in the file.
 5. **Key concepts.** The few ideas the system is built around, in the team's words; not class names.
 6. **Key flows.** The one or two flows people ask about most, as dynamic views, walked through by the person step by step. If nobody can walk through one, leave the section's placeholder.
 7. **Principles and decisions.** For each significant choice, ask why. Record each answered one as an ADR with `bin/adr new`; where that script is missing, write the next numbered file in `docs/decisions/` in the same adr-tools format, dated today, with when the decision was made in its context. Summarize the principles on the page.

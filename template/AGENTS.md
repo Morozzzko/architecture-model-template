@@ -49,6 +49,7 @@ The model follows the C4 model (c4model.com).
 - Every element has a description, and every container a `technology`: what it is built with, not how it is deployed. While nobody knows a container's technology, leave it out and keep the question in the system's questions file.
 - Name views after their system (`paymentsContext`, `paymentsContainers`) so systems can't clash.
 - Who owns a system goes in its metadata as `owner` (`owner 'payments-team'`), for internal and external systems alike.
+- Who to ask about a system goes in four metadata keys, each a list of people: `integratedBy` (integrated it originally), `experts` (know best how it works and how its integration is changed), `contributors` (have worked on it) and `administrators` (manage it: for an external service the vendor account, keys, billing and support; for our own, its accounts and access). `peopleConfirmed` holds the date they were last checked. People are handles listed once in `model/people.json` as `{ "value": "dana", "label": "Dana Kim" }`; add a person there before using their handle.
 - Every relationship goes one way and has a label that reads in that direction (`'Submits orders to'`, never `'Uses'`). Relationships between containers name the protocol in `technology`.
 - An external service that every container uses, such as observability, is related once, from the system.
 

@@ -5,6 +5,8 @@ title: Editable metadata
 import Metadata from '@architecture-model/editable-metadata/Metadata.astro'
 import Property from '@architecture-model/editable-metadata/Property.astro'
 import Derived from '@architecture-model/editable-metadata/Derived.astro'
+import People from '@architecture-model/editable-metadata/People.astro'
+import PeopleTable from '@architecture-model/editable-metadata/PeopleTable.astro'
 
 export const ours = (element, model) => element.id === 'toolkit' || element.isDescendantOf(model.element('toolkit'))
 export const usedBy = (element, model) => [
@@ -66,6 +68,34 @@ Without configuration every key is text. `model/metadata.json` gives keys other 
 `number`, `date` and `boolean` are available too. The options of `select` and `multiselect` are the listed ones plus every value already in use in the model.
 
 An option is a string, or a value with a label: the model stores `morozzzko`, and pages and editors show Igor Morozov.
+
+## People
+
+"Owner" rarely tells you whom to ask. Every system, ours or a vendor's, can say who to go to for which job:
+
+| Key | Who | Ask them when |
+| --- | --- | --- |
+| `integratedBy` | integrated it originally | you need to know why it works the way it does |
+| `experts` | know best how it works and how its integration is changed | there is an incident, an API or contract change, an upgrade, or a change to review |
+| `contributors` | have worked on it | you need reviewers or extra hands, or the experts are away |
+| `administrators` | manage it: for a vendor, the account, keys, billing and support; for our own, its accounts and access | credentials need rotating, someone needs access, or a support ticket or plan change is due |
+| `peopleConfirmed` | | the date someone last checked these; older than about six months, check again |
+
+The people come from one list, `model/people.json`, as a handle and a name, so a person is added once and every field picks from it. `People` shows the fields for one system, with what references it, worked out from the model's relationships:
+
+```mdx
+import People from '@architecture-model/editable-metadata/People.astro'
+
+<People of="npm" />
+```
+
+<People of="npm" />
+
+`PeopleTable` shows the same for every system, ours and external:
+
+<PeopleTable />
+
+In the dev server each people field is click-to-edit, picking from the list.
 
 ## Properties
 

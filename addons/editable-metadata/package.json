@@ -21,15 +21,21 @@
     ".": "./index.js",
     "./Metadata.astro": "./Metadata.astro",
     "./Property.astro": "./Property.astro",
-    "./Derived.astro": "./Derived.astro"
+    "./Derived.astro": "./Derived.astro",
+    "./People.astro": "./People.astro",
+    "./PeopleTable.astro": "./PeopleTable.astro"
   },
   "files": [
     "index.js",
     "editor.js",
     "model.js",
+    "fields.js",
+    "references.js",
     "Metadata.astro",
     "Property.astro",
     "Derived.astro",
+    "People.astro",
+    "PeopleTable.astro",
     "Editor.jsx",
     "NoEditor.jsx",
     "editor.css"

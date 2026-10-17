@@ -49,14 +49,14 @@ export async function setProperty(dir, { fqn, property, value }) {
   await update(dir, fqn, { [property]: token }, asMarkdown(token, text))
 }
 
-export const editor = ({ modelDir, fieldsFile }) => ({
+export const editor = ({ modelDir, fieldsFile, peopleFile }) => ({
   name: 'editable-metadata-editor',
   apply: 'serve',
   configureServer(server) {
     // Pages load the model once per module evaluation, so a changed model has to evict what was evaluated.
-    server.watcher.add([modelDir, fieldsFile])
+    server.watcher.add([modelDir, fieldsFile, peopleFile])
     server.watcher.on('change', (file) => {
-      if (!file.endsWith('.c4') && file !== fieldsFile) return
+      if (!file.endsWith('.c4') && file !== fieldsFile && file !== peopleFile) return
       for (const environment of Object.values(server.environments)) environment.moduleGraph.invalidateAll()
       server.ws.send({ type: 'full-reload' })
     })

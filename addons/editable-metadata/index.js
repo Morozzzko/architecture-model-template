@@ -19,13 +19,17 @@ const withoutEditor = {
   },
 }
 
-export default function editableMetadata({ model = 'model', fields = 'model/metadata.json' } = {}) {
+export default function editableMetadata({
+  model = 'model',
+  fields = 'model/metadata.json',
+  people = 'model/people.json',
+} = {}) {
   return {
     name,
     hooks: {
       'astro:config:setup': ({ config, command, updateConfig }) => {
         const root = fileURLToPath(config.root)
-        const paths = { modelDir: resolve(root, model), fieldsFile: resolve(root, fields) }
+        const paths = { modelDir: resolve(root, model), fieldsFile: resolve(root, fields), peopleFile: resolve(root, people) }
         const hasReact = config.integrations.some((integration) => integration.name === '@astrojs/react')
         updateConfig({
           integrations: hasReact ? [] : [react()],

@@ -34,6 +34,7 @@ This repository is an architecture model of an organization's systems and the do
   - `<Systems />` for a table of all systems with links to their pages.
 - When you add a system to the model, add its page. The build fails while a system has none.
 - A system page's prose explains why; it never restates what the model already says.
+- Write precisely and plainly: say who does what to what. A metaphor, slogan or poetic phrase that a reader has to translate back into what happens ("the reason outlives the choice") is replaced with the literal statement.
 - For derived content those don't cover, add a component in `src/components/` that imports `model` from `src/lib/model.ts`. It runs at build time.
 - Query the model through the `likec4` MCP server rather than reading `.c4` files by hand.
 - Create ADRs with `bin/adr new <title>`. Do not add frontmatter to ADR files; adr-tools reads the title from the first line.

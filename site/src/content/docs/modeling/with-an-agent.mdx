@@ -31,9 +31,9 @@ The rest of this page is what happens in those sessions, and how to steer them.
 
 The agent learns the repository from `AGENTS.md` and the modeling rules from the plugin's `c4-modeling` skill. Have at hand what it can read for itself: repositories, `docker-compose.yml`, Terraform or Kubernetes manifests, runbooks.
 
-## What ages and what doesn't
+## What changes and what doesn't
 
-Documentation goes stale where it copies something that changes. Each kind of content has one home:
+Documentation goes out of date where it copies something that changes. Each kind of content has one home:
 
 | Content | Changes | Lives in |
 | --- | --- | --- |
@@ -44,11 +44,11 @@ Documentation goes stale where it copies something that changes. Each kind of co
 | [Who to ask](../../who-to-ask/) for which job | Fastest | People fields in the model, with the date they were last confirmed, rechecked by the agent |
 | Anything computable from the model | Never by hand | A derived value, computed at build time |
 
-Never restate the model in prose. "The Orders API writes to the orders database" in a paragraph goes stale; the same sentence as a relationship stays checked.
+Never restate the model in prose. "The Orders API writes to the orders database" in a paragraph goes out of date unnoticed; written as a relationship, it is checked by every build.
 
 ## Why the system exists
 
-Start here, before any box. It's the part an agent can't read from code, and the part readers need first.
+Do this first, before modeling any element: an agent can't read it from the code, and readers need it first.
 
 ### 1. Purpose and stakeholders
 
@@ -108,11 +108,11 @@ The rules the agent follows are in [Systems, containers and components](../eleme
 
 Skip this until an environment differs in what runs where. See [Deployment](../deployment/).
 
-## How the why and the what meet
+## Why it is built this way
 
 ### 7. Principles and decisions
 
-Every structural choice in the model has a reason, and the reason is what outlives the choice.
+Record why each choice of structure was made. When the structure changes later, the record still says why it was built the way it was.
 
 > Go through the containers view and ask me why each significant choice was made. Record each answer as an ADR with bin/adr, and summarize the principles under Principles and decisions on the Shop's page.
 
@@ -137,13 +137,13 @@ Some questions have more than one reasonable C4 answer, and the agent would answ
 
 ### 9. Where it's heading
 
-A description that only shows the present can't explain the past or warn about the future.
+Record what is being added, replaced or retired, so readers know which parts are about to change.
 
 > Mark the Payments v1 integration as being replaced, and add the planned Payments v2 with a note on why, linking the ADR.
 
 With the [editable-metadata](../../addons/editable-metadata/) addon, a lifecycle field shows this in tables and can be changed in the dev server.
 
-## Keeping it true
+## Keeping it up to date
 
 Run this whenever the system changes noticeably, and before you rely on the description:
 

@@ -1,5 +1,5 @@
 ---
-title: Find knowledge that left
+title: Find systems whose people have left
 ---
 
 import Derived from '@architecture-model/editable-metadata/Derived.astro'
@@ -11,7 +11,7 @@ export const whoLeft = (element) => {
   return gone.length ? gone : 'nobody'
 }
 
-An integration rarely breaks the week its last expert leaves. It breaks months later, and only then does anyone find out that nobody left knows how it works or has the vendor login. The [people fields](../../who-to-ask/) turn that into a question you can ask in advance: which systems, ours or external, have lost the people who know them?
+When the last person who knows an integration leaves, nothing happens at first. Months later it fails, and only then does anyone find out that nobody still here knows how it works or has the login to the vendor's account. With the [people fields](../../who-to-ask/) filled in, you can check for this before it happens: list the systems, ours or external, where most of the people recorded for them have left.
 
 ## 1. Mark who has left
 
@@ -24,19 +24,19 @@ When someone leaves, keep their entry in `model/people.json` and add the date:
 ]
 ```
 
-Don't remove their handle from the systems. Who used to know a system is the point, and the handle still shows as their name.
+Don't remove their handle from the systems: this recipe needs to know who used to work on each one, and pages still show the handle as their name.
 
-## 2. Ask for the systems at risk
+## 2. Ask the agent for the list
 
 > Using model/people.json and the people fields in the model, list every system, ours and external, where everyone in `experts` or `administrators` has left, or where most of the people across its people fields have. For each, show who has left, who is still here, and which systems and containers reference it.
 
-The agent reads the people fields with the `likec4` MCP tool `query-by-metadata` and what references each system with `query-incomers-graph`. Systems whose `peopleConfirmed` is old belong in the list too: nobody knows whether their people are still right.
+The agent reads the people fields with the `likec4` MCP tool `query-by-metadata` and what references each system with `query-incomers-graph`. Add the systems whose `peopleConfirmed` date is more than about six months old as well: their fields may be out of date, so nobody knows whether their people are still here.
 
-## 3. Act on each one
+## 3. Find new people for each system
 
-- **No experts left:** pick someone from the remaining contributors, or from the teams that reference the system, to become one, and have them pair with whoever is left or read the integrating code.
-- **No administrators left:** move the vendor account, keys and billing to someone here before they are needed. This is the urgent one: without it, nobody can rotate a leaked key or open a support ticket.
-- **Most contributors gone:** the system needs reviewers who know it; add whoever picks it up.
+- **No experts left:** pick someone from the remaining contributors, or from a team that uses the system, to learn it, by working with whoever is still here or by reading the code that integrates it.
+- **No administrators left:** move the vendor account, keys and billing to someone still here. Do this first: until then, nobody can rotate a leaked key or open a support ticket.
+- **Most contributors left:** the system needs people who can review changes to it; add whoever starts working on it.
 
 Then record the new people in the fields and set `peopleConfirmed` to today.
 

@@ -4,9 +4,9 @@ title: Who to ask
 
 import People from '@architecture-model/editable-metadata/People.astro'
 
-Documentation goes stale, and the part about people goes stale fastest: teams reorganize, people change roles and leave. "Owner: Payments team" outlives all of that because it says so little. When Stripe's webhooks start failing at night, it doesn't tell you whom to wake up.
+Documentation goes out of date, and the names of people go out of date first: teams reorganize, people change roles and leave. A field like "Owner: Payments team" stays correct for longer only because it says so little. When a payment provider's webhooks fail at night, it doesn't say whom to call.
 
-So instead of who is responsible in general, each system records who to go to for each job you might need done. The jobs differ, and so do the people:
+So instead of one owner, each system records who to go to for each kind of task. Different tasks often need different people:
 
 | Field | Who | Ask them when |
 | --- | --- | --- |
@@ -15,22 +15,22 @@ So instead of who is responsible in general, each system records who to go to fo
 | `contributors` | have worked on it | you need reviewers or extra hands, or the experts are away |
 | `administrators` | manage it: for a vendor, the account, keys, billing and support; for our own, its accounts and access | credentials need rotating, someone needs access, or a support ticket or plan change is due |
 
-Whoever manages a vendor account is rarely the person who knows how the integration should change, and neither may be the person who built it. A question asked against a job reaches the right person; a question asked of "the owner" gets forwarded. The `owner` field stays, for the team that is accountable.
+The person who manages a vendor account is often not the one who knows how to change the integration, and neither of them may have built it. A question sent to "the owner" usually gets passed on until it reaches one of these people; the fields name them directly. The `owner` field stays, for the team that is accountable for the system.
 
-## Why every system, ours and the vendors'
+## External systems too
 
-What we know about an external system lives with our own people: who wired it in, who can debug it, who has the vendor login. That knowledge is the easiest to lose, because the vendor's documentation doesn't have it and nobody's job description mentions it. So external systems get the same fields as our own.
+What we know about an external system is known by our own people: who connected it, who can debug it, who has the login to the vendor's account. The vendor's documentation doesn't contain any of that, and it is easily lost when those people move on. So external systems have the same fields as our own.
 
-## Why the list ages slowly anyway
+## Keeping the fields useful
 
-- **Contributors outlast experts.** Experts move on, but the people who have worked on a system are a wider list, and someone on it can usually find the next person. When you need to staff work on an integration, it is the list to start from.
-- **A date says how far to trust it.** `peopleConfirmed` is when someone last checked the fields. Older than about six months, the agent asks to check them again; a contact you know may be stale is better than a confident wrong one.
-- **People are listed once.** Fields hold handles from `model/people.json`, so a rename is one edit, and someone who leaves is marked there, not deleted from every system. That is what makes [knowledge that left](../recipes/knowledge-that-left/) something you can look up.
-- **What follows from the model isn't written down.** Which systems and containers reference a system is worked out from the relationships, so it is right as long as the model is.
-- **Git suggests, people confirm.** The agent can propose contributors from the authors of the code that integrates a system. Who changed a file is not who understands it, so it records only the names someone confirms.
+- **Contributors are a longer list than experts.** When the experts have moved on, someone among the contributors can usually say who to ask next. When you need people to work on an integration, start from this list.
+- **A date says how old the fields are.** `peopleConfirmed` is when someone last checked them. When it is more than about six months old, the coding agent asks you to check them again the next time you work on the system with it.
+- **Each person is listed once.** The fields hold handles from `model/people.json`, so renaming someone is one edit. When someone leaves, they are marked as having left in that file and stay in the fields, which lets you [find systems whose people have left](../recipes/people-who-left/).
+- **What the model already says isn't written down again.** Which systems and containers use a system is worked out from the model's relationships, so it is correct as long as the relationships are.
+- **The agent proposes contributors from git, and you confirm them.** The authors of the code that integrates a system are a good first guess, but having changed a file doesn't mean someone understands the system, so the agent records only the people you confirm.
 
-The same fields for this site's npm registry:
+The fields for the npm registry, which this site uses:
 
 <People of="npm" />
 
-To record them, say "Help me document Payments" and the `document-a-system` skill asks for them with the context. To show them, see the [editable-metadata](../addons/editable-metadata/#people) addon.
+To fill them in, say "Help me document Payments" to a coding agent with the [plugin](../modeling/with-an-agent/) installed: its `document-a-system` skill asks for them after the system's users and the systems it talks to. To show them on a page, use the [editable-metadata](../addons/editable-metadata/#people) addon.

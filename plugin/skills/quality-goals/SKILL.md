@@ -45,3 +45,12 @@ Quality goals: a table with one row per goal: priority, ISO kind and the specifi
 Quality scenarios: at least one per goal, plus those for limits on lower-ranked qualities, each with the event, the response and the measure; open numbers marked open.
 
 Name each goal by its ISO term, with the system's own words in the goal: "Reliability / Recoverability: no movement is lost during an outage of up to 15 minutes".
+
+## References
+
+- The nine kinds of quality: [ISO/IEC 25010:2023](https://www.iso.org/standard/78176.html). The standard is paywalled; the specific qualities in `qualities.md` follow [Sonar's guide to it](https://www.sonarsource.com/resources/library/iso-iec-25010-explained/), checked against arc42's [Q42 page on the standard](https://quality.arc42.org/standards/iso-25010), which lists testability under flexibility where Sonar and the 2023 edition put it under maintainability.
+- Real-world wording and example requirements: the [Q42 quality model](https://quality.arc42.org/) by Gernot Starke, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+- Top quality goals as the trade-offs that shape a system: arc42's [Introduction and Goals](https://docs.arc42.org/section-1/) and [Quality Requirements](https://docs.arc42.org/section-10/), by Gernot Starke and Peter Hruschka, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+- Architecture as fundamental properties and the principles behind them: [ISO/IEC/IEEE 42010:2022](https://www.iso.org/standard/74393.html)
+
+This skill links to and paraphrases arc42 and Q42; it copies none of their text.

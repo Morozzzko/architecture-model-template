@@ -4,6 +4,8 @@ Nine kinds of quality, each split into specific qualities. Use these names in wh
 
 For real-world wording, example requirements and the tactics that achieve a quality, look it up on arc42's Q42 site: `https://quality.arc42.org/qualities/<name>`, the name in lowercase with hyphens (`fault-tolerance`, `time-behaviour`). If a page is missing, search the site. Q42 is a thinking aid; the names below are the ones to write.
 
+Q42 is by Gernot Starke and licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Link to it and paraphrase; don't copy its text into the documentation unless you credit it, link the license and keep the copied part under the same license. The meanings and phrases on this page are written for this skill, not taken from Q42.
+
 ## Common phrases and what they usually mean
 
 People rarely name a quality; they name a need. These are starting points for mapping, to confirm with the user.

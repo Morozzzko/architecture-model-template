@@ -76,3 +76,10 @@ views {
 ## What does not work in deployment views
 
 LikeC4 marks deployment views as in development. `with` styling (except `navigateTo`) and `global style` are ignored there. Style through the node kind in `specification` instead.
+
+## References
+
+- One environment per view, deployment and infrastructure nodes: [C4 deployment diagrams](https://c4model.com/diagrams/deployment)
+- `deploymentNode`, `instanceOf`, overrides and deployment relationships: [LikeC4 deployment model](https://likec4.dev/dsl/deployment/model/)
+- Deployment view predicates, `navigateTo` and what doesn't work yet: [LikeC4 deployment views](https://likec4.dev/dsl/deployment/views/)
+- Splitting an environment across files: [LikeC4 extend](https://likec4.dev/dsl/extend/)

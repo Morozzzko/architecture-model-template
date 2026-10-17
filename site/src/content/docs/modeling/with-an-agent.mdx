@@ -47,7 +47,7 @@ Start here, before any box. It's the part an agent can't read from code, and the
 
 ### 2. Quality goals
 
-Every system trades qualities against each other: a payment system gives up speed for correctness, a prototype gives up maintainability for speed of delivery. The quality goals say which trade-offs this system makes, and they explain more of its structure than any diagram.
+Every system trades qualities against each other: a payment system gives up speed for correctness, a prototype gives up maintainability for speed of delivery. The quality goals say which trade-offs this system makes, and they explain more of its structure than any diagram. Ranking the top few goals and backing each with a scenario comes from [arc42](https://arc42.org/), by Gernot Starke and Peter Hruschka, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
 The interview follows the ISO/IEC 25010 quality model without asking you to learn it. Pick the three kinds of quality that matter most, then the specific qualities within them, then a scenario someone could check, and who needs it:
 
@@ -139,6 +139,12 @@ With the [editable-metadata](../../addons/editable-metadata/) addon, a lifecycle
 Run this whenever the system changes noticeably, and before you rely on the description:
 
 > Compare the model with the repositories and infrastructure. List what is missing, gone or different, and fix the model. Don't change the why sections; ask me if something there looks wrong.
+
+An agent that writes from code tends to write about the code: ports, libraries, class names, "highly scalable". Before merging what it wrote, have critics read it:
+
+> Review the Shop's page and model with the architecture-review skill.
+
+The plugin's `architecture-review` skill runs five critics, each seeing only the documentation: a newcomer who must answer questions from it, a noise auditor, a rationale skeptic, a C4 inspector and a quality examiner. It deletes and rewords what they flag, and brings everything new back to you as questions instead of inventing it.
 
 Then review what the build can't check:
 

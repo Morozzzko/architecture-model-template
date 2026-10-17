@@ -101,3 +101,5 @@ To deploy on each push to `main`, uncomment these lines in the workflow:
 ## License
 
 This code is licensed under the [MIT license](LICENSE).
+
+The Quality goals and Quality scenarios sections of a system page build on the idea of ranked quality goals with scenarios from [arc42](https://arc42.org/), by Gernot Starke and Peter Hruschka, licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). The wording here is this template's own; no arc42 text is copied.

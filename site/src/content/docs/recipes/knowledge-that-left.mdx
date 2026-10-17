@@ -1,0 +1,60 @@
+---
+title: Find knowledge that left
+---
+
+import Derived from '@architecture-model/editable-metadata/Derived.astro'
+import people from '../../../../model/people.json'
+
+export const whoLeft = (element) => {
+  const handles = ['integratedBy', 'experts', 'contributors', 'administrators'].flatMap((key) => element.getMetadata(key) ?? [])
+  const gone = people.filter((person) => person.left && handles.includes(person.value)).map((person) => person.label)
+  return gone.length ? gone : 'nobody'
+}
+
+An integration rarely breaks the week its last expert leaves. It breaks months later, and only then does anyone find out that nobody left knows how it works or has the vendor login. The [people fields](../../who-to-ask/) turn that into a question you can ask in advance: which systems, ours or external, have lost the people who know them?
+
+## 1. Mark who has left
+
+When someone leaves, keep their entry in `model/people.json` and add the date:
+
+```json
+[
+  { "value": "igor", "label": "Igor Morozov" },
+  { "value": "dana", "label": "Dana Kim", "left": "2026-05-01" }
+]
+```
+
+Don't remove their handle from the systems. Who used to know a system is the point, and the handle still shows as their name.
+
+## 2. Ask for the systems at risk
+
+> Using model/people.json and the people fields in the model, list every system, ours and external, where everyone in `experts` or `administrators` has left, or where most of the people across its people fields have. For each, show who has left, who is still here, and which systems and containers reference it.
+
+The agent reads the people fields with the `likec4` MCP tool `query-by-metadata` and what references each system with `query-incomers-graph`. Systems whose `peopleConfirmed` is old belong in the list too: nobody knows whether their people are still right.
+
+## 3. Act on each one
+
+- **No experts left:** pick someone from the remaining contributors, or from the teams that reference the system, to become one, and have them pair with whoever is left or read the integrating code.
+- **No administrators left:** move the vendor account, keys and billing to someone here before they are needed. This is the urgent one: without it, nobody can rotate a leaked key or open a support ticket.
+- **Most contributors gone:** the system needs reviewers who know it; add whoever picks it up.
+
+Then record the new people in the fields and set `peopleConfirmed` to today.
+
+## On a system's page
+
+A derived value shows who has left on the system's own page, so it is visible without asking:
+
+```mdx
+import Derived from '@architecture-model/editable-metadata/Derived.astro'
+import people from '../../../../model/people.json'
+
+export const whoLeft = (element) => {
+  const handles = ['integratedBy', 'experts', 'contributors', 'administrators'].flatMap((key) => element.getMetadata(key) ?? [])
+  const gone = people.filter((person) => person.left && handles.includes(person.value)).map((person) => person.label)
+  return gone.length ? gone : 'nobody'
+}
+
+Who has left: <Derived of="stripe" value={whoLeft} />
+```
+
+For this site's npm registry, who has left: <Derived of="npm" value={whoLeft} />.

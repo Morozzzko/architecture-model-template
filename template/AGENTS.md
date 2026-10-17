@@ -56,7 +56,7 @@ The model follows the C4 model (c4model.com).
   - `administrators`: manage it; for an external service the vendor account, keys, billing and support, for our own its accounts and access. Ask them to rotate credentials, grant access, or raise a support ticket or plan change.
   - `peopleConfirmed`: the date they were last checked; check again after about six months.
 
-  People are handles listed once in `model/people.json` (create it when missing) as `[{ "value": "dana", "label": "Dana Kim" }]`; add a person there before using their handle. Which systems and containers reference a system is not recorded: it follows from the relationships, so query the model for it (the `likec4` MCP tool `query-incomers-graph`).
+  People are handles listed once in `model/people.json` (create it when missing) as `[{ "value": "dana", "label": "Dana Kim" }]`; add a person there before using their handle. When someone leaves, keep their entry, add `"left": "<date>"`, and leave their handles in the model. Which systems and containers reference a system is not recorded: it follows from the relationships, so query the model for it (the `likec4` MCP tool `query-incomers-graph`).
 - Every relationship goes one way and has a label that reads in that direction (`'Submits orders to'`, never `'Uses'`). Relationships between containers name the protocol in `technology`.
 - An external service that every container uses, such as observability, is related once, from the system.
 

@@ -33,6 +33,8 @@ export default defineConfig({
         { label: 'Diagram viewer', link: '/diagrams/' },
         { label: 'Start a repository', link: '/start/' },
         { label: 'Modeling', items: [{ autogenerate: { directory: 'modeling' } }] },
+        { label: 'Who to ask', link: '/who-to-ask/' },
+        { label: 'Recipes', items: [{ autogenerate: { directory: 'recipes' } }] },
         { label: 'Addons', items: [{ autogenerate: { directory: 'addons' } }] },
         {
           label: 'Decisions',

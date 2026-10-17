@@ -23,6 +23,13 @@ model {
 
   toolkit = system 'Architecture model toolkit' {
     description 'Tools for documenting software architecture as a LikeC4 model with a documentation site generated from it.'
+    metadata {
+      integratedBy 'morozzzko'
+      experts 'morozzzko'
+      contributors 'morozzzko'
+      administrators 'morozzzko'
+      peopleConfirmed '2026-10-17'
+    }
 
     template = container 'Template' {
       technology 'Astro Starlight, LikeC4'
@@ -78,9 +85,20 @@ model {
 
   npm = external 'npm registry' {
     description 'Hosts the generator and the addons.'
+    metadata {
+      integratedBy 'morozzzko'
+      experts 'morozzzko'
+      administrators 'morozzzko'
+      peopleConfirmed '2026-10-17'
+    }
   }
   pages = external 'GitHub Pages' {
     description 'Hosts the built documentation site.'
+    metadata {
+      integratedBy 'morozzzko'
+      administrators 'morozzzko'
+      peopleConfirmed '2026-10-17'
+    }
   }
 
   architect -> toolkit.generator 'Creates a repository with'

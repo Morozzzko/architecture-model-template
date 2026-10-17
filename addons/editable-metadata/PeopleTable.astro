@@ -1,0 +1,37 @@
+---
+import { peopleFields } from './fields.js'
+import Metadata from './Metadata.astro'
+import { model } from './model.js'
+import { referencedBy } from './references.js'
+
+const systems = [...model.elements()].filter((element) => !element.parent && element.shape !== 'person')
+---
+
+<table>
+  <thead>
+    <tr>
+      <th>System</th>
+      {Object.values(peopleFields).map((label) => <th>{label}</th>)}
+      <th>Referenced by</th>
+      <th>Last confirmed</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      systems.map((system) => (
+        <tr>
+          <td>{system.title}</td>
+          {Object.keys(peopleFields).map((key) => (
+            <td>
+              <Metadata of={system.id} name={key} />
+            </td>
+          ))}
+          <td>{referencedBy(system).join(', ')}</td>
+          <td>
+            <Metadata of={system.id} name="peopleConfirmed" />
+          </td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>

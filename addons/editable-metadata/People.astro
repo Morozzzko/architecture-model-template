@@ -1,0 +1,33 @@
+---
+import { peopleFields } from './fields.js'
+import Metadata from './Metadata.astro'
+import { model } from './model.js'
+import { referencedBy } from './references.js'
+
+interface Props {
+  of: string
+}
+
+const { of } = Astro.props
+const users = referencedBy(model.element(of))
+---
+
+<table>
+  <tbody>
+    {
+      Object.entries(peopleFields).map(([key, label]) => (
+        <tr>
+          <th>{label}</th>
+          <td>
+            <Metadata of={of} name={key} />
+          </td>
+        </tr>
+      ))
+    }
+    <tr><th>Referenced by</th><td>{users.join(', ')}</td></tr>
+    <tr>
+      <th>Last confirmed</th>
+      <td><Metadata of={of} name="peopleConfirmed" /></td>
+    </tr>
+  </tbody>
+</table>

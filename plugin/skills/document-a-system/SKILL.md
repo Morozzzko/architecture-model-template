@@ -48,7 +48,8 @@ Nothing else needs recording between sessions: the page, the model and the quest
    - **done:** written, with no rows left and nothing short.
 3. Tell the person in two or three sentences what is done, what is waiting on whom (from the questions file, with dates), and what comes next. Mention anything that won't build, such as a view the page uses that the model doesn't have.
 4. If there are open questions, ask first whether any were answered, as a multi-select question listing them. Write each answer where it belongs and remove its row.
-5. Ask how much time they have, and plan to stop at a natural point within it.
+5. If a system's `peopleConfirmed` date is more than about six months old, ask whether its people are still right, and update the date when they confirm.
+6. Ask how much time they have, and plan to stop at a natural point within it.
 
 ## The path
 
@@ -58,11 +59,15 @@ Nothing else needs recording between sessions: the page, the model and the quest
 2. **Quality goals.** Follow the `quality-goals` skill: the top three, ranked, with scenarios.
 3. **Context.** The people who use the system and the systems it talks to, with who owns each, following `c4-modeling`. No internals yet. Someone named under Purpose belongs in the model as an actor even while how they use the system is unknown; that relationship is a question.
 
+   Then, for the system and each external system it talks to, ask who to go to, as `AGENTS.md` describes: who integrated it, its experts, its contributors and its administrators. Open with one sentence on why, naming the jobs: "When something breaks or needs changing, these say whom to ask: the experts for an incident or an integration change, the administrators for credentials and the vendor account, whoever integrated it for why it works this way." Ask as multiple-choice questions offering the people already mentioned; add a new person to `model/people.json` before using their handle, and set `peopleConfirmed` to today. If you can already read the code, suggest contributors from its git history as step 4 describes. If the site uses the editable-metadata addon, show them under Context with `<People of="<id>" />`.
+
 The first pass is done for now when all three are at least written, with open questions allowed: done for now means worth publishing, not complete. Two goals the person can't order between are written as tied, with the order as a question; don't decide it for them. Then say plainly: "This is done for now: Payments has a purpose, its goals and its context, and it's worth publishing." Offer to review it with the `architecture-review` skill, and to stop or go on.
 
 **Second pass: the rest.** These are a menu, not an order: take whichever the person has answers for, each a short session of its own. A question from another topic that comes up naturally can be asked when it does.
 
 4. **Containers.** Ask them to point at the code, compose files or manifests and read those; if there is nothing to read, their description is enough. Confirm with them what code can't say: who owns what, and why it is split that way. A container's `technology` is what it is built with; when nobody knows, leave it out and add a question rather than writing how it is deployed. How it runs, when that matters to a reader ("runs every Friday"), goes in its description. A link that is all but certain, such as a service and its own database, is one quick yes-or-no question, not a row in the file.
+
+   When you can read the code's git history, suggest contributors from it: for an external system, the authors of the files that integrate it (`git log --format='%an' -- <paths>`); for the system itself, the repository's recent authors. Git gives names, not handles: match each to an entry in `model/people.json` by name, and offer the unmatched ones as new people to add. Offer them all for the person to confirm, and record only those they confirm.
 5. **Key concepts.** The few ideas the system is built around, in the team's words; not class names.
 6. **Key flows.** The one or two flows people ask about most, as dynamic views, walked through by the person step by step. If nobody can walk through one, leave the section's placeholder.
 7. **Principles and decisions.** For each significant choice, ask why. Record each answered one as an ADR with `bin/adr new`; where that script is missing, write the next numbered file in `docs/decisions/` in the same adr-tools format, dated today, with when the decision was made in its context. Summarize the principles on the page.

@@ -31,7 +31,8 @@ Add or edit the key in `model/metadata.json`:
 }
 ```
 
-- Types: `text`, `number`, `date`, `url`, `boolean`, `select`, `multiselect`. A key that is not listed is `text`.
+- Types: `text`, `number`, `date`, `url`, `boolean`, `select`, `multiselect`, `people`. A key that is not listed is `text`, except the people keys below.
+- `people` picks from the shared list in `model/people.json` (`[{ "value": "dana", "label": "Dana Kim" }]`) and stores handles. The keys `integratedBy`, `experts`, `contributors` and `administrators` are `people` fields, and `peopleConfirmed` a `date`, without being listed; each holds one handle or a list. What each is for, and which job goes to whom, is in the repository's `AGENTS.md`. Add a person to `model/people.json`, creating it if missing, before using their handle anywhere.
 - Keys are identifiers: letters, digits, `_` and `-`, not starting with a digit.
 - `options` applies to `select` and `multiselect`. To add an option, append it to the array.
 - An option that should read differently from what the model stores is `{ "value": "igor", "label": "Igor Morozov" }`. Elements store the value; pages show the label.
@@ -93,6 +94,17 @@ An element's own `title`, `summary`, `description`, `technology` or `links` is s
 import Property from '@architecture-model/editable-metadata/Property.astro'
 
 <Property of="system" name="description" />
+```
+
+A system's people, with the systems and containers that reference it, are shown with `People`, and every system's with `PeopleTable`:
+
+```mdx
+import People from '@architecture-model/editable-metadata/People.astro'
+import PeopleTable from '@architecture-model/editable-metadata/PeopleTable.astro'
+
+<People of="stripe" />
+
+<PeopleTable />
 ```
 
 In `npm run dev` the rendered value is click-to-edit and saves to `model/model.c4`. That is for people using the browser. As an agent, edit the files.

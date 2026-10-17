@@ -1,7 +1,6 @@
 ---
-import { existsSync, readFileSync } from 'node:fs'
-import config from 'virtual:editable-metadata/config'
 import Editor from './Editor.jsx'
+import { fieldOf, people } from './fields.js'
 import { model } from './model.js'
 
 interface Props {
@@ -11,18 +10,17 @@ interface Props {
 
 type Option = string | { value: string; label?: string }
 
-const types = ['text', 'number', 'date', 'url', 'boolean', 'select', 'multiselect']
+const types = ['text', 'number', 'date', 'url', 'boolean', 'select', 'multiselect', 'people']
 
 const { of, name } = Astro.props
-const fields = existsSync(config.fieldsFile) ? JSON.parse(readFileSync(config.fieldsFile, 'utf8')) : {}
-const field: { type: string; options?: Option[] } = fields[name] ?? { type: 'text' }
+const field: { type: string; options?: Option[] } = fieldOf(name)
 if (!types.includes(field.type)) {
   throw new Error(`Unknown type "${field.type}" for metadata "${name}". Known types: ${types.join(', ')}`)
 }
 
 const valuesOf = (fqn: string) => [model.element(fqn).getMetadata(name) ?? []].flat()
 const values = valuesOf(of)
-const listed = (field.options ?? []).map((option) =>
+const listed = ((field.type === 'people' ? people() : field.options) ?? []).map((option: Option) =>
   typeof option === 'string' ? { value: option, label: option } : { value: option.value, label: option.label ?? option.value },
 )
 const labels = new Map(listed.map((option) => [option.value, option.label]))
@@ -39,7 +37,14 @@ const text =
 
 {
   import.meta.env.DEV ? (
-    <Editor client:load fqn={of} name={name} type={field.type} values={values} options={options} />
+    <Editor
+      client:load
+      fqn={of}
+      name={name}
+      type={field.type === 'people' ? 'multiselect' : field.type}
+      values={values}
+      options={options}
+    />
   ) : field.type === 'url' && text ? (
     <a href={text}>{text}</a>
   ) : (

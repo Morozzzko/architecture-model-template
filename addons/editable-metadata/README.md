@@ -53,7 +53,7 @@ The editors are React components built on [Radix](https://www.radix-ui.com/) and
 
 ## Field types
 
-Without configuration every key is text. To give keys other types, create `model/metadata.json`:
+Without configuration every key is text, except the [people keys](#people). To give keys other types, create `model/metadata.json`:
 
 ```json
 {
@@ -70,6 +70,7 @@ Without configuration every key is text. To give keys other types, create `model
 | `boolean` | switch | `'true'` or `'false'`, shown as Yes or No |
 | `select` | searchable list of the options | string |
 | `multiselect` | searchable list of the options, several can be checked | list of strings |
+| `people` | searchable list of the people in `model/people.json`, several can be checked | list of handles |
 
 The options of `select` and `multiselect` are the ones listed plus every value already in use in the model. A `url` is a link in the built site.
 
@@ -96,6 +97,52 @@ Payments calls us back: <Derived of="payments" value={callsBack} />
 
 A function returns a string, a number, a list, or a boolean, shown as Yes or No. A derived value is never editable.
 
+## People
+
+"Owner" rarely tells you whom to ask. Each system, internal or external, can say who to go to for which job:
+
+| Key | Who | Ask them when |
+| --- | --- | --- |
+| `integratedBy` | integrated it originally | you need to know why it works the way it does |
+| `experts` | know best how it works and how its integration is changed | there is an incident, an API or contract change, an upgrade, or a change to review |
+| `contributors` | have worked on it | you need reviewers or extra hands, or the experts are away |
+| `administrators` | manage it: for an external service, the vendor account, keys, billing and support; for our own, its accounts and access | credentials need rotating, someone needs access, or a support ticket or plan change is due |
+| `peopleConfirmed` | | the date someone last checked these; older than about six months, check again |
+
+The four people keys are `people` fields without any configuration. Each stores handles from one shared list, `model/people.json`, so a person is added once and every field picks from it:
+
+```json
+[
+  { "value": "igor", "label": "Igor Morozov" },
+  { "value": "dana", "label": "Dana Kim" }
+]
+```
+
+```
+stripe = external 'Stripe' {
+  metadata {
+    integratedBy 'igor'
+    experts 'dana'
+    contributors ['igor', 'dana']
+    administrators 'dana'
+    peopleConfirmed '2026-10-17'
+  }
+}
+```
+
+`People` shows them for one system, with the systems and containers that reference it, worked out from the model's relationships. `PeopleTable` shows the same for every system:
+
+```mdx
+import People from '@architecture-model/editable-metadata/People.astro'
+import PeopleTable from '@architecture-model/editable-metadata/PeopleTable.astro'
+
+<People of="stripe" />
+
+<PeopleTable />
+```
+
+In the dev server the people fields are click-to-edit, picking from the list. A new person is added to `model/people.json` first.
+
 ## Properties
 
 `Property` shows and edits an element's own `title`, `summary`, `description`, `technology` or `links`:
@@ -120,10 +167,11 @@ A title can't be emptied. Links replace the element's own links, and a row witho
 editableMetadata({
   model: 'model', // folder with the .c4 files
   fields: 'model/metadata.json', // field types
+  people: 'model/people.json', // the people the people fields pick from
 })
 ```
 
-Both paths are relative to the Astro project root.
+The paths are relative to the Astro project root.
 
 ## How it saves
 

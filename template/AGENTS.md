@@ -48,8 +48,15 @@ The model follows the C4 model (c4model.com).
 - One container per database schema, bucket or topic with its own purpose, not one per server or cluster. Servers, clusters and which provider serves which environment belong in a `deployment` block.
 - Every element has a description, and every container a `technology`: what it is built with, not how it is deployed. While nobody knows a container's technology, leave it out and keep the question in the system's questions file.
 - Name views after their system (`paymentsContext`, `paymentsContainers`) so systems can't clash.
-- Who owns a system goes in its metadata as `owner` (`owner 'payments-team'`), for internal and external systems alike.
-- Who to ask about a system goes in four metadata keys, each a list of people: `integratedBy` (integrated it originally), `experts` (know best how it works and how its integration is changed), `contributors` (have worked on it) and `administrators` (manage it: for an external service the vendor account, keys, billing and support; for our own, its accounts and access). `peopleConfirmed` holds the date they were last checked. People are handles listed once in `model/people.json` as `{ "value": "dana", "label": "Dana Kim" }`; add a person there before using their handle.
+- Who owns a system goes in its metadata as `owner` (`owner 'payments-team'`), for internal and external systems alike: the team or company accountable for it.
+- Who to ask about a system goes in four metadata keys, each one handle or a list of them, because owners rarely answer day-to-day questions themselves:
+  - `integratedBy`: integrated it originally. Ask them why it works the way it does.
+  - `experts`: know best how it works and how its integration is changed. Ask them about an incident, an API or contract change, an upgrade, or a change to review.
+  - `contributors`: have worked on it. Ask them for reviews or extra hands, or when the experts are away.
+  - `administrators`: manage it; for an external service the vendor account, keys, billing and support, for our own its accounts and access. Ask them to rotate credentials, grant access, or raise a support ticket or plan change.
+  - `peopleConfirmed`: the date they were last checked; check again after about six months.
+
+  People are handles listed once in `model/people.json` (create it when missing) as `[{ "value": "dana", "label": "Dana Kim" }]`; add a person there before using their handle. Which systems and containers reference a system is not recorded: it follows from the relationships, so query the model for it (the `likec4` MCP tool `query-incomers-graph`).
 - Every relationship goes one way and has a label that reads in that direction (`'Submits orders to'`, never `'Uses'`). Relationships between containers name the protocol in `technology`.
 - An external service that every container uses, such as observability, is related once, from the system.
 

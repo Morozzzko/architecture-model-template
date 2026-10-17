@@ -45,7 +45,7 @@ generator = container 'Generator' {
 
 ## Field types
 
-Without configuration every key is text. `model/metadata.json` gives keys other types, which changes the editor in the dev server and how the value is shown:
+Without configuration every key is text, except the [people keys](#people). `model/metadata.json` gives keys other types, which changes the editor in the dev server and how the value is shown:
 
 ```json
 {
@@ -65,7 +65,7 @@ Without configuration every key is text. `model/metadata.json` gives keys other 
 | `source` | `url` | <Metadata of="toolkit.editableMetadata" name="source" /> |
 | `maintainers` | `multiselect` | <Metadata of="toolkit.editableMetadata" name="maintainers" /> |
 
-`number`, `date` and `boolean` are available too. The options of `select` and `multiselect` are the listed ones plus every value already in use in the model.
+`number`, `date` and `boolean` are available too, and `people`, which picks from the [shared list of people](#people). The options of `select` and `multiselect` are the listed ones plus every value already in use in the model.
 
 An option is a string, or a value with a label: the model stores `morozzzko`, and pages and editors show Igor Morozov.
 

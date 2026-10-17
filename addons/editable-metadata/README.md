@@ -53,7 +53,7 @@ The editors are React components built on [Radix](https://www.radix-ui.com/) and
 
 ## Field types
 
-Without configuration every key is text. To give keys other types, create `model/metadata.json`:
+Without configuration every key is text, except the [people keys](#people). To give keys other types, create `model/metadata.json`:
 
 ```json
 {

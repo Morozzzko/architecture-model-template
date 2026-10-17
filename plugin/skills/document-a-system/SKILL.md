@@ -35,7 +35,7 @@ Walk a person through documenting one system as a conversation. They bring what 
   | Why was Stripe chosen to charge cards? | Principles and decisions | The previous tech lead of the payments team | 2026-10-10 |
   ```
 
-Open questions go in that file and nowhere else: not as notes on the page, not in `model/conventions.md`, not in `AGENTS.md`. On the page, an unknown value, such as a number, a date or a name, is just the word "open" where the value would be, in prose and in table cells alike ("paid by: open"). Never restate a question on the page as "<question>: open". Ask who might know as a multiple-choice question, offering the people and teams the person has already mentioned; write exactly "Not known" only when none of them fits. Before adding a row, check the file: if the question is already there, leave it.
+Open questions go in that file and nowhere else: not as notes on the page, not in `model/conventions.md`, not in `AGENTS.md`. On the page, an unknown value, such as a number, a date or a name, is just the word "open" where the value would be, in prose and in table cells alike ("paid by: open"). Never restate a question on the page as "<question>: open". Ask who might know as a multiple-choice question, offering the people and teams the person has already mentioned, with the likeliest first (finance for how reconciliation works). Write exactly "Not known" only when the person rejects every option. Before adding a row, check the file: if the question is already there, leave it.
 
 Nothing else needs recording between sessions: the page, the model and the questions file are the state. When the person gives the URL of the system's repository, add it as a `link` on the system in the model; a path on their machine is only for this session.
 
@@ -43,7 +43,7 @@ Nothing else needs recording between sessions: the page, the model and the quest
 
 1. Settle which system. The starter's sample "Software System" is not one to document: in a fresh repository, ask which system the person wants to start with. Otherwise, if one real system's page is unfinished, propose it; if not, ask, offering the systems in the model and "a new one".
 2. Read its page, its part of the model, its questions file and the decisions in `docs/decisions/` that mention it. Each section is in one of three states:
-   - **not started:** it still has its italic placeholder, or shows a view the model doesn't have;
+   - **not started:** it still has its italic placeholder, or shows a view the model doesn't have. For Context, Containers and Key flows the main point is the view: once the view shows the real elements, the section is written, and any missing reason, such as why the system is split this way, is a question;
    - **written, still open:** its main point is written, but the questions file still has rows for it, or it falls short of what its skill asks (Quality goals with fewer than three ranked goals, each with who needs it and why, as `quality-goals` asks);
    - **done:** written, with no rows left and nothing short.
 3. Tell the person in two or three sentences what is done, what is waiting on whom (from the questions file, with dates), and what comes next. Mention anything that won't build, such as a view the page uses that the model doesn't have.
@@ -56,7 +56,7 @@ Nothing else needs recording between sessions: the page, the model and the quest
 
 1. **Purpose and stakeholders.** Why the system exists, who depends on it and for what. Written under Purpose.
 2. **Quality goals.** Follow the `quality-goals` skill: the top three, ranked, with scenarios.
-3. **Context.** The people who use the system and the systems it talks to, with who owns each, following `c4-modeling`. No internals yet.
+3. **Context.** The people who use the system and the systems it talks to, with who owns each, following `c4-modeling`. No internals yet. Someone named under Purpose belongs in the model as an actor even while how they use the system is unknown; that relationship is a question.
 
 The first pass is done for now when all three are at least written, with open questions allowed: done for now means worth publishing, not complete. Two goals the person can't order between are written as tied, with the order as a question; don't decide it for them. Then say plainly: "This is done for now: Payments has a purpose, its goals and its context, and it's worth publishing." Offer to review it with the `architecture-review` skill, and to stop or go on.
 

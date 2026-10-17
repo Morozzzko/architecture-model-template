@@ -26,7 +26,7 @@ Use multiple-choice questions for choices and plain conversation for reasons and
 
 3. **Narrow to three, in order.** If more than four were picked, first ask which of them could take a back seat, as multi-select questions over the picked kinds, split along the three groups from step 2. Then ask which matters most, then second, with single-select questions over what remains; the third is what's left, so confirm it rather than asking. "Everything is important" is not an answer: ask which one wins when two conflict, using a concrete conflict from this system.
 
-4. **The specific qualities.** For each of the three, ask a multi-select question over its specific qualities from `qualities.md`, with their plain meanings. Kinds with more than four specific qualities take two questions.
+4. **The specific qualities.** For each of the three, ask a multi-select question over its specific qualities from `qualities.md`, with their plain meanings. Kinds with more than four specific qualities take two questions. If the user can't choose, the kind alone is enough for now: write the specific quality as "open" and add the question to the questions file.
 
    People describe what they need in their own words: "never lose money", "a full audit trail". One such need often covers specific qualities from more than one kind; `qualities.md` lists common phrases and the qualities they usually mean. Map the need to every quality it covers, then confirm the mapping and its place in the ranking with a single-select question, rather than deciding it yourself.
 

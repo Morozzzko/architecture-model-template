@@ -19,6 +19,7 @@ Then judge how it reads. Each of these is a finding of kind `rewrite`, with the 
 
 - a section you had to read twice to understand;
 - a term or acronym used without being explained, where a newcomer wouldn't know it;
+- a phrase chosen to sound good rather than to be precise, which you have to translate into what actually happens: a metaphor, a slogan, a poetic turn ("find knowledge that left", "the reason outlives the choice"). Plain colloquial words are fine. The rewrite says it literally: who does what to what;
 - a section longer than what it has to say, or saying it in an order that hides the point;
 - the same fact told in two places.
 

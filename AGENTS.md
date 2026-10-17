@@ -32,6 +32,10 @@ This is a monorepo of tools for documenting software architecture with LikeC4.
 - A skill ends with a References section listing the sources its rules come from. When you add a rule, add its source; when a rule rests on memory rather than a source you checked, say so.
 - arc42 (by Gernot Starke and Peter Hruschka) and its Q42 quality model (by Gernot Starke) are licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Link to them and paraphrase in your own words, and where the template, a skill or the site builds on one of their ideas, such as ranked quality goals with scenarios, credit the source with its authors and license next to it, or, for something copied into every new page such as the template's system page outline, once in the README. Copy their text into the template, a skill or the site only with credit to the authors, a link to the license, a note of what changed, and the copied part kept under CC BY-SA 4.0.
 
+## Writing
+
+Documentation, skills and READMEs say things precisely and plainly: who does what to what. Plain colloquial words are fine; a metaphor, slogan or poetic phrase that a reader has to translate back into what happens ("find knowledge that left") is not. A page's title names the job the reader comes to it to do ("Find systems whose people have left", "Model who knows and manages each system"); a heading names what its section is about. A page about part of the model starts with the questions that part lets the model answer.
+
 ## Before finishing
 
 For a change to the template, run from `template/` and fix anything reported:

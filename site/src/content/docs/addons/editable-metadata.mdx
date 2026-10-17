@@ -81,7 +81,7 @@ An option is a string, or a value with a label: the model stores `morozzzko`, an
 | `administrators` | manage it: for a vendor, the account, keys, billing and support; for our own, its accounts and access | credentials need rotating, someone needs access, or a support ticket or plan change is due |
 | `peopleConfirmed` | | the date someone last checked these; older than about six months, check again |
 
-[Whom to ask](../../whom-to-ask/) explains why there is a field for each kind of task.
+[Record whom to ask for each task](../../record-whom-to-ask/) explains why there is a field for each kind of task.
 
 The people come from one list, `model/people.json`, as a handle and a name, so a person is added once and every field picks from it. Someone who has left keeps their entry, with `"left": "2026-05-01"`; [Find systems whose people have left](../../recipes/people-who-left/) uses it. `People` shows the fields for one system, with what references it, worked out from the model's relationships:
 

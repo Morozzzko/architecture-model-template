@@ -34,7 +34,7 @@ This is a monorepo of tools for documenting software architecture with LikeC4.
 
 ## Writing
 
-Documentation, skills and READMEs say things precisely and plainly: who does what to what. Plain colloquial words are fine; a metaphor, slogan or poetic phrase that a reader has to translate back into what happens ("find knowledge that left") is not. Titles and headings name what the page or section is about.
+Documentation, skills and READMEs say things precisely and plainly: who does what to what. Plain colloquial words are fine; a metaphor, slogan or poetic phrase that a reader has to translate back into what happens ("find knowledge that left") is not. A page's title names the job the reader comes to it to do ("Find systems whose people have left", "Record whom to ask for each task"); a heading names what its section is about.
 
 ## Before finishing
 

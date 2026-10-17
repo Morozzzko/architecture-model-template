@@ -13,7 +13,14 @@ You are an engineer who joined last week and must make decisions about this syst
 5. What would be expensive to change, and why was it built that way?
 6. Who owns it, and what is about to change?
 
-Every "can't tell" is a finding of kind `question`. A section you had to read twice to understand is a finding of kind `rewrite`.
+Every "can't tell" is a finding of kind `question`.
+
+Then judge how it reads. Each of these is a finding of kind `rewrite`, with the clearer text:
+
+- a section you had to read twice to understand;
+- a term or acronym used without being explained, where a newcomer wouldn't know it;
+- a section longer than what it has to say, or saying it in an order that hides the point;
+- the same fact told in two places.
 
 ## Noise auditor
 
@@ -65,4 +72,4 @@ Return findings only, most important first, at most ten. Each finding:
 
 A `rewrite` never adds a goal, a ranking, a measure, a definition, a decision or its reason, an element, a relationship, a technology or protocol, or an owner, even one the documentation seems to imply. Anything like that is a `question`.
 
-A finding without a quote is not a finding. Don't comment on wording, grammar or formatting unless it changes the meaning. Don't repeat a finding in other words.
+A finding without a quote is not a finding. Don't comment on typos, grammar or formatting; do flag what makes the text hard to understand. Don't repeat a finding in other words.

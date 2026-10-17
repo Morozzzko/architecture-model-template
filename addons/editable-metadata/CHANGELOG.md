@@ -1,5 +1,15 @@
 # @architecture-model/editable-metadata
 
+## 0.4.0
+
+### Minor Changes
+
+- a64516a: Add people fields for every system: who integrated it, its experts, contributors and administrators, picked from a shared `model/people.json`. `People` shows them for one system with the systems that reference it, and `PeopleTable` for all systems.
+
+### Patch Changes
+
+- b23eee8: Keep people who have left in `model/people.json`, marked with the date they left. The template's `AGENTS.md` asks for precise, plain prose instead of metaphors and slogans.
+
 ## 0.3.0
 
 ### Minor Changes

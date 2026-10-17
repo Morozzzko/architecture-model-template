@@ -59,7 +59,7 @@ Nothing else needs recording between sessions: the page, the model and the quest
 2. **Quality goals.** Follow the `quality-goals` skill: the top three, ranked, with scenarios.
 3. **Context.** The people who use the system and the systems it talks to, with who owns each, following `c4-modeling`. No internals yet. Someone named under Purpose belongs in the model as an actor even while how they use the system is unknown; that relationship is a question.
 
-   Then, for the system and each external system it talks to, ask who to go to, as `AGENTS.md` describes: who integrated it, its experts, its contributors and its administrators. Open with one sentence on why, naming the jobs: "When something breaks or needs changing, these say whom to ask: the experts for an incident or an integration change, the administrators for credentials and the vendor account, whoever integrated it for why it works this way." Ask as multiple-choice questions offering the people already mentioned; add a new person to `model/people.json` before using their handle, and set `peopleConfirmed` to today. If you can already read the code, suggest contributors from its git history as step 4 describes. If the site uses the editable-metadata addon, show them under Context with `<People of="<id>" />`.
+   Then, for the system and each external system it talks to, ask whom to go to, as `AGENTS.md` describes: who integrated it, its experts, its contributors and its administrators. Open with one sentence on why, naming the jobs: "When something breaks or needs changing, these say whom to ask: the experts for an incident or an integration change, the administrators for credentials and the vendor account, whoever integrated it for why it works this way." Ask as multiple-choice questions offering the people already mentioned; add a new person to `model/people.json` before using their handle, and set `peopleConfirmed` to today. If you can already read the code, suggest contributors from its git history as step 4 describes. If the site uses the editable-metadata addon, show them under Context with `<People of="<id>" />`.
 
 The first pass is done for now when all three are at least written, with open questions allowed: done for now means worth publishing, not complete. Two goals the person can't order between are written as tied, with the order as a question; don't decide it for them. Then say plainly: "This is done for now: Payments has a purpose, its goals and its context, and it's worth publishing." Offer to review it with the `architecture-review` skill, and to stop or go on.
 
@@ -89,7 +89,7 @@ People doing this for the first time don't know what a good answer looks like.
 
 ## End every session
 
-Run `npm run validate`, `npm test` and `npm run build`, and fix what they report. Then tell the person what you wrote, what the next session will start with, and the open questions with who to ask, so they can ask those people before they come back.
+Run `npm run validate`, `npm test` and `npm run build`, and fix what they report. Then tell the person what you wrote, what the next session will start with, and the open questions with whom to ask, so they can ask those people before they come back.
 
 ## References
 

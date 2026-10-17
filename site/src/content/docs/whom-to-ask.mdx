@@ -1,12 +1,12 @@
 ---
-title: Who to ask
+title: Whom to ask
 ---
 
 import People from '@architecture-model/editable-metadata/People.astro'
 
 Documentation goes out of date, and the names of people go out of date first: teams reorganize, people change roles and leave. A field like "Owner: Payments team" stays correct for longer only because it says so little. When a payment provider's webhooks fail at night, it doesn't say whom to call.
 
-So instead of one owner, each system records who to go to for each kind of task. Different tasks often need different people:
+So instead of one owner, each system records whom to go to for each kind of task. Different tasks often need different people:
 
 | Field | Who | Ask them when |
 | --- | --- | --- |
@@ -23,7 +23,7 @@ What we know about an external system is known by our own people: who connected 
 
 ## Keeping the fields useful
 
-- **Contributors are a longer list than experts.** When the experts have moved on, someone among the contributors can usually say who to ask next. When you need people to work on an integration, start from this list.
+- **Contributors are a longer list than experts.** When the experts have moved on, someone among the contributors can usually say whom to ask next. When you need people to work on an integration, start from this list.
 - **A date says how old the fields are.** `peopleConfirmed` is when someone last checked them. When it is more than about six months old, the coding agent asks you to check them again the next time you work on the system with it.
 - **Each person is listed once.** The fields hold handles from `model/people.json`, so renaming someone is one edit. When someone leaves, they are marked as having left in that file and stay in the fields, which lets you [find systems whose people have left](../recipes/people-who-left/).
 - **What the model already says isn't written down again.** Which systems and containers use a system is worked out from the model's relationships, so it is correct as long as the relationships are.

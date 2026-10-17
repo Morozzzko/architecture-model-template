@@ -50,7 +50,7 @@ The model follows the C4 model (c4model.com).
 - Every element has a description, and every container a `technology`: what it is built with, not how it is deployed. While nobody knows a container's technology, leave it out and keep the question in the system's questions file.
 - Name views after their system (`paymentsContext`, `paymentsContainers`) so systems can't clash.
 - Who owns a system goes in its metadata as `owner` (`owner 'payments-team'`), for internal and external systems alike: the team or company accountable for it.
-- Who to ask about a system goes in four metadata keys, each one handle or a list of them, because owners rarely answer day-to-day questions themselves:
+- Whom to ask about a system goes in four metadata keys, each one handle or a list of them, because owners rarely answer day-to-day questions themselves:
   - `integratedBy`: integrated it originally. Ask them why it works the way it does.
   - `experts`: know best how it works and how its integration is changed. Ask them about an incident, an API or contract change, an upgrade, or a change to review.
   - `contributors`: have worked on it. Ask them for reviews or extra hands, or when the experts are away.

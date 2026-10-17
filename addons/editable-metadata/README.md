@@ -99,7 +99,7 @@ A function returns a string, a number, a list, or a boolean, shown as Yes or No.
 
 ## People
 
-"Owner" rarely tells you whom to ask. Each system, internal or external, can say who to go to for which job:
+"Owner" rarely tells you whom to ask. Each system, internal or external, can say whom to go to for which job:
 
 | Key | Who | Ask them when |
 | --- | --- | --- |
@@ -141,7 +141,7 @@ import PeopleTable from '@architecture-model/editable-metadata/PeopleTable.astro
 <PeopleTable />
 ```
 
-In the dev server the people fields are click-to-edit, picking from the list. A new person is added to `model/people.json` first. Someone who has left keeps their entry, with `"left": "2026-05-01"`, so their handle still shows as their name and you can [find the systems whose people have left](https://arch.morozov.is/recipes/people-who-left/). Why there is a field for each kind of task: [Who to ask](https://arch.morozov.is/who-to-ask/).
+In the dev server the people fields are click-to-edit, picking from the list. A new person is added to `model/people.json` first. Someone who has left keeps their entry, with `"left": "2026-05-01"`, so their handle still shows as their name and you can [find the systems whose people have left](https://arch.morozov.is/recipes/people-who-left/). Why there is a field for each kind of task: [Whom to ask](https://arch.morozov.is/whom-to-ask/).
 
 ## Properties
 

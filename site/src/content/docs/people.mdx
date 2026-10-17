@@ -1,0 +1,50 @@
+---
+title: Model who knows and manages each system
+---
+
+import People from '@architecture-model/editable-metadata/People.astro'
+
+The model can say, for every system, ours or a vendor's, which people can help with it and for which task. With that in the model, it answers:
+
+- whom to contact about an incident, an API or contract change, an upgrade, or a change to review;
+- who has the vendor account, the keys and the billing, or grants access to our own system;
+- who built the integration, and so can say why it works the way it does;
+- who has worked on a system, to review a change or join the work on it;
+- which systems and containers use a system, and would be affected by a change to it;
+- how long ago someone checked the people for a system;
+- [which systems have lost most of the people who know them](../recipes/people-who-left/).
+
+## What is modeled
+
+Each system has four people fields and a date, as metadata:
+
+| Field | Who | Ask them when |
+| --- | --- | --- |
+| `integratedBy` | integrated it originally | you need to know why it works the way it does |
+| `experts` | know best how it works and how its integration is changed | there is an incident, an API or contract change, an upgrade, or a change to review |
+| `contributors` | have worked on it | you need reviewers or extra hands, or the experts are away |
+| `administrators` | manage it: for a vendor, the account, keys, billing and support; for our own, its accounts and access | credentials need rotating, someone needs access, or a support ticket or plan change is due |
+| `peopleConfirmed` | | the date someone last checked the four fields |
+
+The people come from one list, `model/people.json`, as a handle and a name. Someone who has left stays in the list, marked with the date they left. Which systems and containers use a system isn't a field: it comes from the model's relationships.
+
+The fields for the npm registry, which this site uses:
+
+<People of="npm" />
+
+## Why not one owner
+
+Documentation goes out of date, and the names of people go out of date first: teams reorganize, people change roles and leave. A field like "Owner: Payments team" stays correct for longer only because it says so little. When a payment provider's webhooks fail at night, it doesn't say whom to call.
+
+The person who manages a vendor account is often not the one who knows how to change the integration, and neither of them may have built it. A question sent to "the owner" usually gets passed on until it reaches one of these people; the fields name them directly. The `owner` field stays, for the team that is accountable for the system.
+
+External systems have the same fields as our own, because what we know about them is known only by our own people: who connected it, who can debug it, who has the login to the vendor's account. The vendor's documentation doesn't contain any of that.
+
+## How the fields stay accurate
+
+- **Contributors are a longer list than experts.** When the experts have moved on, someone among the contributors can usually say whom to ask next.
+- **The date shows how old the fields are.** When `peopleConfirmed` is more than about six months old, the coding agent asks you to check them the next time you work on the system with it.
+- **Each person is listed once.** Renaming someone is one edit to `model/people.json`, and marking someone as having left doesn't touch the systems they worked on.
+- **Git proposes contributors, and you confirm them.** The authors of the code that integrates a system are a good first guess, but having changed a file doesn't mean someone understands the system, so the agent adds only the people you confirm.
+
+To model them, say "Help me document Payments" to a coding agent with the [plugin](../modeling/with-an-agent/) installed: its `document-a-system` skill asks for them after the system's users and the systems it talks to. To show them on a page, use the [editable-metadata](../addons/editable-metadata/#people) addon.

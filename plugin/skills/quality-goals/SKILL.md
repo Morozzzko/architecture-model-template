@@ -26,21 +26,21 @@ Use multiple-choice questions for choices and plain conversation for reasons and
 
 3. **Narrow to three, in order.** If more than four were picked, first ask which of them could take a back seat, as multi-select questions over the picked kinds, split along the three groups from step 2. Then ask which matters most, then second, with single-select questions over what remains; the third is what's left, so confirm it rather than asking. "Everything is important" is not an answer: ask which one wins when two conflict, using a concrete conflict from this system.
 
-4. **The specific qualities.** For each of the three, ask a multi-select question over its specific qualities from `qualities.md`, with their plain meanings. Kinds with more than four specific qualities take two questions.
+4. **The specific qualities.** For each of the three, ask a multi-select question over its specific qualities from `qualities.md`, with their plain meanings. Kinds with more than four specific qualities take two questions. If the user can't choose, the kind alone is enough for now: write the specific quality as "open" and add the question to the questions file.
 
    People describe what they need in their own words: "never lose money", "a full audit trail". One such need often covers specific qualities from more than one kind; `qualities.md` lists common phrases and the qualities they usually mean. Map the need to every quality it covers, then confirm the mapping and its place in the ranking with a single-select question, rather than deciding it yourself.
 
 5. **Why, for each specific quality.** In conversation: who needs it, and what happens to them when it's missing. This is the part that stays true longest; don't skip it when the user is short of time.
 
-6. **Scenarios someone could check.** For each goal, draft one or more as "when <event> under <conditions>, the system <response> within <measure>", one per distinct check, then ask the user to correct the numbers. A number the user doesn't know is written as open, never guessed. A need nobody has thought about yet ("we never considered attacks") is written as an open question, not a scenario.
+6. **Scenarios someone could check.** For each goal, draft one or more as "when <event> under <conditions>, the system <response> within <measure>", one per distinct check, then ask the user to correct the numbers. A number the user doesn't know is written as open, never guessed, and goes into the system's questions file, `docs/questions/<id>.md` (its shape is in the `document-a-system` skill), with who might know. A need nobody has thought about yet ("we never considered attacks") is a question in the same file, not a scenario.
 
 7. **What was ranked lower on purpose.** For each kind that was picked but ranked below the top three, ask why it can wait and whether it still has a limit it must not cross ("a catalog upload still finishes within 10 minutes"). Record the trade-off: it explains the design as much as the goals do. A limit becomes a scenario, marked as a limit rather than a goal.
 
-When the user won't be interviewed and asks for "typical goals", say in one sentence that generic goals can't settle a trade-off, and offer the short version: mostly clicking, a few minutes per goal, in which you ask steps 2 to 5 (and step 1 if nothing describes the system yet) and draft the scenarios from what they said for them to correct. If they still decline, write nothing they didn't say: list the questions as open instead.
+When the user won't be interviewed and asks for "typical goals", say in one sentence that generic goals can't settle a trade-off, and offer the short version: mostly clicking, a few minutes per goal, in which you ask steps 2 to 5 (and step 1 if nothing describes the system yet) and draft the scenarios from what they said for them to correct. If they still decline, write nothing they didn't say: add the questions to the questions file instead.
 
 ## What to write
 
-Quality goals: a table with one row per goal: priority, ISO kind and the specific qualities it covers, the goal for this system, and who needs it and why. One sentence above it: when two goals conflict, the higher one wins. Below it, the trade-offs from step 7 and the open questions.
+Quality goals: a table with one row per goal: priority, ISO kind and the specific qualities it covers, the goal for this system, and who needs it and why. One sentence above it: when two goals conflict, the higher one wins. Below it, the trade-offs from step 7. Open questions go in the questions file, not on the page; where a value is unknown, the page just says "open".
 
 Quality scenarios: at least one per goal, plus those for limits on lower-ranked qualities, each with the event, the response and the measure; open numbers marked open.
 

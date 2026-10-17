@@ -23,7 +23,7 @@ The sources are listed under References.
 
 ## Run the critics
 
-The critics are the review: a request to review the documentation is a request to run them. Spawn the five critics in `critics.md` in parallel, as subagents with fresh context: Newcomer, Noise auditor, Rationale skeptic, C4 inspector, Quality examiner. Give each its brief, the paths of the pages and model files under review, and the output format, and tell it to read only those files. A critic that reads the code inherits the author's blind spots; one that sees only the documentation reads it the way its readers will.
+The critics are the review: a request to review the documentation is a request to run them. Spawn the five critics in `critics.md` in parallel, as subagents with fresh context: Newcomer, Noise auditor, Rationale skeptic, C4 inspector, Quality examiner. Give each its brief, the paths of the pages and model files under review and of their questions files in `docs/questions/`, and the output format, and tell it to read only those files. A critic that reads the code inherits the author's blind spots; one that sees only the documentation reads it the way its readers will.
 
 Spawn them whenever the documentation was written in this session, by you or another agent: you can't read your own work with fresh eyes. For a single page of up to about a hundred lines written elsewhere, or if you can't spawn subagents, run the briefs one at a time yourself instead, re-reading only the documentation for each; it costs a fraction of five critics.
 
@@ -45,7 +45,7 @@ A container's `technology` names what it runs on (`Node.js`, `PostgreSQL schema`
 
 Everything new is a question for the user, never an edit: a quality goal or its ranking, a measure, a scenario, a concept's definition, a decision or its reason, an element, a relationship, a technology or protocol, an owner, a plan. This holds even when you're sure, even when the documentation hints at it, and even when you'd mark it as unconfirmed.
 
-A section that loses all its content, including a table left with only its header, keeps its heading and gets back its placeholder: the italic line under the same heading in the starter page, `src/content/docs/systems/system.mdx`, or if there is none, one italic line saying what belongs there. Don't delete sections of the outline.
+A section that loses all its content, including a table left with only its header, keeps its heading and gets back its placeholder, from the table of placeholders in the `document-a-system` skill; for a section that isn't there, one italic line saying what belongs there. Don't delete sections of the outline.
 
 | Thought | Reality |
 | --- | --- |
@@ -57,7 +57,7 @@ A section that loses all its content, including a table left with only its heade
 
 ## Ask
 
-Collect the questions from all findings. Ask the closed ones as multiple-choice questions (AskUserQuestion in Claude Code) and the rest in conversation, grouped by section. Write in only what the user answers. Questions about why belong to people; when the user can't answer, suggest who could, and leave the section as it is.
+Collect the questions from all findings. Ask the closed ones as multiple-choice questions (AskUserQuestion in Claude Code) and the rest in conversation, grouped by section. Write in only what the user answers. Questions about why belong to people; when the user can't answer, suggest who could, leave the section as it is, and add the question to the system's questions file, `docs/questions/<id>.md` (its shape is in the `document-a-system` skill), never to the page, unless the file already has it.
 
 ## Finish
 

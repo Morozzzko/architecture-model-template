@@ -48,7 +48,8 @@ Size and importance never decide the level; ownership and runtime do. Microservi
 
 ## Writing elements and relationships
 
-- Every element has a description saying what it does; every container and component has a `technology`.
+- Every element has a description saying what it does; every container and component has a `technology`, what it is built with, or while nobody knows it, a question in the system's questions file.
+- Who owns a system goes in its metadata as `owner` (`owner 'payments-team'`), for internal and external systems alike.
 - Every relationship goes one way and has a label that reads in that direction: `'Submits orders to'`, never `'Uses'`.
 - Relationships between containers name the protocol: `technology 'HTTPS/JSON'`.
 - A two-way exchange is two relationships, each with its own label.
@@ -56,7 +57,7 @@ Size and importance never decide the level; ownership and runtime do. Microservi
 ## Views
 
 - Context and container views are enough for most systems. Add a component view only when a container's insides are discussed often, and a dynamic view for one important flow.
-- Every view title names its type and scope: `'Shop: containers'`.
+- Every view title names its type and scope: `'Shop: containers'`; its id names its system too (`shopContainers`), so views of different systems can't clash.
 - One environment per deployment view.
 - Colours, shapes and line styles mean the same in every view; give them meaning in `specification`, not per view.
 

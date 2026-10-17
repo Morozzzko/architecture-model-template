@@ -38,6 +38,7 @@ In Claude Code:
 | Skill | Use |
 | --- | --- |
 | `new-architecture-repo` | Scaffold a new repository from the template |
+| `document-a-system` | Walk someone through documenting a system, first time or after a break, and keep its open questions |
 | `metadata-fields` | Define, set and show element metadata with the editable-metadata addon |
 | `c4-modeling` | Decide what is a system, container or component, and model data stores, queues, providers and deployments |
 | `quality-goals` | Interview people for a system's quality goals and scenarios, in ISO/IEC 25010 terms |

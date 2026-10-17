@@ -24,17 +24,23 @@ import Relationships from '../../../components/Relationships.astro'
 
 ## Context
 
+*Who uses the system and which systems it talks to, with who owns each.*
+
 <LikeC4View viewId="context" />
 
 <Relationships of="system" />
 
 ## Containers
 
+*The apps, jobs and data stores the system runs, and why it is split this way.*
+
 <LikeC4View viewId="containers" />
 
 <Elements of="system" kind="container" />
 
 ## Key flows
+
+*The one or two flows people ask about most, step by step.*
 
 <LikeC4View viewId="userRequestFlow" />
 

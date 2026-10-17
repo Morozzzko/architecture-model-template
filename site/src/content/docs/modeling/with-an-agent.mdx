@@ -10,7 +10,7 @@ ISO/IEC/IEEE 42010 separates a system's architecture, its fundamental concepts a
 
 One repository describes all of an organization's systems: the model holds every one of them, and each has its own page that says why it exists and what it's made of. The steps below are for one system; repeat them for the next.
 
-A coding agent writes most of it. It can read code, compose files and infrastructure manifests to find the parts. Only you know why they are there. This page is the order to work in, as prompts for the agent; the diagrams come from an example shop modeled the same way.
+A coding agent writes most of it. It can read code, compose files and infrastructure manifests to find the parts. Only you know why they are there. This page explains what the sessions cover, grouped by why and what, with prompts you can give the agent directly; the diagrams come from an example shop modeled the same way. The order you work in is set by the skill below: purpose, quality goals and context first, everything else after.
 
 ## Before you start
 
@@ -20,6 +20,14 @@ Make a repository as described in [Start a repository](../../start/), and instal
 /plugin marketplace add Morozzzko/architecture-model-template
 /plugin install architecture-model@architecture-model
 ```
+
+Then say:
+
+> Help me document Payments.
+
+The plugin's `document-a-system` skill takes it from there: one topic at a time, with a sentence on why each matters and an example of a good answer, mostly as multiple-choice questions. It aims first for a small "done for now" that is worth publishing: the purpose, the top three quality goals and the context. Containers, concepts, decisions and the rest come in later sessions. Whatever you can't answer goes into `docs/questions/payments.md` with who might know, and the next session, even weeks later, starts by telling you where you got to and asking whether any of those were answered.
+
+The rest of this page is what happens in those sessions, and how to steer them.
 
 The agent learns the repository from `AGENTS.md` and the modeling rules from the plugin's `c4-modeling` skill. Have at hand what it can read for itself: repositories, `docker-compose.yml`, Terraform or Kubernetes manifests, runbooks.
 
@@ -67,7 +75,7 @@ The interview follows the ISO/IEC 25010 quality model without asking you to lear
 
 A goal is useful when someone could check it: "a placed order is confirmed to the customer within two seconds at peak load, because customers abandon slow checkouts", not "fast".
 
-### 3. Key concepts
+### 3. Key concepts, in a later session
 
 > Ask me for the handful of concepts the Shop is built around, and put them under Key concepts on its page.
 
@@ -89,7 +97,7 @@ Check that every box is the Shop, a person or an external system, and that every
 
 <ExampleView viewId="containers" />
 
-The rules the agent follows are in [Systems, containers and components](../elements/). Check that each schema, bucket and topic with its own purpose is its own box, that no server, cluster or library is, and that every container has a technology.
+The rules the agent follows are in [Systems, containers and components](../elements/). Check that each schema, bucket and topic with its own purpose is its own box, that no server, cluster or library is, and that every container has a technology, or an open question for it.
 
 ### 6. Deployment, when environments differ
 
@@ -149,7 +157,7 @@ The plugin's `architecture-review` skill runs five critics, each seeing only the
 Then review what the build can't check:
 
 - The why sections still describe the system's purpose and goals.
-- Every element has a description, and every container a technology.
+- Every element has a description, and every container a technology, or an open question for it.
 - No relationship is labeled "Uses".
 - Every view title says what it shows.
 - Decisions made since the last review have ADRs.

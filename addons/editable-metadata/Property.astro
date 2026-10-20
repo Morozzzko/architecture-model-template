@@ -1,5 +1,6 @@
 ---
 import Editor from './Editor.jsx'
+import { isAbsolute } from './editor.js'
 import { model } from './model.js'
 
 interface Props {
@@ -15,7 +16,7 @@ if (!type) throw new Error(`Unknown property "${name}". Known properties: ${Obje
 
 const element = model.element(of)
 const rich = name === 'summary' || name === 'description' ? element[name] : null
-const links = element.links.map(({ url, title }) => (title ? { url, label: title } : { url }))
+const links = element.links.filter(({ url }) => isAbsolute(url)).map(({ url, title }) => (title ? { url, label: title } : { url }))
 const values =
   name === 'links' ? links : [rich ? (rich.$source?.md ?? rich.$source?.txt ?? '') : (element[name] ?? '')].filter(Boolean)
 ---

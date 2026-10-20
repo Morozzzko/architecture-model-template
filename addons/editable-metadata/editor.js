@@ -4,13 +4,15 @@ import { join } from 'node:path'
 
 export const properties = ['title', 'summary', 'description', 'technology', 'links']
 
+export const isAbsolute = (url) => /^[a-z][a-z\d+.-]*:/i.test(url)
+
 const update = async (dir, fqn, patch, rewrite = (text) => text) => {
   const sources = Object.fromEntries(
     globSync('**/*.c4', { cwd: dir }).map((file) => [file, readFileSync(join(dir, file), 'utf8')]),
   )
   const { LikeC4Mutator } = await import('likec4-mutator')
   const mutator = LikeC4Mutator.fromFiles(sources)
-  const { changedFiles } = mutator.updateElement(fqn, patch)
+  const { changedFiles } = mutator.updateElement(fqn, typeof patch === 'function' ? patch(mutator) : patch)
   const updated = mutator.serialize()
   for (const file of changedFiles) writeFileSync(join(dir, file), rewrite(updated[file]))
 }
@@ -37,9 +39,14 @@ export async function setProperty(dir, { fqn, property, value }) {
     throw new Error(`Expected { fqn, property, value } with one of ${properties.join(', ')} as the property`)
   }
   if (property === 'links') {
-    const valid = Array.isArray(value) && value.every((link) => /^\S+$/.test(link?.url) && ['string', 'undefined'].includes(typeof link.label))
-    if (!valid) throw new Error('Expected links as a list of { url, label } with no spaces in the url')
-    return update(dir, fqn, { links: value.map(({ url, label }) => (label?.trim() ? { url, label: label.trim() } : { url })) })
+    const valid =
+      Array.isArray(value) &&
+      value.every((link) => /^\S+$/.test(link?.url) && isAbsolute(link.url) && ['string', 'undefined'].includes(typeof link.label))
+    if (!valid) throw new Error('Expected links as a list of { url, label } with a scheme and no spaces in the url')
+    const edited = value.map(({ url, label }) => (label?.trim() ? { url, label: label.trim() } : { url }))
+    return update(dir, fqn, (mutator) => ({
+      links: [...(mutator.getElement(fqn)?.links ?? []).filter(({ url }) => !isAbsolute(url)), ...edited],
+    }))
   }
   if (typeof value !== 'string') throw new Error(`Expected ${property} as a string`)
   const text = value.trim()

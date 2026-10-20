@@ -161,6 +161,8 @@ import Property from '@architecture-model/editable-metadata/Property.astro'
 
 A title can't be emptied. Links replace the element's own links, and a row without a URL is dropped.
 
+Only links whose URL has a scheme, such as `https:` or `mailto:`, are shown and edited. Relative links, such as an element's link to its own page, are kept when the links are saved, and move into the element's declaration if they were in an `extend` block.
+
 ## Options
 
 ```js

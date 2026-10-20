@@ -172,6 +172,8 @@ Links save when their editor closes, and a row without a URL is dropped:
 
 ![The links with their editor open: one row per link with a URL and a label](../../../assets/editable-metadata/links.png)
 
+Only links whose URL has a scheme, such as `https:` or `mailto:`, are shown and edited. Relative links, such as an element's link to its own page, are kept when the links are saved, and move into the element's declaration if they were in an `extend` block.
+
 The editors are React components built on [Radix](https://www.radix-ui.com/) and [cmdk](https://cmdk.paco.me/). The addon adds Astro's React integration if the site doesn't have it, and none of the editor code reaches the built site. The dev server rewrites only what was edited in that element and reloads the page.
 
 Editing exists only in the dev server: the endpoint that saves is not part of the built site, and it accepts requests only from the page itself.

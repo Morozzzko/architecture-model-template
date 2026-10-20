@@ -68,6 +68,20 @@ test('links replace the links of the element', async () => {
   assert.match(model, /link https:\/\/a.example 'Docs'\n\s+link https:\/\/b.example\n/)
 })
 
+test('relative links are kept, before the edited links', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'editable-metadata-'))
+  writeFileSync(join(dir, 'model.c4'), source)
+  writeFileSync(join(dir, 'docs.c4'), "model {\n  extend shop {\n    link /shop/ 'Documentation'\n  }\n}\n")
+  await setProperty(dir, { fqn: 'shop', property: 'links', value: [{ url: 'https://a.example' }] })
+  const likec4 = await LikeC4.fromWorkspace(dir, { throwIfInvalid: true })
+  const model = await likec4.computedModel()
+  assert.deepEqual(model.element('shop').links.map(({ url }) => url), ['/shop/', 'https://a.example'])
+})
+
+test('a relative url in the links is refused', async () => {
+  await assert.rejects(edit({ property: 'links', value: [{ url: '/shop/' }] }), /url/)
+})
+
 test('an empty title, a url with spaces and an unknown property are refused', async () => {
   await assert.rejects(edit({ property: 'title', value: ' ' }), /title/)
   await assert.rejects(edit({ property: 'links', value: [{ url: 'https://a.example x' }] }), /url/)

@@ -22,7 +22,16 @@ const resources = {
           'app.kubernetes.io/version': '1.8.0',
           'helm.sh/chart': 'shop-2.4.0',
         }),
-        spec: { replicas: 3, template: podTemplate('registry/sidecar:2', 'registry/api:1.8.0') },
+        spec: {
+          replicas: 3,
+          template: {
+            ...podTemplate('registry/sidecar:2', 'registry/api:1.8.0'),
+            spec: {
+              ...podTemplate('registry/sidecar:2', 'registry/api:1.8.0').spec,
+              initContainers: [{ name: 'migrate', image: 'registry/migrate:1' }],
+            },
+          },
+        },
         status: { replicas: 3, readyReplicas: 2, availableReplicas: 2, updatedReplicas: 1 },
       },
       {
@@ -133,7 +142,7 @@ test('discovers supported mapped workloads and derives rollout metadata', async 
         element: 'shop.api',
         version: '1.8.0',
         chart: 'shop-2.4.0',
-        desiredImages: ['registry/api:1.8.0', 'registry/sidecar:2'],
+        desiredImages: ['registry/api:1.8.0', 'registry/migrate:1', 'registry/sidecar:2'],
         observedImageDigests: ['registry/api@sha256:aaa', 'registry/api@sha256:bbb', 'registry/sidecar@sha256:ccc'],
         replicas: { desired: 3, ready: 2, available: 2, updated: 1 },
       },

@@ -28,7 +28,11 @@ const desiredImages = (kind, resource) => {
   const template = kind === 'CronJob'
     ? resource.spec?.jobTemplate?.spec?.template
     : resource.spec?.template
-  return uniqueSorted((template?.spec?.containers ?? []).map(container => container.image))
+  const containers = [
+    ...(template?.spec?.initContainers ?? []),
+    ...(template?.spec?.containers ?? []),
+  ]
+  return uniqueSorted(containers.map(container => container.image))
 }
 
 const replicaStatus = (kind, resource) => {
@@ -100,9 +104,11 @@ const listNamespaceResources = async (client, namespace, annotation) => {
   return workloads
 }
 
-const compareWorkloads = (left, right) => [left.namespace, left.kind, left.name]
-  .join('\0')
-  .localeCompare([right.namespace, right.kind, right.name].join('\0'))
+const compareWorkloads = (left, right) => {
+  const leftKey = [left.namespace, left.kind, left.name].join('\0')
+  const rightKey = [right.namespace, right.kind, right.name].join('\0')
+  return leftKey < rightKey ? -1 : leftKey > rightKey ? 1 : 0
+}
 
 export const discoverTarget = async (target, clientFactory = apiClientFactory) => {
   try {

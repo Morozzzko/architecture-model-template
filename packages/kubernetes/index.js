@@ -36,7 +36,8 @@ export const run = async (args, {
           writeOut(`Unmapped ${snapshot.context} ${workload.kind} ${workload.namespace}/${workload.name}`)
         }
       }
-      return 0
+      for (const failure of report.failures ?? []) writeError(failure.message)
+      return (report.failures?.length ?? 0) > 0 ? 1 : 0
     }
 
     const output = values.output ?? joinWorkspace(workspace, 'deployment.generated.c4')

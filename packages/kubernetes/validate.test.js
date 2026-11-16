@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { test } from 'node:test'
 import { replaceIfChanged, validateCandidate } from './lib/validate.js'
+import { generatedHeader } from './lib/generated.js'
 
 const authored = `specification {
   element system
@@ -20,7 +21,9 @@ deployment {
 }
 `
 
-const oldGenerated = `deployment {
+const oldGenerated = `${generatedHeader}
+
+deployment {
   extend production {
     namespace old {
       instanceOf app
@@ -29,7 +32,9 @@ const oldGenerated = `deployment {
 }
 `
 
-const candidate = `deployment {
+const candidate = `${generatedHeader}
+
+deployment {
   extend production {
     namespace current {
       instanceOf app
@@ -62,6 +67,28 @@ test('rejects an invalid candidate without changing the current output', async (
   assert.equal(await readFile(output, 'utf8'), oldGenerated)
 })
 
+test('rejects an existing output that is not owned by the generator', async () => {
+  const { workspace, output } = await fixture()
+  const authoredSource = 'deployment { environment authored }\n'
+  await writeFile(output, authoredSource)
+
+  await assert.rejects(
+    validateCandidate({ workspace, output, source: candidate }),
+    /not owned by @architecture-model\/kubernetes/,
+  )
+  assert.equal(await readFile(output, 'utf8'), authoredSource)
+})
+
+test('rejects an output extension that LikeC4 will not load', async () => {
+  const { workspace } = await fixture()
+  const output = join(workspace, 'deployment.generated.txt')
+
+  await assert.rejects(
+    validateCandidate({ workspace, output, source: candidate }),
+    /\.c4.*\.likec4|\.likec4.*\.c4/,
+  )
+})
+
 test('does not rewrite unchanged output', async () => {
   const { output } = await fixture()
   const oldTime = new Date('2025-01-01T00:00:00Z')
@@ -81,4 +108,16 @@ test('atomically replaces changed output without leaving a temporary file', asyn
   assert.equal(result, 'changed')
   assert.equal(await readFile(output, 'utf8'), candidate)
   assert.deepEqual((await readdir(workspace)).sort(), ['deployment.generated.c4', 'model.c4'])
+})
+
+test('refuses an authored output at the final replacement boundary', async () => {
+  const { output } = await fixture()
+  const authoredSource = 'deployment { environment authored }\n'
+  await writeFile(output, authoredSource)
+
+  await assert.rejects(
+    replaceIfChanged({ output, source: candidate }),
+    /not owned by @architecture-model\/kubernetes/,
+  )
+  assert.equal(await readFile(output, 'utf8'), authoredSource)
 })

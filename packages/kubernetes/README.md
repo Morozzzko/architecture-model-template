@@ -65,7 +65,7 @@ Each target requires:
 - `kubernetesNamespaces`: a namespace, a list, or exactly `'*'`.
 - `kubernetesElementAnnotation`: the annotation key that maps a controller to a LikeC4 element.
 
-`kubernetesExcludeNamespaces` optionally removes namespaces from the selected scope. Prefer an explicit list; use `'*'` only when the model covers the whole cluster. An authored namespace can declare one `kubernetesNamespace`. A selected namespace without an authored match is generated below the target.
+`kubernetesExcludeNamespaces` optionally removes namespaces from the selected scope. Prefer an explicit list; use `'*'` only when the model covers the whole cluster. An authored namespace can declare one `kubernetesNamespace`. A namespace with mapped workloads and no authored match is generated below the target.
 
 Keep this configuration and all deployment views in authored files. The command owns `model/deployment.generated.c4`.
 
@@ -114,6 +114,8 @@ npx architecture-model-kubernetes discover model
 
 `discover` writes nothing. It reports mapped and unmapped supported controllers. Resolve each unmapped controller by adding the configured annotation or deliberately removing its namespace from the target scope.
 
+If one context is inaccessible, discovery still reports successful contexts and every access failure, then exits nonzero. A workspace with no synchronization targets is an error rather than an empty result.
+
 Then update the overlay, validate the repository and review the diff:
 
 ```bash
@@ -124,6 +126,8 @@ git diff -- model/deployment.generated.c4
 ```
 
 Use `--output path/inside/model.c4` with `sync` to choose another file inside the LikeC4 workspace.
+
+The output must end in `.c4` or `.likec4`. When it already exists, its first line must be the generator ownership marker. Synchronization refuses an authored file at either the default or a custom output path before it contacts a cluster.
 
 `sync` discovers every target, renders one complete candidate, validates it with LikeC4 and atomically replaces the output only when content changed. Any inaccessible target, invalid metadata, unknown annotated element, authored/generated identifier collision or invalid candidate leaves the previous snapshot unchanged. It never writes a partial multi-cluster snapshot.
 

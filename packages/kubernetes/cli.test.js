@@ -45,6 +45,25 @@ test('sync defaults to the model workspace and its generated output', async () =
   assert.deepEqual(output.stderr, [])
 })
 
+test('reports every discovery failure after printing successful results', async () => {
+  const output = capture()
+  const discoverFn = async () => ({
+    summary: { targets: 2, mapped: 1, unmapped: 0 },
+    snapshots: [{ context: 'production-eu', unmapped: [] }],
+    failures: [{
+      context: 'production-us',
+      deploymentFqn: 'production.us',
+      message: 'Unable to read Kubernetes context production-us: forbidden',
+    }],
+  })
+
+  const exitCode = await run(['discover'], { discoverFn, ...output })
+
+  assert.equal(exitCode, 1)
+  assert.deepEqual(output.stdout, ['Discovered 2 targets: 1 mapped, 0 unmapped'])
+  assert.deepEqual(output.stderr, ['Unable to read Kubernetes context production-us: forbidden'])
+})
+
 test('returns a clear error for a missing command', async () => {
   const output = capture()
 

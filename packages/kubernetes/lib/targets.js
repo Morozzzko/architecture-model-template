@@ -81,7 +81,7 @@ export const readTargets = async (workspace, { exclude } = {}) => {
       elementAnnotation,
       authoredNamespaces: authoredNamespaces(node),
     }
-  }).sort((left, right) => left.deploymentFqn.localeCompare(right.deploymentFqn))
+  }).sort((left, right) => left.deploymentFqn < right.deploymentFqn ? -1 : left.deploymentFqn > right.deploymentFqn ? 1 : 0)
 
   const contexts = new Map()
   for (const target of targets) {

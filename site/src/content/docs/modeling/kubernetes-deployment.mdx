@@ -19,7 +19,7 @@ Answer stable questions in authored LikeC4. Refresh observed answers from Kubern
 | Author in LikeC4 | Generate from Kubernetes |
 | --- | --- |
 | systems, containers and relationships | instances of mapped workload controllers |
-| environments, cluster targets and important namespaces | selected namespaces that are not authored |
+| environments, cluster targets and important namespaces | namespaces with mapped workloads that are not authored |
 | deployment views and their scope | images, digests, versions, Helm charts and replica status |
 
 Pods are short-lived evidence for observed image digests. ReplicaSets connect Pods to Deployments, and Jobs connect Pods to CronJobs. They do not become deployment nodes. The diagram shows the controller instance and normalized replica counts instead.
@@ -61,7 +61,7 @@ views {
 }
 ```
 
-Repeat the cluster target for every context. `kubernetesExcludeNamespaces` removes namespaces from a list or from `kubernetesNamespaces '*'`. An authored namespace joins the Kubernetes namespace through `kubernetesNamespace`; selected namespaces without a match are generated. Views remain authored because their scope expresses what a reader needs to see.
+Repeat the cluster target for every context. `kubernetesExcludeNamespaces` removes namespaces from a list or from `kubernetesNamespaces '*'`. An authored namespace joins the Kubernetes namespace through `kubernetesNamespace`; namespaces with mapped workloads and no authored match are generated. Views remain authored because their scope expresses what a reader needs to see.
 
 Use an annotation name under a domain your organization controls. Put it on the workload controller and map it to an existing, fully qualified LikeC4 element:
 
@@ -101,6 +101,8 @@ npx architecture-model-kubernetes discover model
 
 Resolve each reported unmapped controller by adding the annotation or deliberately taking its namespace out of the authored scope. Discovery does not write a file and does not fail merely because an unmapped workload exists.
 
+Discovery reports successful contexts and every access failure before it exits nonzero. A model with no synchronization targets is an error rather than an empty snapshot.
+
 Then generate and review the complete snapshot:
 
 ```bash
@@ -110,6 +112,6 @@ npm run build
 git diff -- model/deployment.generated.c4
 ```
 
-If any context is inaccessible or the generated LikeC4 is invalid, synchronization preserves the previous file. Do not remove a failed target to create a partial snapshot. Fix access, metadata or model errors and rerun the complete sequence.
+If any context is inaccessible or the generated LikeC4 is invalid, synchronization preserves the previous file. It also refuses to replace an existing file unless that file carries its generator ownership marker. Do not remove a failed target to create a partial snapshot. Fix access, metadata or model errors and rerun the complete sequence.
 
 `model/deployment.generated.c4` is generated data: do not edit it. Review changed images, rollout digests, versions and replica counts, then commit the snapshot manually when it is acceptable. Logical relationships stay authored once and carry over to every generated instance.

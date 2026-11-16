@@ -3,6 +3,7 @@ import { mkdir, mkdtemp, readFile, readdir, rename, rm, writeFile } from 'node:f
 import { tmpdir } from 'node:os'
 import { dirname, extname, isAbsolute, join, relative, resolve } from 'node:path'
 import { LikeC4 } from 'likec4'
+import { generatedHeader, isGeneratedSource } from './generated.js'
 
 const sourceExtensions = new Set(['.c4', '.likec4'])
 
@@ -22,6 +23,33 @@ const pathIn = (workspace, file, label) => {
     throw new Error(`${label} must be a file inside the LikeC4 workspace`)
   }
   return path
+}
+
+const assertSupportedExtension = output => {
+  if (!sourceExtensions.has(extname(output))) {
+    throw new Error('Output must end in .c4 or .likec4 so LikeC4 validates it')
+  }
+}
+
+const assertGeneratedCandidate = source => {
+  if (!isGeneratedSource(source)) {
+    throw new Error(`Generated candidate must start with ${generatedHeader}`)
+  }
+}
+
+export const assertOutputOwned = async ({ workspace, output }) => {
+  const workspacePath = resolve(workspace)
+  const outputPath = resolve(output)
+  pathIn(workspacePath, outputPath, 'Output')
+  assertSupportedExtension(outputPath)
+  try {
+    const existing = await readFile(outputPath, 'utf8')
+    if (!isGeneratedSource(existing)) {
+      throw new Error(`${output} exists and is not owned by @architecture-model/kubernetes`)
+    }
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error
+  }
 }
 
 export const inSourceMirror = async ({ workspace, exclude, replacement }, operation) => {
@@ -51,15 +79,25 @@ export const inSourceMirror = async ({ workspace, exclude, replacement }, operat
   }
 }
 
-export const validateCandidate = async ({ workspace, output, source }) => inSourceMirror({
-  workspace,
-  exclude: output,
-  replacement: { path: output, source },
-}, staging => LikeC4.fromWorkspace(staging, { throwIfInvalid: true, logger: false, printErrors: false }))
+export const validateCandidate = async ({ workspace, output, source }) => {
+  await assertOutputOwned({ workspace, output })
+  assertGeneratedCandidate(source)
+  return inSourceMirror({
+    workspace,
+    exclude: output,
+    replacement: { path: output, source },
+  }, staging => LikeC4.fromWorkspace(staging, { throwIfInvalid: true, logger: false, printErrors: false }))
+}
 
 export const replaceIfChanged = async ({ output, source }) => {
+  assertSupportedExtension(output)
+  assertGeneratedCandidate(source)
   try {
-    if (await readFile(output, 'utf8') === source) return 'unchanged'
+    const existing = await readFile(output, 'utf8')
+    if (!isGeneratedSource(existing)) {
+      throw new Error(`${output} exists and is not owned by @architecture-model/kubernetes`)
+    }
+    if (existing === source) return 'unchanged'
   } catch (error) {
     if (error.code !== 'ENOENT') throw error
   }

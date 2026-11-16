@@ -26,6 +26,7 @@ deployment {
       namespace payments {
         manual = instanceOf shop.manual
       }
+      namespace my_ns
     }
   }
 }
@@ -158,6 +159,32 @@ test('adds stable hashes when sanitized workload names collide', async () => {
   assert.match(rendered, /kubernetesName 'my_app'/)
 })
 
+test('does not render selected namespaces without mapped workloads', async () => {
+  const model = await loadedModel()
+  const snapshot = {
+    context: target.context,
+    deploymentFqn: target.deploymentFqn,
+    namespaces: ['empty', 'workers'],
+    workloads: [{
+      namespace: 'workers',
+      kind: 'CronJob',
+      name: 'cleanup',
+      element: 'shop.worker',
+      version: null,
+      chart: null,
+      desiredImages: [],
+      observedImageDigests: [],
+      replicas: {},
+    }],
+    unmapped: [],
+  }
+
+  const rendered = renderOverlay({ model, targets: [target], snapshots: [snapshot] })
+
+  assert.doesNotMatch(rendered, /namespace empty/)
+  assert.match(rendered, /namespace workers/)
+})
+
 test('rejects a generated workload that collides with an authored instance', async () => {
   const model = await loadedModel()
   const snapshot = {
@@ -181,5 +208,59 @@ test('rejects a generated workload that collides with an authored instance', asy
   assert.throws(
     () => renderOverlay({ model, targets: [target], snapshots: [snapshot] }),
     /manual.*authored|authored.*manual/,
+  )
+})
+
+test('rejects authored collisions before disambiguating generated workload names', async () => {
+  const model = await loadedModel()
+  const workloads = ['Deployment', 'StatefulSet'].map((kind, index) => ({
+    namespace: 'payments',
+    kind,
+    name: 'manual',
+    element: index === 0 ? 'shop.api' : 'shop.database',
+    version: null,
+    chart: null,
+    desiredImages: [],
+    observedImageDigests: [],
+    replicas: {},
+  }))
+  const snapshot = {
+    context: target.context,
+    deploymentFqn: target.deploymentFqn,
+    namespaces: ['payments'],
+    unmapped: [],
+    workloads,
+  }
+
+  assert.throws(
+    () => renderOverlay({ model, targets: [target], snapshots: [snapshot] }),
+    /manual.*authored|authored.*manual/,
+  )
+})
+
+test('rejects authored namespace collisions before disambiguating generated names', async () => {
+  const model = await loadedModel()
+  const workloads = ['my-ns', 'my--ns'].map((namespace, index) => ({
+    namespace,
+    kind: 'Deployment',
+    name: `api-${index}`,
+    element: 'shop.api',
+    version: null,
+    chart: null,
+    desiredImages: [],
+    observedImageDigests: [],
+    replicas: {},
+  }))
+  const snapshot = {
+    context: target.context,
+    deploymentFqn: target.deploymentFqn,
+    namespaces: ['my-ns', 'my--ns'],
+    unmapped: [],
+    workloads,
+  }
+
+  assert.throws(
+    () => renderOverlay({ model, targets: [target], snapshots: [snapshot] }),
+    /my_ns.*authored|authored.*my_ns/,
   )
 })

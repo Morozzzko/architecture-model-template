@@ -12,7 +12,7 @@ Keep architectural meaning authored and generate only observed deployment facts.
 | Author in C4 | Generate from Kubernetes |
 | --- | --- |
 | systems, containers and relationships | instances of mapped workload controllers |
-| environments, cluster targets and important namespaces | missing selected namespaces |
+| environments, cluster targets and important namespaces | missing namespaces that contain mapped workloads |
 | deployment views and their scope | images, digests, versions, charts and replica status |
 
 Generate instances for Deployments, StatefulSets, DaemonSets and CronJobs. Pods are short-lived evidence for observed image digests. ReplicaSets and Jobs connect Pods to their owning controller. Do not draw Pods, ReplicaSets or Jobs as deployment nodes.
@@ -58,7 +58,7 @@ views {
 }
 ```
 
-Repeat the target block for every cluster. A context may appear on only one target. `kubernetesExcludeNamespaces` removes names from a list or `'*'`. An authored namespace uses exactly one `kubernetesNamespace`; otherwise the synchronizer generates the selected namespace below the target. Keep cluster nodes, authored namespaces and views outside `model/deployment.generated.c4`.
+Repeat the target block for every cluster. A context may appear on only one target. `kubernetesExcludeNamespaces` removes names from a list or `'*'`. An authored namespace uses exactly one `kubernetesNamespace`; otherwise the synchronizer generates a namespace below the target when it contains a mapped workload. Keep cluster nodes, authored namespaces and views outside `model/deployment.generated.c4`.
 
 ## Map Helm workloads
 

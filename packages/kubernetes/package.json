@@ -27,6 +27,7 @@
     "test": "node --test"
   },
   "dependencies": {
+    "@kubernetes/client-node": "^2.0.2",
     "likec4": "^1.59.4"
   }
 }

@@ -1,0 +1,194 @@
+import assert from 'node:assert/strict'
+import { test } from 'node:test'
+import { discoverTarget } from './lib/discover.js'
+
+const owner = (kind, name, uid) => ({ kind, name, uid })
+const metadata = (name, namespace, uid, annotations = {}, labels = {}, ownerReferences = []) => ({
+  name,
+  namespace,
+  uid,
+  annotations,
+  labels,
+  ownerReferences,
+})
+const podTemplate = (...images) => ({ spec: { containers: images.map((image, index) => ({ name: `c${index}`, image })) } })
+
+const resources = {
+  namespaces: ['payments', 'workers', 'monitoring'].map(name => ({ metadata: { name } })),
+  deployments: {
+    payments: [
+      {
+        metadata: metadata('api', 'payments', 'dep-api', { 'example.com/element': 'shop.api' }, {
+          'app.kubernetes.io/version': '1.8.0',
+          'helm.sh/chart': 'shop-2.4.0',
+        }),
+        spec: { replicas: 3, template: podTemplate('registry/sidecar:2', 'registry/api:1.8.0') },
+        status: { replicas: 3, readyReplicas: 2, availableReplicas: 2, updatedReplicas: 1 },
+      },
+      {
+        metadata: metadata('unmapped', 'payments', 'dep-unmapped'),
+        spec: { replicas: 1, template: podTemplate('registry/unmapped:1') },
+        status: { replicas: 1, readyReplicas: 1 },
+      },
+    ],
+    monitoring: [{
+      metadata: metadata('metrics', 'monitoring', 'dep-metrics', { 'example.com/element': 'shop.metrics' }),
+      spec: { replicas: 1, template: podTemplate('registry/metrics:1') },
+      status: { replicas: 1, readyReplicas: 1 },
+    }],
+  },
+  statefulSets: {
+    payments: [{
+      metadata: metadata('database', 'payments', 'sts-db', { 'example.com/element': 'shop.database' }),
+      spec: { replicas: 2, template: podTemplate('registry/database:15') },
+      status: { replicas: 2, readyReplicas: 2, currentReplicas: 2, updatedReplicas: 2 },
+    }],
+  },
+  daemonSets: {
+    workers: [{
+      metadata: metadata('agent', 'workers', 'ds-agent', { 'example.com/element': 'shop.agent' }),
+      spec: { template: podTemplate('registry/agent:4') },
+      status: { desiredNumberScheduled: 4, numberReady: 3, numberAvailable: 3, updatedNumberScheduled: 4 },
+    }],
+  },
+  cronJobs: {
+    workers: [{
+      metadata: metadata('cleanup', 'workers', 'cron-cleanup', { 'example.com/element': 'shop.cleanup' }),
+      spec: { jobTemplate: { spec: { template: podTemplate('registry/cleanup:7') } } },
+      status: {},
+    }],
+  },
+  replicaSets: {
+    payments: [
+      { metadata: metadata('api-old', 'payments', 'rs-old', {}, {}, [owner('Deployment', 'api', 'dep-api')]) },
+      { metadata: metadata('api-new', 'payments', 'rs-new', {}, {}, [owner('Deployment', 'api', 'dep-api')]) },
+    ],
+  },
+  jobs: {
+    workers: [{ metadata: metadata('cleanup-1', 'workers', 'job-cleanup', {}, {}, [owner('CronJob', 'cleanup', 'cron-cleanup')]) }],
+  },
+  pods: {
+    payments: [
+      {
+        metadata: metadata('api-old-1', 'payments', 'pod-old', {}, {}, [owner('ReplicaSet', 'api-old', 'rs-old')]),
+        status: { containerStatuses: [{ imageID: 'registry/api@sha256:bbb' }] },
+      },
+      {
+        metadata: metadata('api-new-1', 'payments', 'pod-new', {}, {}, [owner('ReplicaSet', 'api-new', 'rs-new')]),
+        status: { containerStatuses: [
+          { imageID: 'registry/api@sha256:aaa' },
+          { imageID: 'registry/sidecar@sha256:ccc' },
+        ] },
+      },
+      {
+        metadata: metadata('database-0', 'payments', 'pod-db', {}, {}, [owner('StatefulSet', 'database', 'sts-db')]),
+        status: { containerStatuses: [{ imageID: 'registry/database@sha256:ddd' }] },
+      },
+    ],
+    workers: [
+      {
+        metadata: metadata('agent-a', 'workers', 'pod-agent', {}, {}, [owner('DaemonSet', 'agent', 'ds-agent')]),
+        status: { containerStatuses: [{ imageID: 'registry/agent@sha256:eee' }] },
+      },
+      {
+        metadata: metadata('cleanup-1-a', 'workers', 'pod-cleanup', {}, {}, [owner('Job', 'cleanup-1', 'job-cleanup')]),
+        status: { containerStatuses: [{ imageID: 'registry/cleanup@sha256:fff' }] },
+      },
+    ],
+  },
+}
+
+const clientFactory = async () => ({
+  listNamespaces: async () => resources.namespaces,
+  listDeployments: async namespace => resources.deployments[namespace] ?? [],
+  listStatefulSets: async namespace => resources.statefulSets[namespace] ?? [],
+  listDaemonSets: async namespace => resources.daemonSets[namespace] ?? [],
+  listCronJobs: async namespace => resources.cronJobs[namespace] ?? [],
+  listReplicaSets: async namespace => resources.replicaSets[namespace] ?? [],
+  listJobs: async namespace => resources.jobs[namespace] ?? [],
+  listPods: async namespace => resources.pods[namespace] ?? [],
+})
+
+const target = {
+  deploymentFqn: 'production.eu',
+  context: 'production-eu',
+  includedNamespaces: '*',
+  excludedNamespaces: ['monitoring'],
+  elementAnnotation: 'example.com/element',
+  authoredNamespaces: {},
+}
+
+test('discovers supported mapped workloads and derives rollout metadata', async () => {
+  const snapshot = await discoverTarget(target, clientFactory)
+
+  assert.deepEqual(snapshot, {
+    context: 'production-eu',
+    deploymentFqn: 'production.eu',
+    namespaces: ['payments', 'workers'],
+    workloads: [
+      {
+        namespace: 'payments',
+        kind: 'Deployment',
+        name: 'api',
+        element: 'shop.api',
+        version: '1.8.0',
+        chart: 'shop-2.4.0',
+        desiredImages: ['registry/api:1.8.0', 'registry/sidecar:2'],
+        observedImageDigests: ['registry/api@sha256:aaa', 'registry/api@sha256:bbb', 'registry/sidecar@sha256:ccc'],
+        replicas: { desired: 3, ready: 2, available: 2, updated: 1 },
+      },
+      {
+        namespace: 'payments',
+        kind: 'StatefulSet',
+        name: 'database',
+        element: 'shop.database',
+        version: null,
+        chart: null,
+        desiredImages: ['registry/database:15'],
+        observedImageDigests: ['registry/database@sha256:ddd'],
+        replicas: { desired: 2, ready: 2, available: 2, updated: 2 },
+      },
+      {
+        namespace: 'workers',
+        kind: 'CronJob',
+        name: 'cleanup',
+        element: 'shop.cleanup',
+        version: null,
+        chart: null,
+        desiredImages: ['registry/cleanup:7'],
+        observedImageDigests: ['registry/cleanup@sha256:fff'],
+        replicas: {},
+      },
+      {
+        namespace: 'workers',
+        kind: 'DaemonSet',
+        name: 'agent',
+        element: 'shop.agent',
+        version: null,
+        chart: null,
+        desiredImages: ['registry/agent:4'],
+        observedImageDigests: ['registry/agent@sha256:eee'],
+        replicas: { desired: 4, ready: 3, available: 3, updated: 4 },
+      },
+    ],
+    unmapped: [{ namespace: 'payments', kind: 'Deployment', name: 'unmapped' }],
+  })
+})
+
+test('uses the explicit namespace scope before discovering resources', async () => {
+  const snapshot = await discoverTarget({
+    ...target,
+    includedNamespaces: ['payments', 'workers'],
+    excludedNamespaces: ['workers'],
+  }, clientFactory)
+
+  assert.deepEqual(snapshot.namespaces, ['payments'])
+  assert.equal(snapshot.workloads.every(workload => workload.namespace === 'payments'), true)
+})
+
+test('normalizes context access failures', async () => {
+  await assert.rejects(
+    discoverTarget(target, async () => { throw new Error('forbidden') }),
+    /production-eu.*forbidden/,
+  )
+})

@@ -1,0 +1,115 @@
+---
+title: Synchronize Kubernetes deployment views
+sidebar:
+  order: 4
+---
+
+A Kubernetes deployment view can answer:
+
+- Which clusters and namespaces run each logical system or container?
+- Which Deployment, StatefulSet, DaemonSet or CronJob represents it in each cluster?
+- Which images and digests are desired and observed now?
+- How many replicas are desired, ready, available and updated?
+- Which selected workload controllers are not mapped into the architecture model?
+
+Answer stable questions in authored LikeC4. Refresh observed answers from Kubernetes. This keeps the diagram readable without making people maintain data that the cluster already knows.
+
+## Keep the boundary explicit
+
+| Author in LikeC4 | Generate from Kubernetes |
+| --- | --- |
+| systems, containers and relationships | instances of mapped workload controllers |
+| environments, cluster targets and important namespaces | selected namespaces that are not authored |
+| deployment views and their scope | images, digests, versions, Helm charts and replica status |
+
+Pods are short-lived evidence for observed image digests. ReplicaSets connect Pods to Deployments, and Jobs connect Pods to CronJobs. They do not become deployment nodes. The diagram shows the controller instance and normalized replica counts instead.
+
+The optional [`@architecture-model/kubernetes`](https://www.npmjs.com/package/@architecture-model/kubernetes) package generates this observed part as a committed LikeC4 overlay. A repository made from the template does not depend on it unless you install it.
+
+## Declare every cluster
+
+Declare a `namespace` deployment kind and put explicit synchronization metadata on each cluster. Use exact kubeconfig context names and an explicit namespace list while introducing the model.
+
+```
+specification {
+  deploymentNode environment
+  deploymentNode cluster { technology 'Kubernetes' }
+  deploymentNode namespace
+}
+
+deployment {
+  environment production {
+    cluster eu {
+      metadata {
+        kubernetesContext 'production-eu'
+        kubernetesNamespaces ['shop', 'workers']
+        kubernetesElementAnnotation 'architecture.example.com/likec4-element'
+      }
+
+      namespace shop {
+        metadata { kubernetesNamespace 'shop' }
+      }
+    }
+  }
+}
+
+views {
+  deployment view production {
+    title 'Shop: production deployment'
+    include production.**
+  }
+}
+```
+
+Repeat the cluster target for every context. `kubernetesExcludeNamespaces` removes namespaces from a list or from `kubernetesNamespaces '*'`. An authored namespace joins the Kubernetes namespace through `kubernetesNamespace`; selected namespaces without a match are generated. Views remain authored because their scope expresses what a reader needs to see.
+
+Use an annotation name under a domain your organization controls. Put it on the workload controller and map it to an existing, fully qualified LikeC4 element:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "shop-api.fullname" . }}
+  annotations:
+    architecture.example.com/likec4-element: shop.api
+  labels:
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+    helm.sh/chart: {{ printf "%s-%s" .Chart.Name (.Chart.Version | replace "+" "_") | quote }}
+spec:
+  template:
+    spec:
+      containers:
+        - name: api
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+```
+
+The mapping belongs on the Deployment, StatefulSet, DaemonSet or CronJob itself, not only under `spec.template.metadata`.
+
+## Refresh the snapshot
+
+Install the package in the architecture repository:
+
+```bash
+npm install --save-dev @architecture-model/kubernetes
+```
+
+The kubeconfig identity needs list access to namespaces, the four supported controller kinds, Pods, ReplicaSets and Jobs in scope. Run the read-only check first:
+
+```bash
+npx architecture-model-kubernetes discover model
+```
+
+Resolve each reported unmapped controller by adding the annotation or deliberately taking its namespace out of the authored scope. Discovery does not write a file and does not fail merely because an unmapped workload exists.
+
+Then generate and review the complete snapshot:
+
+```bash
+npx architecture-model-kubernetes sync model
+npm run validate
+npm run build
+git diff -- model/deployment.generated.c4
+```
+
+If any context is inaccessible or the generated LikeC4 is invalid, synchronization preserves the previous file. Do not remove a failed target to create a partial snapshot. Fix access, metadata or model errors and rerun the complete sequence.
+
+`model/deployment.generated.c4` is generated data: do not edit it. Review changed images, rollout digests, versions and replica counts, then commit the snapshot manually when it is acceptable. Logical relationships stay authored once and carry over to every generated instance.

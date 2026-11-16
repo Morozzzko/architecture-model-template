@@ -72,6 +72,19 @@ model {
       }
     }
 
+    kubernetes = container 'Kubernetes deployment synchronization' {
+      technology 'Node.js, Kubernetes client'
+      description 'Writes deterministic LikeC4 deployment overlays from mapped workload controllers in explicit Kubernetes contexts.'
+      link https://www.npmjs.com/package/@architecture-model/kubernetes 'npm'
+      metadata {
+        package '@architecture-model/kubernetes'
+        lifecycle 'experimental'
+        languages 'JavaScript'
+        source 'https://github.com/Morozzzko/architecture-model-template/tree/main/packages/kubernetes'
+        maintainers 'morozzzko'
+      }
+    }
+
     plugin = container 'Claude Code plugin' {
       technology 'Claude Code skills'
       description 'Skills that teach coding agents to work in an architecture repository.'
@@ -84,7 +97,7 @@ model {
   }
 
   npm = external 'npm registry' {
-    description 'Hosts the generator and the addons.'
+    description 'Hosts the published toolkit packages.'
     metadata {
       integratedBy 'morozzzko'
       experts 'morozzzko'
@@ -104,11 +117,14 @@ model {
   architect -> toolkit.generator 'Creates a repository with'
   architect -> toolkit.template 'Writes the model and pages in'
   architect -> toolkit.editableMetadata 'Edits metadata with'
+  architect -> toolkit.kubernetes 'Refreshes deployment snapshots with'
   architect -> toolkit.plugin 'Delegates edits to agents with'
   toolkit.generator -> toolkit.template 'Copies'
   toolkit.editableMetadata -> toolkit.template 'Extends'
+  toolkit.kubernetes -> toolkit.template 'Writes generated deployment overlays to'
   toolkit.generator -> npm 'Is installed from'
   toolkit.editableMetadata -> npm 'Is installed from'
+  toolkit.kubernetes -> npm 'Is installed from'
   toolkit.template -> pages 'Is published to'
   reader -> pages 'Reads the site on'
 }

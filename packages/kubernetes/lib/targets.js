@@ -1,4 +1,5 @@
 import { LikeC4 } from 'likec4'
+import { inSourceMirror } from './validate.js'
 
 const targetKeys = [
   'kubernetesContext',
@@ -52,7 +53,10 @@ const authoredNamespaces = target => {
   return mappings
 }
 
-export const readTargets = async workspace => {
+export const readTargets = async (workspace, { exclude } = {}) => {
+  if (exclude) {
+    return inSourceMirror({ workspace, exclude }, mirrored => readTargets(mirrored))
+  }
   const likec4 = await LikeC4.fromWorkspace(workspace, { throwIfInvalid: true, logger: false, printErrors: false })
   const model = await likec4.computedModel()
   const nodes = [...model.deployment.nodes()]

@@ -16,36 +16,46 @@ const sourceFiles = async directory => {
   return files
 }
 
-const outputPathIn = (workspace, output) => {
-  const path = relative(workspace, output)
+const pathIn = (workspace, file, label) => {
+  const path = relative(workspace, file)
   if (path === '' || path.startsWith('..') || isAbsolute(path)) {
-    throw new Error('Generated output must be a file inside the LikeC4 workspace')
+    throw new Error(`${label} must be a file inside the LikeC4 workspace`)
   }
   return path
 }
 
-export const validateCandidate = async ({ workspace, output, source }) => {
+export const inSourceMirror = async ({ workspace, exclude, replacement }, operation) => {
   const workspacePath = resolve(workspace)
-  const outputPath = resolve(output)
-  const relativeOutput = outputPathIn(workspacePath, outputPath)
+  const excludedPath = exclude && resolve(exclude)
+  const relativeReplacement = replacement
+    ? pathIn(workspacePath, resolve(replacement.path), 'Replacement')
+    : null
   const staging = await mkdtemp(join(tmpdir(), 'architecture-model-kubernetes-validation-'))
 
   try {
     for (const file of await sourceFiles(workspacePath)) {
-      if (resolve(file) === outputPath) continue
+      if (excludedPath && resolve(file) === excludedPath) continue
       const destination = join(staging, relative(workspacePath, file))
       await mkdir(dirname(destination), { recursive: true })
       await writeFile(destination, await readFile(file))
     }
-    const candidate = join(staging, relativeOutput)
-    await mkdir(dirname(candidate), { recursive: true })
-    await writeFile(candidate, source)
+    if (replacement) {
+      const candidate = join(staging, relativeReplacement)
+      await mkdir(dirname(candidate), { recursive: true })
+      await writeFile(candidate, replacement.source)
+    }
     await writeFile(join(staging, 'likec4.config.json'), JSON.stringify({ name: 'validation' }))
-    await LikeC4.fromWorkspace(staging, { throwIfInvalid: true, logger: false, printErrors: false })
+    return await operation(staging)
   } finally {
     await rm(staging, { recursive: true, force: true })
   }
 }
+
+export const validateCandidate = async ({ workspace, output, source }) => inSourceMirror({
+  workspace,
+  exclude: output,
+  replacement: { path: output, source },
+}, staging => LikeC4.fromWorkspace(staging, { throwIfInvalid: true, logger: false, printErrors: false }))
 
 export const replaceIfChanged = async ({ output, source }) => {
   try {

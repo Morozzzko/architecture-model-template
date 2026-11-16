@@ -1,0 +1,76 @@
+#!/usr/bin/env node
+
+import { realpathSync } from 'node:fs'
+import { parseArgs } from 'node:util'
+import { pathToFileURL } from 'node:url'
+import { resolve } from 'node:path'
+import { defaultOutput, discover, sync } from './lib/sync.js'
+
+const count = (amount, singular) => `${amount} ${amount === 1 ? singular : `${singular}s`}`
+const maxTimeoutSeconds = 2_147_483
+
+export const run = async (args, {
+  discoverFn = discover,
+  syncFn = sync,
+  writeOut = console.log,
+  writeError = console.error,
+} = {}) => {
+  try {
+    const command = args[0]
+    if (!['discover', 'sync'].includes(command)) {
+      throw new Error('Usage: architecture-model-kubernetes <discover|sync> [workspace] [--output path] [--timeout-seconds number]')
+    }
+    const { values, positionals } = parseArgs({
+      args: args.slice(1),
+      options: {
+        output: { type: 'string' },
+        'timeout-seconds': { type: 'string' },
+      },
+      allowPositionals: true,
+      strict: true,
+    })
+    if (positionals.length > 1) throw new Error('Only one LikeC4 workspace path may be provided')
+    const workspace = positionals[0] ?? 'model'
+    const output = values.output ?? defaultOutput(workspace)
+    const runtimeOptions = {}
+    if (values['timeout-seconds'] !== undefined) {
+      const timeoutSeconds = Number(values['timeout-seconds'])
+      if (!Number.isFinite(timeoutSeconds) || timeoutSeconds <= 0) {
+        throw new Error('--timeout-seconds must be a positive number')
+      }
+      if (timeoutSeconds > maxTimeoutSeconds) {
+        throw new Error(`--timeout-seconds must not exceed ${maxTimeoutSeconds}`)
+      }
+      runtimeOptions.timeoutMs = timeoutSeconds * 1_000
+    }
+
+    if (command === 'discover') {
+      const report = await discoverFn({ workspace, output, ...runtimeOptions })
+      writeOut(`Discovered ${count(report.summary.targets, 'target')}: ${report.summary.mapped} mapped, ${report.summary.ignored} ignored, ${report.summary.unmapped} unmapped`)
+      for (const snapshot of report.snapshots) {
+        for (const workload of snapshot.workloads) {
+          writeOut(`Mapped ${snapshot.context} ${workload.kind} ${workload.namespace}/${workload.name} -> ${workload.element}`)
+        }
+        for (const workload of snapshot.ignored) {
+          writeOut(`Ignored ${snapshot.context} ${workload.kind} ${workload.namespace}/${workload.name}: ${workload.reason}`)
+        }
+        for (const workload of snapshot.unmapped) {
+          writeOut(`Unmapped ${snapshot.context} ${workload.kind} ${workload.namespace}/${workload.name}`)
+        }
+      }
+      for (const failure of report.failures ?? []) writeError(failure.message)
+      return (report.failures?.length ?? 0) > 0 ? 1 : 0
+    }
+
+    const report = await syncFn({ workspace, output, ...runtimeOptions })
+    const verb = report.status === 'changed' ? 'Updated deployment snapshot' : 'Deployment snapshot unchanged'
+    writeOut(`${verb}: ${output} (${count(report.summary.targets, 'target')}, ${report.summary.mapped} mapped, ${report.summary.ignored} ignored, ${report.summary.unmapped} unmapped)`)
+    return 0
+  } catch (error) {
+    writeError(error.message)
+    return 1
+  }
+}
+
+const isMain = process.argv[1] && import.meta.url === pathToFileURL(realpathSync(resolve(process.argv[1]))).href
+if (isMain) process.exitCode = await run(process.argv.slice(2))

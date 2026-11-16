@@ -1,0 +1,36 @@
+{
+  "name": "@architecture-model/kubernetes",
+  "version": "0.0.0",
+  "description": "Generate LikeC4 deployment overlays from Kubernetes clusters",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Morozzzko/architecture-model-template.git",
+    "directory": "packages/kubernetes"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "bin": {
+    "architecture-model-kubernetes": "index.js"
+  },
+  "exports": {
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "lib",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22.22.3"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@kubernetes/client-node": "^2.0.2",
+    "likec4": "^1.59.4"
+  }
+}

@@ -6,6 +6,7 @@ Tools for documenting software architecture as a [LikeC4](https://likec4.dev/) m
 | --- | --- |
 | [`template/`](template/) | A ready-to-use architecture repository: a model of an organization's systems, an [Astro Starlight](https://starlight.astro.build/) site with a page per system, and Architecture Decision Records |
 | [`packages/create-architecture-model/`](packages/create-architecture-model/) | The `npm create @architecture-model` generator, which copies the template and sets it up |
+| [`packages/kubernetes/`](packages/kubernetes/) | A CLI that writes deterministic LikeC4 deployment overlays from mapped Kubernetes workloads |
 | [`plugin/`](plugin/) | A [Claude Code](https://claude.com/claude-code) plugin with skills for working in such a repository |
 | [`addons/`](addons/) | Optional features for the template, published as npm packages |
 | [`site/`](site/) | The [documentation site](https://arch.morozov.is/), itself a repository made with the generator |
@@ -41,6 +42,7 @@ In Claude Code:
 | `document-a-system` | Walk someone through documenting a system, first time or after a break, and keep its open questions |
 | `metadata-fields` | Define, set and show element metadata with the editable-metadata addon |
 | `c4-modeling` | Decide what is a system, container or component, and model data stores, queues, providers and deployments |
+| `kubernetes-deployment` | Keep LikeC4 deployment views synchronized with mapped Kubernetes and Helm workloads |
 | `quality-goals` | Interview people for a system's quality goals and scenarios, in ISO/IEC 25010 terms |
 | `architecture-review` | Have critics review documentation for noise, missing intent and rationale, and turn the gaps into questions |
 

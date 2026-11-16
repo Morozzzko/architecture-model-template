@@ -1,0 +1,173 @@
+import assert from 'node:assert/strict'
+import { mkdir, mkdtemp, readFile, readdir, stat, symlink, utimes, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { test } from 'node:test'
+import { inSourceMirror, replaceIfChanged, validateCandidate } from './lib/validate.js'
+import { generatedHeader } from './lib/generated.js'
+
+const authored = `specification {
+  element system
+  deploymentNode environment
+  deploymentNode namespace
+}
+
+model {
+  app = system 'Application'
+}
+
+deployment {
+  environment production
+}
+`
+
+const oldGenerated = `${generatedHeader}
+
+deployment {
+  extend production {
+    namespace old {
+      instanceOf app
+    }
+  }
+}
+`
+
+const candidate = `${generatedHeader}
+
+deployment {
+  extend production {
+    namespace current {
+      instanceOf app
+    }
+  }
+}
+`
+
+const fixture = async () => {
+  const workspace = await mkdtemp(join(tmpdir(), 'architecture-model-kubernetes-'))
+  const output = join(workspace, 'deployment.generated.c4')
+  await writeFile(join(workspace, 'model.c4'), authored)
+  await writeFile(output, oldGenerated)
+  return { workspace, output }
+}
+
+test('validates a candidate without loading the current generated declarations', async () => {
+  const { workspace, output } = await fixture()
+
+  await validateCandidate({ workspace, output, source: candidate })
+
+  assert.equal(await readFile(output, 'utf8'), oldGenerated)
+})
+
+test('preserves the root LikeC4 project config in the source mirror', async () => {
+  const { workspace, output } = await fixture()
+  const config = JSON.stringify({ name: 'original', title: 'Original project' })
+  await writeFile(join(workspace, 'likec4.config.json'), config)
+
+  await inSourceMirror({ workspace, exclude: output }, async mirror => {
+    assert.equal(await readFile(join(mirror, 'likec4.config.json'), 'utf8'), config)
+  })
+})
+
+test('preserves config-relative include paths in the source mirror', async () => {
+  const parent = await mkdtemp(join(tmpdir(), 'architecture-model-kubernetes-parent-'))
+  const workspace = join(parent, 'model')
+  const shared = join(parent, 'shared')
+  const output = join(workspace, 'deployment.generated.c4')
+  await mkdir(workspace)
+  await mkdir(shared)
+  await writeFile(join(workspace, 'likec4.config.json'), JSON.stringify({
+    name: 'root',
+    include: { paths: ['../shared'] },
+  }))
+  await writeFile(join(shared, 'model.c4'), authored)
+  await writeFile(output, oldGenerated)
+
+  await validateCandidate({ workspace, output, source: candidate })
+
+  assert.equal(await readFile(output, 'utf8'), oldGenerated)
+})
+
+test('preserves relative modules imported by a LikeC4 config', async () => {
+  const { workspace, output } = await fixture()
+  await writeFile(join(workspace, 'config-values.mjs'), "export const title = 'Configured project'\n")
+  await writeFile(join(workspace, 'likec4.config.mjs'), "import { title } from './config-values.mjs'\nexport default { name: 'root', title }\n")
+
+  await validateCandidate({ workspace, output, source: candidate })
+
+  assert.equal(await readFile(output, 'utf8'), oldGenerated)
+})
+
+test('rejects an invalid candidate without changing the current output', async () => {
+  const { workspace, output } = await fixture()
+  const invalid = candidate.replace('instanceOf app', 'instanceOf missing')
+
+  await assert.rejects(validateCandidate({ workspace, output, source: invalid }))
+  assert.equal(await readFile(output, 'utf8'), oldGenerated)
+})
+
+test('rejects an existing output that is not owned by the generator', async () => {
+  const { workspace, output } = await fixture()
+  const authoredSource = 'deployment { environment authored }\n'
+  await writeFile(output, authoredSource)
+
+  await assert.rejects(
+    validateCandidate({ workspace, output, source: candidate }),
+    /not owned by @architecture-model\/kubernetes/,
+  )
+  assert.equal(await readFile(output, 'utf8'), authoredSource)
+})
+
+test('rejects an output extension that LikeC4 will not load', async () => {
+  const { workspace } = await fixture()
+  const output = join(workspace, 'deployment.generated.txt')
+
+  await assert.rejects(
+    validateCandidate({ workspace, output, source: candidate }),
+    /\.c4.*\.likec4|\.likec4.*\.c4/,
+  )
+})
+
+test('rejects an output directory symlinked outside the workspace', async () => {
+  const { workspace } = await fixture()
+  const outside = await mkdtemp(join(tmpdir(), 'architecture-model-kubernetes-outside-'))
+  await symlink(outside, join(workspace, 'generated'), 'dir')
+
+  await assert.rejects(
+    validateCandidate({ workspace, output: join(workspace, 'generated', 'deployment.c4'), source: candidate }),
+    /Output must be a file inside the LikeC4 workspace/,
+  )
+})
+
+test('does not rewrite unchanged output', async () => {
+  const { output } = await fixture()
+  const oldTime = new Date('2025-01-01T00:00:00Z')
+  await utimes(output, oldTime, oldTime)
+
+  const result = await replaceIfChanged({ output, source: oldGenerated })
+
+  assert.equal(result, 'unchanged')
+  assert.equal((await stat(output)).mtime.toISOString(), oldTime.toISOString())
+})
+
+test('atomically replaces changed output without leaving a temporary file', async () => {
+  const { workspace, output } = await fixture()
+
+  const result = await replaceIfChanged({ output, source: candidate })
+
+  assert.equal(result, 'changed')
+  assert.equal(await readFile(output, 'utf8'), candidate)
+  assert.deepEqual((await readdir(workspace)).sort(), ['deployment.generated.c4', 'model.c4'])
+})
+
+test('refuses an authored output at the final replacement boundary', async () => {
+  const { output } = await fixture()
+  const authoredSource = 'deployment { environment authored }\n'
+  await writeFile(output, authoredSource)
+
+  await assert.rejects(
+    replaceIfChanged({ output, source: candidate }),
+    /not owned by @architecture-model\/kubernetes/,
+  )
+  assert.equal(await readFile(output, 'utf8'), authoredSource)
+})

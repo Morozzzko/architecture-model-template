@@ -20,8 +20,8 @@ const requireTargets = targets => {
 
 export const defaultOutput = workspace => join(workspace, 'deployment.generated.c4')
 
-const discoverSnapshots = async (targets, clientFactory) => {
-  const results = await Promise.allSettled(targets.map(target => discoverTarget(target, clientFactory)))
+const discoverSnapshots = async (targets, clientFactory, timeoutMs) => {
+  const results = await Promise.allSettled(targets.map(target => discoverTarget(target, clientFactory, { timeoutMs })))
   const snapshots = []
   const failures = []
   results.forEach((result, index) => {
@@ -51,13 +51,17 @@ const snapshotFailures = (model, snapshots) => snapshots.flatMap(snapshot => [
   }),
 ])
 
-export const discover = async ({ workspace = 'model', clientFactory } = {}) => {
-  const output = defaultOutput(workspace)
+const inspectTargets = async ({ workspace, output, clientFactory, timeoutMs }) => {
   await assertOutputOwned({ workspace, output })
   const { model, targets } = await readTargets(workspace, { exclude: output })
   requireTargets(targets)
-  const { snapshots, failures: accessFailures } = await discoverSnapshots(targets, clientFactory)
+  const { snapshots, failures: accessFailures } = await discoverSnapshots(targets, clientFactory, timeoutMs)
   const failures = [...accessFailures, ...snapshotFailures(model, snapshots)]
+  return { model, targets, snapshots, failures }
+}
+
+export const discover = async ({ workspace = 'model', output = defaultOutput(workspace), clientFactory, timeoutMs } = {}) => {
+  const { targets, snapshots, failures } = await inspectTargets({ workspace, output, clientFactory, timeoutMs })
   return { workspace, snapshots, failures, summary: summaryOf(snapshots, targets.length) }
 }
 
@@ -65,14 +69,11 @@ export const sync = async ({
   workspace = 'model',
   output = defaultOutput(workspace),
   clientFactory,
+  timeoutMs,
   validateCandidateFn = validateCandidate,
   replaceIfChangedFn = replaceIfChanged,
 } = {}) => {
-  await assertOutputOwned({ workspace, output })
-  const { model, targets } = await readTargets(workspace, { exclude: output })
-  requireTargets(targets)
-  const { snapshots, failures: accessFailures } = await discoverSnapshots(targets, clientFactory)
-  const failures = [...accessFailures, ...snapshotFailures(model, snapshots)]
+  const { model, targets, snapshots, failures } = await inspectTargets({ workspace, output, clientFactory, timeoutMs })
   if (failures.length > 0) {
     throw new Error(['Unable to read all Kubernetes synchronization targets:', ...failures.map(failure => `- ${failure.message}`)].join('\n'))
   }

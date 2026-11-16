@@ -120,6 +120,8 @@ The package loads the default kubeconfig and uses only the contexts declared in 
 
 ## Discover and synchronize
 
+The workspace argument identifies one LikeC4 project directory. When a repository contains several LikeC4 projects, run the command against the project that owns the Kubernetes targets rather than their common parent.
+
 Run discovery before every update:
 
 ```bash
@@ -130,7 +132,7 @@ npx architecture-model-kubernetes discover model
 
 If one context is inaccessible, discovery still reports successful contexts and every access failure, then exits nonzero. An unknown or non-deployable logical mapping and an explicitly configured namespace missing from the cluster are also errors. A workspace with no synchronization targets is an error rather than an empty result.
 
-Each context has a 30-second discovery deadline. Within one context, the command reads at most four namespaces concurrently so an all-namespace target does not send an unbounded burst of API requests.
+Each context has a 30-second discovery deadline. Use `--timeout-seconds number` on both commands for a larger cluster or slower API path. Within one context, the command reads at most four namespaces concurrently so an all-namespace target does not send an unbounded burst of API requests.
 
 Then update the overlay, validate the repository and review the diff:
 
@@ -141,7 +143,7 @@ npm run build
 git diff -- model/deployment.generated.c4
 ```
 
-Use `--output path/inside/model.c4` with `sync` to choose another file inside the LikeC4 workspace.
+Use the same `--output path/inside/model.c4` with both `discover` and `sync` when the generated overlay is not `deployment.generated.c4`. Discovery must exclude the file that synchronization replaces.
 
 The output must end in `.c4` or `.likec4`. When it already exists, its first line must be the generator ownership marker. Synchronization refuses an authored file at either the default or a custom output path before it contacts a cluster.
 

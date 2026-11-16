@@ -104,6 +104,8 @@ Install the package in the architecture repository:
 npm install --save-dev @architecture-model/kubernetes
 ```
 
+Pass one LikeC4 project directory as the workspace. If the repository contains several LikeC4 projects, run the command against the project that owns these Kubernetes targets, not their common parent.
+
 The kubeconfig identity needs list access to namespaces, the four supported controller kinds, Pods, ReplicaSets and Jobs in scope. Run the read-only check first:
 
 ```bash
@@ -114,7 +116,7 @@ Discovery prints mapped controllers with their LikeC4 FQNs, intentionally ignore
 
 Discovery reports successful contexts and every access failure before it exits nonzero. Unknown or non-deployable mappings and explicitly configured namespaces that are absent from the cluster are errors. A model with no synchronization targets is an error rather than an empty snapshot.
 
-Each context has a 30-second discovery deadline. Within one context, the command reads at most four namespaces concurrently, including when the target selects `'*'`.
+Each context has a 30-second discovery deadline. Pass `--timeout-seconds number` to both commands for a larger cluster or slower API path. Within one context, the command reads at most four namespaces concurrently, including when the target selects `'*'`.
 
 Then generate and review the complete snapshot:
 
@@ -124,6 +126,8 @@ npm run validate
 npm run build
 git diff -- model/deployment.generated.c4
 ```
+
+When the generated file has a custom path, pass the same `--output path/inside/model.c4` to both `discover` and `sync` so discovery excludes the previous generated snapshot.
 
 If any context is inaccessible or the generated LikeC4 is invalid, synchronization preserves the previous file. It also refuses to replace an existing file unless that file carries its generator ownership marker. Do not remove a failed target to create a partial snapshot. Fix access, metadata or model errors and rerun the complete sequence.
 

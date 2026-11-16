@@ -17,20 +17,31 @@ export const run = async (args, {
   try {
     const command = args[0]
     if (!['discover', 'sync'].includes(command)) {
-      throw new Error('Usage: architecture-model-kubernetes <discover|sync> [workspace] [--output path]')
+      throw new Error('Usage: architecture-model-kubernetes <discover|sync> [workspace] [--output path] [--timeout-seconds number]')
     }
     const { values, positionals } = parseArgs({
       args: args.slice(1),
-      options: { output: { type: 'string' } },
+      options: {
+        output: { type: 'string' },
+        'timeout-seconds': { type: 'string' },
+      },
       allowPositionals: true,
       strict: true,
     })
     if (positionals.length > 1) throw new Error('Only one LikeC4 workspace path may be provided')
-    if (command === 'discover' && values.output) throw new Error('--output is only available with sync')
     const workspace = positionals[0] ?? 'model'
+    const output = values.output ?? defaultOutput(workspace)
+    const runtimeOptions = {}
+    if (values['timeout-seconds'] !== undefined) {
+      const timeoutSeconds = Number(values['timeout-seconds'])
+      if (!Number.isFinite(timeoutSeconds) || timeoutSeconds <= 0) {
+        throw new Error('--timeout-seconds must be a positive number')
+      }
+      runtimeOptions.timeoutMs = timeoutSeconds * 1_000
+    }
 
     if (command === 'discover') {
-      const report = await discoverFn({ workspace })
+      const report = await discoverFn({ workspace, output, ...runtimeOptions })
       writeOut(`Discovered ${count(report.summary.targets, 'target')}: ${report.summary.mapped} mapped, ${report.summary.ignored} ignored, ${report.summary.unmapped} unmapped`)
       for (const snapshot of report.snapshots) {
         for (const workload of snapshot.workloads) {
@@ -47,8 +58,7 @@ export const run = async (args, {
       return (report.failures?.length ?? 0) > 0 ? 1 : 0
     }
 
-    const output = values.output ?? defaultOutput(workspace)
-    const report = await syncFn({ workspace, output })
+    const report = await syncFn({ workspace, output, ...runtimeOptions })
     const verb = report.status === 'changed' ? 'Updated deployment snapshot' : 'Deployment snapshot unchanged'
     writeOut(`${verb}: ${output} (${count(report.summary.targets, 'target')}, ${report.summary.mapped} mapped, ${report.summary.ignored} ignored, ${report.summary.unmapped} unmapped)`)
     return 0

@@ -63,20 +63,22 @@ const desiredImages = (kind, resource) => {
 
 const replicaStatus = (kind, resource) => {
   const status = resource.status ?? {}
+  const reported = Number.isFinite(status.observedGeneration)
+  const counter = value => Number.isFinite(value) ? value : reported ? 0 : undefined
   if (kind === 'DaemonSet') {
     return Object.fromEntries([
-      ['desired', status.desiredNumberScheduled],
-      ['ready', status.numberReady],
-      ['available', status.numberAvailable],
-      ['updated', status.updatedNumberScheduled],
+      ['desired', counter(status.desiredNumberScheduled)],
+      ['ready', counter(status.numberReady)],
+      ['available', counter(status.numberAvailable)],
+      ['updated', counter(status.updatedNumberScheduled)],
     ].filter(([, value]) => Number.isFinite(value)))
   }
   if (kind === 'CronJob') return {}
   return Object.fromEntries([
     ['desired', resource.spec?.replicas ?? status.replicas],
-    ['ready', status.readyReplicas],
-    ['available', status.availableReplicas],
-    ['updated', status.updatedReplicas],
+    ['ready', counter(status.readyReplicas)],
+    ['available', counter(status.availableReplicas)],
+    ['updated', counter(status.updatedReplicas)],
   ].filter(([, value]) => Number.isFinite(value)))
 }
 
@@ -196,6 +198,7 @@ export const discoverTarget = async (target, clientFactory = apiClientFactory, {
       }),
     ])
   } catch (error) {
+    controller.abort(error)
     throw new Error(`Unable to read Kubernetes context ${target.context}: ${error.message}`, { cause: error })
   } finally {
     clearTimeout(timeout)

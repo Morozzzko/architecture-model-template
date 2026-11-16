@@ -190,6 +190,34 @@ test('orders workloads by code point independently of locale', async () => {
   assert.equal(rendered.indexOf("kubernetesName 'B'") < rendered.indexOf("kubernetesName 'a'"), true)
 })
 
+test('generates valid identifiers for Kubernetes names that start with digits', async () => {
+  const model = await loadedModel()
+  const snapshot = {
+    context: target.context,
+    deploymentFqn: target.deploymentFqn,
+    namespaces: ['3scale'],
+    workloads: [{
+      namespace: '3scale',
+      kind: 'Deployment',
+      name: '9-api',
+      element: 'shop.api',
+      version: null,
+      chart: null,
+      desiredImages: [],
+      observedImageIds: [],
+      replicas: {},
+    }],
+    unmapped: [],
+  }
+
+  const rendered = renderOverlay({ model, targets: [target], snapshots: [snapshot] })
+  const likec4 = await LikeC4.fromSource(`${source}\n${rendered}`, { throwIfInvalid: true, logger: false, printErrors: false })
+
+  await likec4.computedModel()
+  assert.match(rendered, /namespace _3scale/)
+  assert.match(rendered, /_9_api = instanceOf/)
+})
+
 test('does not render selected namespaces without mapped workloads', async () => {
   const model = await loadedModel()
   const snapshot = {

@@ -55,6 +55,31 @@ test('sync defaults to the model workspace and its generated output', async () =
   assert.deepEqual(output.stderr, [])
 })
 
+test('passes custom output and timeout options to discovery', async () => {
+  const output = capture()
+  let received
+  const discoverFn = async options => {
+    received = options
+    return {
+      summary: { targets: 1, mapped: 0, ignored: 0, unmapped: 0 },
+      snapshots: [],
+      failures: [],
+    }
+  }
+
+  const exitCode = await run(['discover', 'architecture', '--output', 'architecture/runtime.c4', '--timeout-seconds', '90'], {
+    discoverFn,
+    ...output,
+  })
+
+  assert.equal(exitCode, 0)
+  assert.deepEqual(received, {
+    workspace: 'architecture',
+    output: 'architecture/runtime.c4',
+    timeoutMs: 90_000,
+  })
+})
+
 test('reports every discovery failure after printing successful results', async () => {
   const output = capture()
   const discoverFn = async () => ({

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { mkdir, mkdtemp, readFile, readdir, stat, utimes, writeFile } from 'node:fs/promises'
+import { mkdtemp, readFile, readdir, stat, utimes, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { test } from 'node:test'
@@ -53,19 +53,6 @@ const fixture = async () => {
 
 test('validates a candidate without loading the current generated declarations', async () => {
   const { workspace, output } = await fixture()
-
-  await validateCandidate({ workspace, output, source: candidate })
-
-  assert.equal(await readFile(output, 'utf8'), oldGenerated)
-})
-
-test('preserves project boundaries from LikeC4 config files', async () => {
-  const { workspace, output } = await fixture()
-  const nested = join(workspace, 'independent-project')
-  await mkdir(nested)
-  await writeFile(join(workspace, 'likec4.config.json'), JSON.stringify({ name: 'root' }))
-  await writeFile(join(nested, 'likec4.config.json'), JSON.stringify({ name: 'independent' }))
-  await writeFile(join(nested, 'model.c4'), authored)
 
   await validateCandidate({ workspace, output, source: candidate })
 

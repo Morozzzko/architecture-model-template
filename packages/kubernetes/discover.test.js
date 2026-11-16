@@ -255,6 +255,31 @@ test('reports explicitly configured namespaces that do not exist', async () => {
   assert.deepEqual(snapshot.missingNamespaces, ['missing'])
 })
 
+test('records omitted replica counters as zero after a controller reports status', async () => {
+  const snapshot = await discoverTarget({
+    ...target,
+    includedNamespaces: ['payments'],
+    excludedNamespaces: [],
+  }, async () => ({
+    ...await clientFactory(),
+    listDeployments: async () => [{
+      metadata: metadata('starting', 'payments', 'dep-starting', { 'example.com/element': 'shop.api' }),
+      spec: { replicas: 2, template: podTemplate('registry/api:1') },
+      status: { observedGeneration: 1 },
+    }],
+    listStatefulSets: async () => [],
+    listReplicaSets: async () => [],
+    listPods: async () => [],
+  }))
+
+  assert.deepEqual(snapshot.workloads[0].replicas, {
+    desired: 2,
+    ready: 0,
+    available: 0,
+    updated: 0,
+  })
+})
+
 test('rejects a controller with both mapping and ignore annotations', async () => {
   await assert.rejects(discoverTarget({
     ...target,
@@ -281,6 +306,19 @@ test('normalizes context access failures', async () => {
     discoverTarget(target, async () => { throw new Error('forbidden') }),
     /production-eu.*forbidden/,
   )
+})
+
+test('aborts remaining requests when a context read fails', async () => {
+  let signal
+  await assert.rejects(discoverTarget(target, async (context, options) => {
+    signal = options.signal
+    return {
+      ...await clientFactory(),
+      listDeployments: async () => { throw new Error('list failed') },
+    }
+  }), /list failed/)
+
+  assert.equal(signal.aborted, true)
 })
 
 test('times out a stalled Kubernetes context', async () => {

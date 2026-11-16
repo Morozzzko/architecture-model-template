@@ -94,6 +94,8 @@ Install and lock the CLI in the architecture repository:
 npm install --save-dev @architecture-model/kubernetes
 ```
 
+Use a workspace directory that contains one LikeC4 project. If the repository contains several projects, select the project that owns the Kubernetes targets rather than their common parent.
+
 The kubeconfig identity must be able to list namespaces, the four supported controllers, Pods, ReplicaSets and Jobs in scope. Then run:
 
 ```bash
@@ -106,7 +108,9 @@ git diff -- model/deployment.generated.c4
 
 `discover` is read-only. It prints every mapping, every intentional ignore and reason, and every unmapped controller. Resolve each unmapped controller by adding a mapping or ignore annotation, or deliberately removing its namespace from the authored target scope. Do not silently accept an unmapped controller. Unknown or non-deployable mappings and explicitly configured missing namespaces are errors.
 
-Discovery gives each context 30 seconds and reads at most four namespaces concurrently within it. Report a timeout as an access failure; do not remove the target to make synchronization pass.
+Discovery gives each context 30 seconds and reads at most four namespaces concurrently within it. For a larger cluster or slower API path, pass the same `--timeout-seconds number` to `discover` and `sync`. Report a timeout as an access failure; do not remove the target to make synchronization pass.
+
+If synchronization uses a custom generated path, pass the same `--output path/inside/model.c4` to `discover` and `sync`. Discovery must exclude the snapshot that synchronization replaces.
 
 `sync` validates a complete candidate and atomically updates `model/deployment.generated.c4`. If any target is inaccessible, target metadata is invalid, an annotation names an unknown element, identifiers collide or LikeC4 rejects the candidate, it exits nonzero and preserves the previous snapshot. Fix the cause; do not produce a partial snapshot by temporarily deleting a target.
 

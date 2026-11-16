@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto'
 import { mkdir, mkdtemp, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
 import { basename, dirname, extname, isAbsolute, join, relative, resolve } from 'node:path'
 import { LikeC4 } from 'likec4'
 import { generatedHeader, isGeneratedSource } from './generated.js'
@@ -17,15 +18,12 @@ const configFilenames = new Set([
   'likec4.config.mts',
 ])
 
-const sourceFiles = async (directory, root = directory) => {
+const sourceFiles = async directory => {
   const files = []
   const entries = await readdir(directory, { withFileTypes: true })
-  if (directory !== root && entries.some(entry => entry.isFile() && configFilenames.has(entry.name))) {
-    return files
-  }
   for (const entry of entries) {
     const path = join(directory, entry.name)
-    if (entry.isDirectory()) files.push(...await sourceFiles(path, root))
+    if (entry.isDirectory()) files.push(...await sourceFiles(path))
     if (entry.isFile() && (sourceExtensions.has(extname(entry.name)) || configFilenames.has(entry.name))) files.push(path)
   }
   return files
@@ -51,19 +49,25 @@ const assertGeneratedCandidate = source => {
   }
 }
 
+const readGeneratedOutput = async output => {
+  try {
+    const source = await readFile(output, 'utf8')
+    if (!isGeneratedSource(source)) {
+      throw new Error(`${output} exists and is not owned by @architecture-model/kubernetes`)
+    }
+    return source
+  } catch (error) {
+    if (error.code === 'ENOENT') return null
+    throw error
+  }
+}
+
 export const assertOutputOwned = async ({ workspace, output }) => {
   const workspacePath = resolve(workspace)
   const outputPath = resolve(output)
   pathIn(workspacePath, outputPath, 'Output')
   assertSupportedExtension(outputPath)
-  try {
-    const existing = await readFile(outputPath, 'utf8')
-    if (!isGeneratedSource(existing)) {
-      throw new Error(`${output} exists and is not owned by @architecture-model/kubernetes`)
-    }
-  } catch (error) {
-    if (error.code !== 'ENOENT') throw error
-  }
+  await readGeneratedOutput(outputPath)
 }
 
 export const inSourceMirror = async ({ workspace, exclude, replacement }, operation) => {
@@ -72,7 +76,7 @@ export const inSourceMirror = async ({ workspace, exclude, replacement }, operat
   const relativeReplacement = replacement
     ? pathIn(workspacePath, resolve(replacement.path), 'Replacement')
     : null
-  const staging = await mkdtemp(join(dirname(workspacePath), '.architecture-model-kubernetes-validation-'))
+  const staging = await mkdtemp(join(tmpdir(), 'architecture-model-kubernetes-validation-'))
 
   try {
     const files = await sourceFiles(workspacePath)
@@ -110,15 +114,8 @@ export const validateCandidate = async ({ workspace, output, source }) => {
 export const replaceIfChanged = async ({ output, source }) => {
   assertSupportedExtension(output)
   assertGeneratedCandidate(source)
-  try {
-    const existing = await readFile(output, 'utf8')
-    if (!isGeneratedSource(existing)) {
-      throw new Error(`${output} exists and is not owned by @architecture-model/kubernetes`)
-    }
-    if (existing === source) return 'unchanged'
-  } catch (error) {
-    if (error.code !== 'ENOENT') throw error
-  }
+  const existing = await readGeneratedOutput(output)
+  if (existing === source) return 'unchanged'
 
   await mkdir(dirname(output), { recursive: true })
   const temporary = join(dirname(output), `.${randomUUID()}.tmp`)

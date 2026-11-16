@@ -17,16 +17,26 @@ const configFilenames = new Set([
   'likec4.config.cts',
   'likec4.config.mts',
 ])
+const ignoredDirectories = new Set(['.git', '.likec4', 'node_modules'])
 
-const sourceFiles = async directory => {
+const mirrorFiles = async directory => {
   const files = []
   const entries = await readdir(directory, { withFileTypes: true })
   for (const entry of entries) {
     const path = join(directory, entry.name)
-    if (entry.isDirectory()) files.push(...await sourceFiles(path))
-    if (entry.isFile() && (sourceExtensions.has(extname(entry.name)) || configFilenames.has(entry.name))) files.push(path)
+    if (entry.isDirectory() && !ignoredDirectories.has(entry.name)) files.push(...await mirrorFiles(path))
+    if (entry.isFile()) files.push(path)
   }
   return files
+}
+
+const createStaging = async workspacePath => {
+  try {
+    return await mkdtemp(join(dirname(workspacePath), '.architecture-model-kubernetes-validation-'))
+  } catch (error) {
+    if (!['EACCES', 'EPERM', 'EROFS'].includes(error.code)) throw error
+    return mkdtemp(join(tmpdir(), 'architecture-model-kubernetes-validation-'))
+  }
 }
 
 const pathIn = (workspace, file, label) => {
@@ -76,10 +86,10 @@ export const inSourceMirror = async ({ workspace, exclude, replacement }, operat
   const relativeReplacement = replacement
     ? pathIn(workspacePath, resolve(replacement.path), 'Replacement')
     : null
-  const staging = await mkdtemp(join(tmpdir(), 'architecture-model-kubernetes-validation-'))
+  const staging = await createStaging(workspacePath)
 
   try {
-    const files = await sourceFiles(workspacePath)
+    const files = await mirrorFiles(workspacePath)
     for (const file of files) {
       if (excludedPath && resolve(file) === excludedPath) continue
       const destination = join(staging, relative(workspacePath, file))

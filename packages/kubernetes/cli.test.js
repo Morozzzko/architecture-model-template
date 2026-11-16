@@ -80,6 +80,15 @@ test('passes custom output and timeout options to discovery', async () => {
   })
 })
 
+test('rejects a timeout larger than Node can schedule', async () => {
+  const output = capture()
+
+  const exitCode = await run(['discover', '--timeout-seconds', '2147484'], output)
+
+  assert.equal(exitCode, 1)
+  assert.match(output.stderr[0], /timeout-seconds.*2147483|2147483.*timeout-seconds/i)
+})
+
 test('reports every discovery failure after printing successful results', async () => {
   const output = capture()
   const discoverFn = async () => ({

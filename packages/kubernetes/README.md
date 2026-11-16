@@ -132,7 +132,7 @@ npx architecture-model-kubernetes discover model
 
 If one context is inaccessible, discovery still reports successful contexts and every access failure, then exits nonzero. An unknown or non-deployable logical mapping and an explicitly configured namespace missing from the cluster are also errors. A workspace with no synchronization targets is an error rather than an empty result.
 
-Each context has a 30-second discovery deadline. Use `--timeout-seconds number` on both commands for a larger cluster or slower API path. Within one context, the command reads at most four namespaces concurrently so an all-namespace target does not send an unbounded burst of API requests.
+Each context has a 30-second discovery deadline. Use `--timeout-seconds number` on both commands for a larger cluster or slower API path. Within one context, the command reads at most four namespaces concurrently so an all-namespace target does not send an unbounded burst of API requests. The deadline aborts Kubernetes HTTP requests; it cannot interrupt a kubeconfig exec credential plugin that blocks while asking for authentication, so refresh interactive credentials before running the command.
 
 Then update the overlay, validate the repository and review the diff:
 

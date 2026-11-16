@@ -116,7 +116,7 @@ Discovery prints mapped controllers with their LikeC4 FQNs, intentionally ignore
 
 Discovery reports successful contexts and every access failure before it exits nonzero. Unknown or non-deployable mappings and explicitly configured namespaces that are absent from the cluster are errors. A model with no synchronization targets is an error rather than an empty snapshot.
 
-Each context has a 30-second discovery deadline. Pass `--timeout-seconds number` to both commands for a larger cluster or slower API path. Within one context, the command reads at most four namespaces concurrently, including when the target selects `'*'`.
+Each context has a 30-second discovery deadline. Pass `--timeout-seconds number` to both commands for a larger cluster or slower API path. Within one context, the command reads at most four namespaces concurrently, including when the target selects `'*'`. The deadline aborts Kubernetes HTTP requests, but it cannot interrupt a kubeconfig exec credential plugin that blocks while asking for authentication. Refresh interactive credentials first.
 
 Then generate and review the complete snapshot:
 

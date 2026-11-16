@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { mkdtemp, readFile, readdir, stat, utimes, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, readdir, stat, utimes, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { test } from 'node:test'
@@ -67,6 +67,35 @@ test('preserves the root LikeC4 project config in the source mirror', async () =
   await inSourceMirror({ workspace, exclude: output }, async mirror => {
     assert.equal(await readFile(join(mirror, 'likec4.config.json'), 'utf8'), config)
   })
+})
+
+test('preserves config-relative include paths in the source mirror', async () => {
+  const parent = await mkdtemp(join(tmpdir(), 'architecture-model-kubernetes-parent-'))
+  const workspace = join(parent, 'model')
+  const shared = join(parent, 'shared')
+  const output = join(workspace, 'deployment.generated.c4')
+  await mkdir(workspace)
+  await mkdir(shared)
+  await writeFile(join(workspace, 'likec4.config.json'), JSON.stringify({
+    name: 'root',
+    include: { paths: ['../shared'] },
+  }))
+  await writeFile(join(shared, 'model.c4'), authored)
+  await writeFile(output, oldGenerated)
+
+  await validateCandidate({ workspace, output, source: candidate })
+
+  assert.equal(await readFile(output, 'utf8'), oldGenerated)
+})
+
+test('preserves relative modules imported by a LikeC4 config', async () => {
+  const { workspace, output } = await fixture()
+  await writeFile(join(workspace, 'config-values.mjs'), "export const title = 'Configured project'\n")
+  await writeFile(join(workspace, 'likec4.config.mjs'), "import { title } from './config-values.mjs'\nexport default { name: 'root', title }\n")
+
+  await validateCandidate({ workspace, output, source: candidate })
+
+  assert.equal(await readFile(output, 'utf8'), oldGenerated)
 })
 
 test('rejects an invalid candidate without changing the current output', async () => {

@@ -7,6 +7,7 @@ import { resolve } from 'node:path'
 import { defaultOutput, discover, sync } from './lib/sync.js'
 
 const count = (amount, singular) => `${amount} ${amount === 1 ? singular : `${singular}s`}`
+const maxTimeoutSeconds = 2_147_483
 
 export const run = async (args, {
   discoverFn = discover,
@@ -36,6 +37,9 @@ export const run = async (args, {
       const timeoutSeconds = Number(values['timeout-seconds'])
       if (!Number.isFinite(timeoutSeconds) || timeoutSeconds <= 0) {
         throw new Error('--timeout-seconds must be a positive number')
+      }
+      if (timeoutSeconds > maxTimeoutSeconds) {
+        throw new Error(`--timeout-seconds must not exceed ${maxTimeoutSeconds}`)
       }
       runtimeOptions.timeoutMs = timeoutSeconds * 1_000
     }

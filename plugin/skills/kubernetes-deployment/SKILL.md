@@ -108,7 +108,7 @@ git diff -- model/deployment.generated.c4
 
 `discover` is read-only. It prints every mapping, every intentional ignore and reason, and every unmapped controller. Resolve each unmapped controller by adding a mapping or ignore annotation, or deliberately removing its namespace from the authored target scope. Do not silently accept an unmapped controller. Unknown or non-deployable mappings and explicitly configured missing namespaces are errors.
 
-Discovery gives each context 30 seconds and reads at most four namespaces concurrently within it. For a larger cluster or slower API path, pass the same `--timeout-seconds number` to `discover` and `sync`. Report a timeout as an access failure; do not remove the target to make synchronization pass.
+Discovery gives each context 30 seconds and reads at most four namespaces concurrently within it. For a larger cluster or slower API path, pass the same `--timeout-seconds number` to `discover` and `sync`. The deadline aborts Kubernetes HTTP requests but cannot interrupt a kubeconfig exec credential plugin that blocks for interactive authentication; refresh those credentials first. Report a timeout as an access failure; do not remove the target to make synchronization pass.
 
 If synchronization uses a custom generated path, pass the same `--output path/inside/model.c4` to `discover` and `sync`. Discovery must exclude the snapshot that synchronization replaces.
 

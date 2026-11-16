@@ -1,4 +1,9 @@
 import assert from 'node:assert/strict'
+import { mkdtemp, symlink } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { spawnSync } from 'node:child_process'
+import { fileURLToPath } from 'node:url'
 import { test } from 'node:test'
 import { run } from './index.js'
 
@@ -85,6 +90,17 @@ test('returns a clear error for a missing command', async () => {
   assert.equal(exitCode, 1)
   assert.deepEqual(output.stdout, [])
   assert.match(output.stderr[0], /discover|sync/)
+})
+
+test('runs when invoked through a package-manager symlink', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'architecture-model-kubernetes-cli-'))
+  const executable = join(directory, 'architecture-model-kubernetes')
+  await symlink(fileURLToPath(new URL('index.js', import.meta.url)), executable)
+
+  const result = spawnSync(process.execPath, [executable], { encoding: 'utf8' })
+
+  assert.equal(result.status, 1)
+  assert.match(result.stderr, /discover|sync/)
 })
 
 test('returns configuration and cluster access errors without a stack trace', async () => {

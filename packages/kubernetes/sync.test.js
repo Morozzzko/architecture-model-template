@@ -90,6 +90,24 @@ test('discovers every target concurrently and reports unmapped workloads without
   await assert.rejects(access(output), error => error.code === 'ENOENT')
 })
 
+test('discovery ignores a stale generated snapshot', async () => {
+  const { workspace, output } = await fixture()
+  await writeFile(output, `${generatedHeader}
+
+deployment {
+  extend production.eu {
+    namespace stale {
+      instanceOf missing
+    }
+  }
+}
+`)
+
+  const report = await discover({ workspace, clientFactory: async context => clientFor(context) })
+
+  assert.equal(report.summary.mapped, 2)
+})
+
 test('does not replace the previous snapshot when one target is inaccessible', async () => {
   const { workspace, output } = await fixture()
   const previous = `${generatedHeader}\n\ndeployment {}\n`

@@ -106,6 +106,8 @@ git diff -- model/deployment.generated.c4
 
 `discover` is read-only. It prints every mapping, every intentional ignore and reason, and every unmapped controller. Resolve each unmapped controller by adding a mapping or ignore annotation, or deliberately removing its namespace from the authored target scope. Do not silently accept an unmapped controller. Unknown or non-deployable mappings and explicitly configured missing namespaces are errors.
 
+Discovery gives each context 30 seconds and reads at most four namespaces concurrently within it. Report a timeout as an access failure; do not remove the target to make synchronization pass.
+
 `sync` validates a complete candidate and atomically updates `model/deployment.generated.c4`. If any target is inaccessible, target metadata is invalid, an annotation names an unknown element, identifiers collide or LikeC4 rejects the candidate, it exits nonzero and preserves the previous snapshot. Fix the cause; do not produce a partial snapshot by temporarily deleting a target.
 
 Review changes in images, multiple rollout image IDs, versions and desired/ready/available/updated replicas as operational evidence from the last successful refresh. Use repository history to establish age; the overlay has no timestamp. Mention that registry and image metadata may be sensitive in a public repository. The finished state is a valid, reviewed, unstaged diff. End the workflow there. Do not run or recommend `git add` or `git commit`, even as manual follow-up commands; state only that the user owns any later commit.

@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict'
-import { mkdtemp, readFile, readdir, stat, utimes, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, readdir, stat, utimes, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { test } from 'node:test'
-import { replaceIfChanged, validateCandidate } from './lib/validate.js'
+import { inSourceMirror, replaceIfChanged, validateCandidate } from './lib/validate.js'
 import { generatedHeader } from './lib/generated.js'
 
 const authored = `specification {
@@ -57,6 +57,29 @@ test('validates a candidate without loading the current generated declarations',
   await validateCandidate({ workspace, output, source: candidate })
 
   assert.equal(await readFile(output, 'utf8'), oldGenerated)
+})
+
+test('preserves project boundaries from LikeC4 config files', async () => {
+  const { workspace, output } = await fixture()
+  const nested = join(workspace, 'independent-project')
+  await mkdir(nested)
+  await writeFile(join(workspace, 'likec4.config.json'), JSON.stringify({ name: 'root' }))
+  await writeFile(join(nested, 'likec4.config.json'), JSON.stringify({ name: 'independent' }))
+  await writeFile(join(nested, 'model.c4'), authored)
+
+  await validateCandidate({ workspace, output, source: candidate })
+
+  assert.equal(await readFile(output, 'utf8'), oldGenerated)
+})
+
+test('preserves the root LikeC4 project config in the source mirror', async () => {
+  const { workspace, output } = await fixture()
+  const config = JSON.stringify({ name: 'original', title: 'Original project' })
+  await writeFile(join(workspace, 'likec4.config.json'), config)
+
+  await inSourceMirror({ workspace, exclude: output }, async mirror => {
+    assert.equal(await readFile(join(mirror, 'likec4.config.json'), 'utf8'), config)
+  })
 })
 
 test('rejects an invalid candidate without changing the current output', async () => {

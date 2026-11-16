@@ -71,7 +71,7 @@ const workloadLines = (workload, id, context, indent) => {
 
 const workloadsIn = (snapshot, namespace) => snapshot.workloads
   .filter(workload => workload.namespace === namespace)
-  .sort((left, right) => [left.kind, left.name].join('\0').localeCompare([right.kind, right.name].join('\0')))
+  .sort((left, right) => compare([left.kind, left.name].join('\0'), [right.kind, right.name].join('\0')))
 
 const workloadIds = workloads => assignIds(workloads, workload => workload.name, workload => `${workload.kind}:${workload.name}`)
 

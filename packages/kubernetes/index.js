@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
+import { realpathSync } from 'node:fs'
 import { parseArgs } from 'node:util'
 import { pathToFileURL } from 'node:url'
 import { resolve } from 'node:path'
-import { discover, sync } from './lib/sync.js'
+import { defaultOutput, discover, sync } from './lib/sync.js'
 
 const count = (amount, singular) => `${amount} ${amount === 1 ? singular : `${singular}s`}`
 
@@ -46,7 +47,7 @@ export const run = async (args, {
       return (report.failures?.length ?? 0) > 0 ? 1 : 0
     }
 
-    const output = values.output ?? joinWorkspace(workspace, 'deployment.generated.c4')
+    const output = values.output ?? defaultOutput(workspace)
     const report = await syncFn({ workspace, output })
     const verb = report.status === 'changed' ? 'Updated deployment snapshot' : 'Deployment snapshot unchanged'
     writeOut(`${verb}: ${output} (${count(report.summary.targets, 'target')}, ${report.summary.mapped} mapped, ${report.summary.ignored} ignored, ${report.summary.unmapped} unmapped)`)
@@ -57,7 +58,5 @@ export const run = async (args, {
   }
 }
 
-const joinWorkspace = (workspace, file) => workspace.endsWith('/') ? `${workspace}${file}` : `${workspace}/${file}`
-
-const isMain = process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href
+const isMain = process.argv[1] && import.meta.url === pathToFileURL(realpathSync(resolve(process.argv[1]))).href
 if (isMain) process.exitCode = await run(process.argv.slice(2))

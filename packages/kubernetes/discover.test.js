@@ -218,6 +218,32 @@ test('uses the explicit namespace scope before discovering resources', async () 
   assert.equal(snapshot.workloads.every(workload => workload.namespace === 'payments'), true)
 })
 
+test('bounds namespace list concurrency for a context', async () => {
+  let active = 0
+  let maximum = 0
+  const list = async () => {
+    active += 1
+    maximum = Math.max(maximum, active)
+    await new Promise(resolve => setImmediate(resolve))
+    active -= 1
+    return []
+  }
+  const namespaces = Array.from({ length: 8 }, (_, index) => ({ metadata: { name: `namespace-${index}` } }))
+
+  await discoverTarget(target, async () => ({
+    listNamespaces: async () => namespaces,
+    listDeployments: list,
+    listStatefulSets: list,
+    listDaemonSets: list,
+    listCronJobs: list,
+    listReplicaSets: list,
+    listJobs: list,
+    listPods: list,
+  }))
+
+  assert.equal(maximum <= 28, true)
+})
+
 test('reports explicitly configured namespaces that do not exist', async () => {
   const snapshot = await discoverTarget({
     ...target,
@@ -254,5 +280,17 @@ test('normalizes context access failures', async () => {
   await assert.rejects(
     discoverTarget(target, async () => { throw new Error('forbidden') }),
     /production-eu.*forbidden/,
+  )
+})
+
+test('times out a stalled Kubernetes context', async () => {
+  const slowClientFactory = async () => ({
+    ...await clientFactory(),
+    listNamespaces: async () => new Promise(resolve => setTimeout(() => resolve(resources.namespaces), 100)),
+  })
+
+  await assert.rejects(
+    discoverTarget(target, slowClientFactory, { timeoutMs: 10 }),
+    /timed out.*production-eu|production-eu.*timed out/i,
   )
 })

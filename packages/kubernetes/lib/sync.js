@@ -18,6 +18,8 @@ const requireTargets = targets => {
   }
 }
 
+export const defaultOutput = workspace => join(workspace, 'deployment.generated.c4')
+
 const discoverSnapshots = async (targets, clientFactory) => {
   const results = await Promise.allSettled(targets.map(target => discoverTarget(target, clientFactory)))
   const snapshots = []
@@ -50,7 +52,9 @@ const snapshotFailures = (model, snapshots) => snapshots.flatMap(snapshot => [
 ])
 
 export const discover = async ({ workspace = 'model', clientFactory } = {}) => {
-  const { model, targets } = await readTargets(workspace)
+  const output = defaultOutput(workspace)
+  await assertOutputOwned({ workspace, output })
+  const { model, targets } = await readTargets(workspace, { exclude: output })
   requireTargets(targets)
   const { snapshots, failures: accessFailures } = await discoverSnapshots(targets, clientFactory)
   const failures = [...accessFailures, ...snapshotFailures(model, snapshots)]
@@ -59,7 +63,7 @@ export const discover = async ({ workspace = 'model', clientFactory } = {}) => {
 
 export const sync = async ({
   workspace = 'model',
-  output = join(workspace, 'deployment.generated.c4'),
+  output = defaultOutput(workspace),
   clientFactory,
   validateCandidateFn = validateCandidate,
   replaceIfChangedFn = replaceIfChanged,

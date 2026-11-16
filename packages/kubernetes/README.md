@@ -130,6 +130,8 @@ npx architecture-model-kubernetes discover model
 
 If one context is inaccessible, discovery still reports successful contexts and every access failure, then exits nonzero. An unknown or non-deployable logical mapping and an explicitly configured namespace missing from the cluster are also errors. A workspace with no synchronization targets is an error rather than an empty result.
 
+Each context has a 30-second discovery deadline. Within one context, the command reads at most four namespaces concurrently so an all-namespace target does not send an unbounded burst of API requests.
+
 Then update the overlay, validate the repository and review the diff:
 
 ```bash

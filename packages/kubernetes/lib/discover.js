@@ -1,23 +1,49 @@
 import { AppsV1Api, BatchV1Api, CoreV1Api, KubeConfig } from '@kubernetes/client-node'
 
 const uniqueSorted = values => [...new Set(values.filter(Boolean))].sort()
+const namespaceConcurrency = 4
+const targetTimeoutMs = 30_000
 
-const apiClientFactory = async context => {
+const mapConcurrent = async (values, concurrency, operation) => {
+  const results = new Array(values.length)
+  let next = 0
+  const worker = async () => {
+    while (next < values.length) {
+      const index = next
+      next += 1
+      results[index] = await operation(values[index])
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(concurrency, values.length) }, worker))
+  return results
+}
+
+const apiClientFactory = async (context, { signal, timeoutMs }) => {
   const kubeconfig = new KubeConfig()
   kubeconfig.loadFromDefault()
   kubeconfig.setCurrentContext(context)
   const apps = kubeconfig.makeApiClient(AppsV1Api)
   const batch = kubeconfig.makeApiClient(BatchV1Api)
   const core = kubeconfig.makeApiClient(CoreV1Api)
+  const request = { timeoutSeconds: Math.max(1, Math.ceil(timeoutMs / 1_000)) }
+  const options = {
+    middleware: [{
+      pre: async context => {
+        context.setSignal(signal)
+        return context
+      },
+      post: async context => context,
+    }],
+  }
   return {
-    listNamespaces: async () => (await core.listNamespace()).items,
-    listDeployments: async namespace => (await apps.listNamespacedDeployment({ namespace })).items,
-    listStatefulSets: async namespace => (await apps.listNamespacedStatefulSet({ namespace })).items,
-    listDaemonSets: async namespace => (await apps.listNamespacedDaemonSet({ namespace })).items,
-    listCronJobs: async namespace => (await batch.listNamespacedCronJob({ namespace })).items,
-    listReplicaSets: async namespace => (await apps.listNamespacedReplicaSet({ namespace })).items,
-    listJobs: async namespace => (await batch.listNamespacedJob({ namespace })).items,
-    listPods: async namespace => (await core.listNamespacedPod({ namespace })).items,
+    listNamespaces: async () => (await core.listNamespace(request, options)).items,
+    listDeployments: async namespace => (await apps.listNamespacedDeployment({ ...request, namespace }, options)).items,
+    listStatefulSets: async namespace => (await apps.listNamespacedStatefulSet({ ...request, namespace }, options)).items,
+    listDaemonSets: async namespace => (await apps.listNamespacedDaemonSet({ ...request, namespace }, options)).items,
+    listCronJobs: async namespace => (await batch.listNamespacedCronJob({ ...request, namespace }, options)).items,
+    listReplicaSets: async namespace => (await apps.listNamespacedReplicaSet({ ...request, namespace }, options)).items,
+    listJobs: async namespace => (await batch.listNamespacedJob({ ...request, namespace }, options)).items,
+    listPods: async namespace => (await core.listNamespacedPod({ ...request, namespace }, options)).items,
   }
 }
 
@@ -118,9 +144,11 @@ const compareWorkloads = (left, right) => {
   return leftKey < rightKey ? -1 : leftKey > rightKey ? 1 : 0
 }
 
-export const discoverTarget = async (target, clientFactory = apiClientFactory) => {
-  try {
-    const client = await clientFactory(target.context)
+export const discoverTarget = async (target, clientFactory = apiClientFactory, { timeoutMs = targetTimeoutMs } = {}) => {
+  const controller = new AbortController()
+  let timeout
+  const discovery = async () => {
+    const client = await clientFactory(target.context, { signal: controller.signal, timeoutMs })
     const available = uniqueSorted((await client.listNamespaces()).map(namespace => namespace.metadata?.name))
     const excluded = new Set(target.excludedNamespaces)
     const missingNamespaces = target.includedNamespaces === '*'
@@ -130,9 +158,9 @@ export const discoverTarget = async (target, clientFactory = apiClientFactory) =
       ? available
       : target.includedNamespaces.filter(namespace => available.includes(namespace))
     const namespaces = included.filter(namespace => !excluded.has(namespace))
-    const workloads = (await Promise.all(namespaces.map(namespace =>
+    const workloads = (await mapConcurrent(namespaces, namespaceConcurrency, namespace =>
       listNamespaceResources(client, namespace, target.elementAnnotation, target.ignoreAnnotation),
-    ))).flat().sort(compareWorkloads)
+    )).flat().sort(compareWorkloads)
 
     return {
       context: target.context,
@@ -155,7 +183,21 @@ export const discoverTarget = async (target, clientFactory = apiClientFactory) =
         name: workload.name,
       })),
     }
+  }
+  try {
+    return await Promise.race([
+      discovery(),
+      new Promise((_, reject) => {
+        timeout = setTimeout(() => {
+          const error = new Error(`timed out after ${timeoutMs} ms`)
+          reject(error)
+          controller.abort(error)
+        }, timeoutMs)
+      }),
+    ])
   } catch (error) {
     throw new Error(`Unable to read Kubernetes context ${target.context}: ${error.message}`, { cause: error })
+  } finally {
+    clearTimeout(timeout)
   }
 }

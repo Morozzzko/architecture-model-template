@@ -11,3 +11,4 @@ These sources were checked when this skill was written. The skill paraphrases th
 - [Helm labels and annotations](https://helm.sh/docs/chart_best_practices/labels/) recommends standard `app.kubernetes.io/*` labels and distinguishes queryable labels from annotations. The synchronizer reads `app.kubernetes.io/version` and `helm.sh/chart` when present.
 - [Helm advanced techniques](https://helm.sh/docs/v3/topics/advanced/) documents Helm ownership metadata and reinforces that tool-specific annotations belong on managed resources.
 - [Kubernetes JavaScript client](https://github.com/kubernetes-client/javascript) is the official client used to load explicit kubeconfig contexts and read cluster resources.
+- The 30-second target deadline and four-namespace concurrency limit describe the synchronizer implementation in `packages/kubernetes/lib/discover.js`; they are product behavior, not a limit stated by Kubernetes.

@@ -1,18 +1,32 @@
 import { randomUUID } from 'node:crypto'
 import { mkdir, mkdtemp, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises'
-import { tmpdir } from 'node:os'
-import { dirname, extname, isAbsolute, join, relative, resolve } from 'node:path'
+import { basename, dirname, extname, isAbsolute, join, relative, resolve } from 'node:path'
 import { LikeC4 } from 'likec4'
 import { generatedHeader, isGeneratedSource } from './generated.js'
 
 const sourceExtensions = new Set(['.c4', '.likec4'])
+const configFilenames = new Set([
+  '.likec4rc',
+  '.likec4.config.json',
+  'likec4.config.json',
+  'likec4.config.js',
+  'likec4.config.cjs',
+  'likec4.config.mjs',
+  'likec4.config.ts',
+  'likec4.config.cts',
+  'likec4.config.mts',
+])
 
-const sourceFiles = async directory => {
+const sourceFiles = async (directory, root = directory) => {
   const files = []
-  for (const entry of await readdir(directory, { withFileTypes: true })) {
+  const entries = await readdir(directory, { withFileTypes: true })
+  if (directory !== root && entries.some(entry => entry.isFile() && configFilenames.has(entry.name))) {
+    return files
+  }
+  for (const entry of entries) {
     const path = join(directory, entry.name)
-    if (entry.isDirectory()) files.push(...await sourceFiles(path))
-    if (entry.isFile() && sourceExtensions.has(extname(entry.name))) files.push(path)
+    if (entry.isDirectory()) files.push(...await sourceFiles(path, root))
+    if (entry.isFile() && (sourceExtensions.has(extname(entry.name)) || configFilenames.has(entry.name))) files.push(path)
   }
   return files
 }
@@ -58,10 +72,11 @@ export const inSourceMirror = async ({ workspace, exclude, replacement }, operat
   const relativeReplacement = replacement
     ? pathIn(workspacePath, resolve(replacement.path), 'Replacement')
     : null
-  const staging = await mkdtemp(join(tmpdir(), 'architecture-model-kubernetes-validation-'))
+  const staging = await mkdtemp(join(dirname(workspacePath), '.architecture-model-kubernetes-validation-'))
 
   try {
-    for (const file of await sourceFiles(workspacePath)) {
+    const files = await sourceFiles(workspacePath)
+    for (const file of files) {
       if (excludedPath && resolve(file) === excludedPath) continue
       const destination = join(staging, relative(workspacePath, file))
       await mkdir(dirname(destination), { recursive: true })
@@ -72,7 +87,10 @@ export const inSourceMirror = async ({ workspace, exclude, replacement }, operat
       await mkdir(dirname(candidate), { recursive: true })
       await writeFile(candidate, replacement.source)
     }
-    await writeFile(join(staging, 'likec4.config.json'), JSON.stringify({ name: 'validation' }))
+    const hasRootConfig = files.some(file => dirname(file) === workspacePath && configFilenames.has(basename(file)))
+    if (!hasRootConfig) {
+      await writeFile(join(staging, 'likec4.config.json'), JSON.stringify({ name: 'validation' }))
+    }
     return await operation(staging)
   } finally {
     await rm(staging, { recursive: true, force: true })

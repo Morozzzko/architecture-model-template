@@ -114,6 +114,8 @@ Discovery prints mapped controllers with their LikeC4 FQNs, intentionally ignore
 
 Discovery reports successful contexts and every access failure before it exits nonzero. Unknown or non-deployable mappings and explicitly configured namespaces that are absent from the cluster are errors. A model with no synchronization targets is an error rather than an empty snapshot.
 
+Each context has a 30-second discovery deadline. Within one context, the command reads at most four namespaces concurrently, including when the target selects `'*'`.
+
 Then generate and review the complete snapshot:
 
 ```bash

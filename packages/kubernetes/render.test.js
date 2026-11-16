@@ -164,6 +164,32 @@ test('adds stable hashes when sanitized workload names collide', async () => {
   assert.match(rendered, /kubernetesName 'my_app'/)
 })
 
+test('orders workloads by code point independently of locale', async () => {
+  const model = await loadedModel()
+  const workloads = ['a', 'B'].map(name => ({
+    namespace: 'workers',
+    kind: 'Deployment',
+    name,
+    element: 'shop.api',
+    version: null,
+    chart: null,
+    desiredImages: [],
+    observedImageIds: [],
+    replicas: {},
+  }))
+  const snapshot = {
+    context: target.context,
+    deploymentFqn: target.deploymentFqn,
+    namespaces: ['workers'],
+    workloads,
+    unmapped: [],
+  }
+
+  const rendered = renderOverlay({ model, targets: [target], snapshots: [snapshot] })
+
+  assert.equal(rendered.indexOf("kubernetesName 'B'") < rendered.indexOf("kubernetesName 'a'"), true)
+})
+
 test('does not render selected namespaces without mapped workloads', async () => {
   const model = await loadedModel()
   const snapshot = {

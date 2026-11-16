@@ -41,6 +41,7 @@ In Claude Code:
 | `document-a-system` | Walk someone through documenting a system, first time or after a break, and keep its open questions |
 | `metadata-fields` | Define, set and show element metadata with the editable-metadata addon |
 | `c4-modeling` | Decide what is a system, container or component, and model data stores, queues, providers and deployments |
+| `kubernetes-deployment` | Keep LikeC4 deployment views synchronized with mapped Kubernetes and Helm workloads |
 | `quality-goals` | Interview people for a system's quality goals and scenarios, in ISO/IEC 25010 terms |
 | `architecture-review` | Have critics review documentation for noise, missing intent and rationale, and turn the gaps into questions |
 

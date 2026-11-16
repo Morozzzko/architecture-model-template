@@ -1,6 +1,6 @@
 {
   "name": "@architecture-model/kubernetes",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Generate LikeC4 deployment overlays from Kubernetes clusters",
   "license": "MIT",
   "repository": {

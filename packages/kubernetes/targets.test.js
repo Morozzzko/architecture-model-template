@@ -13,6 +13,7 @@ const workspaceWith = async source => {
 
 const model = deployment => `specification {
   element system
+  deploymentNode environment
   deploymentNode cluster
   deploymentNode namespace
 }
@@ -33,6 +34,7 @@ test('reads a target and matches authored namespaces only by metadata', async ()
       kubernetesNamespaces ['payments', 'orders']
       kubernetesExcludeNamespaces 'orders'
       kubernetesElementAnnotation 'example.com/architecture-element'
+      kubernetesIgnoreAnnotation 'example.com/architecture-ignore'
     }
     namespace namedDifferently {
       metadata {
@@ -51,6 +53,7 @@ test('reads a target and matches authored namespaces only by metadata', async ()
     includedNamespaces: ['payments'],
     excludedNamespaces: ['orders'],
     elementAnnotation: 'example.com/architecture-element',
+    ignoreAnnotation: 'example.com/architecture-ignore',
     authoredNamespaces: { payments: 'production.namedDifferently' },
   }])
 })
@@ -129,4 +132,57 @@ test('rejects duplicate authored namespace mappings', async () => {
   }`))
 
   await assert.rejects(readTargets(workspace), /payments.*first.*second|payments.*second.*first/)
+})
+
+test('accepts namespace names inherited by ordinary JavaScript objects', async () => {
+  const workspace = await workspaceWith(model(`  cluster production {
+    metadata {
+      kubernetesContext 'production-eu'
+      kubernetesNamespaces ['constructor']
+      kubernetesElementAnnotation 'example.com/architecture-element'
+    }
+    namespace constructorNamespace {
+      metadata { kubernetesNamespace 'constructor' }
+    }
+  }`))
+
+  const { targets } = await readTargets(workspace)
+
+  assert.equal(targets[0].authoredNamespaces.constructor, 'production.constructorNamespace')
+})
+
+test('rejects an explicit namespace scope emptied by exclusions', async () => {
+  const workspace = await workspaceWith(model(`  cluster production {
+    metadata {
+      kubernetesContext 'production-eu'
+      kubernetesNamespaces ['payments']
+      kubernetesExcludeNamespaces ['payments']
+      kubernetesElementAnnotation 'example.com/architecture-element'
+    }
+  }`))
+
+  await assert.rejects(readTargets(workspace), /kubernetesNamespaces.*empty|empty.*kubernetesNamespaces/)
+})
+
+test('requires target and namespace metadata on their documented deployment kinds', async () => {
+  const targetWorkspace = await workspaceWith(model(`  environment production {
+    metadata {
+      kubernetesContext 'production-eu'
+      kubernetesNamespaces '*'
+      kubernetesElementAnnotation 'example.com/architecture-element'
+    }
+  }`))
+  await assert.rejects(readTargets(targetWorkspace), /production.*cluster|cluster.*production/)
+
+  const namespaceWorkspace = await workspaceWith(model(`  cluster production {
+    metadata {
+      kubernetesContext 'production-eu'
+      kubernetesNamespaces '*'
+      kubernetesElementAnnotation 'example.com/architecture-element'
+    }
+    cluster misplaced {
+      metadata { kubernetesNamespace 'payments' }
+    }
+  }`))
+  await assert.rejects(readTargets(namespaceWorkspace), /misplaced.*namespace|namespace.*misplaced/)
 })

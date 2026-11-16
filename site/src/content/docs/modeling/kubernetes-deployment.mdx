@@ -8,7 +8,7 @@ A Kubernetes deployment view can answer:
 
 - Which clusters and namespaces run each logical system or container?
 - Which Deployment, StatefulSet, DaemonSet or CronJob represents it in each cluster?
-- Which images and digests are desired and observed now?
+- Which images and Kubernetes image IDs were desired and observed at the last successful refresh?
 - How many replicas are desired, ready, available and updated?
 - Which selected workload controllers are not mapped into the architecture model?
 
@@ -20,9 +20,9 @@ Answer stable questions in authored LikeC4. Refresh observed answers from Kubern
 | --- | --- |
 | systems, containers and relationships | instances of mapped workload controllers |
 | environments, cluster targets and important namespaces | namespaces with mapped workloads that are not authored |
-| deployment views and their scope | images, digests, versions, Helm charts and replica status |
+| deployment views and their scope | images, image IDs, versions, Helm charts and replica status |
 
-Pods are short-lived evidence for observed image digests. ReplicaSets connect Pods to Deployments, and Jobs connect Pods to CronJobs. They do not become deployment nodes. The diagram shows the controller instance and normalized replica counts instead.
+Non-terminal Pods are short-lived evidence for observed `imageID` values. ReplicaSets connect Pods to Deployments, and Jobs connect Pods to CronJobs. They do not become deployment nodes. The diagram shows the controller deployment unit and normalized replica counts instead.
 
 The optional [`@architecture-model/kubernetes`](https://www.npmjs.com/package/@architecture-model/kubernetes) package generates this observed part as a committed LikeC4 overlay. A repository made from the template does not depend on it unless you install it.
 
@@ -44,6 +44,7 @@ deployment {
         kubernetesContext 'production-eu'
         kubernetesNamespaces ['shop', 'workers']
         kubernetesElementAnnotation 'architecture.example.com/likec4-element'
+        kubernetesIgnoreAnnotation 'architecture.example.com/likec4-ignore'
       }
 
       namespace shop {
@@ -61,7 +62,7 @@ views {
 }
 ```
 
-Repeat the cluster target for every context. `kubernetesExcludeNamespaces` removes namespaces from a list or from `kubernetesNamespaces '*'`. An authored namespace joins the Kubernetes namespace through `kubernetesNamespace`; namespaces with mapped workloads and no authored match are generated. Views remain authored because their scope expresses what a reader needs to see.
+Repeat the cluster target for every context. `kubernetesExcludeNamespaces` removes namespaces from a list or from `kubernetesNamespaces '*'`. An authored namespace joins the Kubernetes namespace through `kubernetesNamespace`; namespaces with mapped workloads and no authored match are generated. Views remain authored because their scope expresses what a reader needs to see. Select generated content through stable authored ancestors such as `include production.**`; do not reference generated FQNs directly.
 
 Use an annotation name under a domain your organization controls. Put it on the workload controller and map it to an existing, fully qualified LikeC4 element:
 
@@ -83,7 +84,17 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
 ```
 
-The mapping belongs on the Deployment, StatefulSet, DaemonSet or CronJob itself, not only under `spec.template.metadata`.
+The mapping belongs on the Deployment, StatefulSet, DaemonSet or CronJob itself, not only under `spec.template.metadata`. It points to an independently deployable software system, container or custom kind, never a person or component.
+
+An incidental controller in a mixed namespace can instead carry the configured ignore annotation with a reason:
+
+```yaml
+metadata:
+  annotations:
+    architecture.example.com/likec4-ignore: 'Platform-managed helper, not architecture-significant'
+```
+
+Do not put both mapping and ignore annotations on one controller.
 
 ## Refresh the snapshot
 
@@ -99,9 +110,9 @@ The kubeconfig identity needs list access to namespaces, the four supported cont
 npx architecture-model-kubernetes discover model
 ```
 
-Resolve each reported unmapped controller by adding the annotation or deliberately taking its namespace out of the authored scope. Discovery does not write a file and does not fail merely because an unmapped workload exists.
+Discovery prints mapped controllers with their LikeC4 FQNs, intentionally ignored controllers with their reasons, and unmapped controllers. Resolve each unmapped controller by adding a mapping or ignore annotation, or deliberately taking its namespace out of the authored scope. Discovery does not write a file and does not fail merely because an unmapped workload exists.
 
-Discovery reports successful contexts and every access failure before it exits nonzero. A model with no synchronization targets is an error rather than an empty snapshot.
+Discovery reports successful contexts and every access failure before it exits nonzero. Unknown or non-deployable mappings and explicitly configured namespaces that are absent from the cluster are errors. A model with no synchronization targets is an error rather than an empty snapshot.
 
 Then generate and review the complete snapshot:
 
@@ -114,4 +125,6 @@ git diff -- model/deployment.generated.c4
 
 If any context is inaccessible or the generated LikeC4 is invalid, synchronization preserves the previous file. It also refuses to replace an existing file unless that file carries its generator ownership marker. Do not remove a failed target to create a partial snapshot. Fix access, metadata or model errors and rerun the complete sequence.
 
-`model/deployment.generated.c4` is generated data: do not edit it. Review changed images, rollout digests, versions and replica counts, then commit the snapshot manually when it is acceptable. Logical relationships stay authored once and carry over to every generated instance.
+`model/deployment.generated.c4` is generated data: do not edit it. Review changed images, image IDs, versions and replica counts, then commit the snapshot manually when it is acceptable. The generated title names the Kubernetes controller; `instanceOf` retains its logical association. Logical relationships stay authored and LikeC4 resolves inherited edges through the deployment hierarchy rather than connecting every instance to every other instance.
+
+Refresh after releases or before architecture reviews. Use repository history to establish snapshot age because the generated overlay has no timestamp. Registry names, versions and image IDs may be sensitive when the repository or site is public. Use dynamic views for important flows and quality scenarios for availability, failover and capacity expectations; a deployment snapshot is not the whole architecture.

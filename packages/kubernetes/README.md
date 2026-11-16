@@ -1,19 +1,20 @@
 # Kubernetes deployment synchronization for LikeC4
 
-`@architecture-model/kubernetes` reads explicit Kubernetes contexts and writes a deterministic LikeC4 deployment overlay. Keep systems, containers, relationships, environments, clusters, important namespaces and deployment views authored. Generate only current workload instances and operational metadata.
+`@architecture-model/kubernetes` reads explicit Kubernetes contexts and writes a deterministic LikeC4 deployment overlay. Keep systems, containers, relationships, environments, clusters, important namespaces and deployment views authored. Generate only workload instances and operational metadata observed at the last successful refresh.
 
 The command is read-only with respect to Kubernetes. It does not parse Helm templates or mutate a cluster.
+The command-line interface is the supported package surface; modules under `lib/` are internal.
 
 ## What it reads
 
 | Kubernetes resource | Result |
 | --- | --- |
 | Deployment, StatefulSet, DaemonSet, CronJob | One `instanceOf` node when the controller has the configured element annotation |
-| Pod | Observed image digests for its owning controller |
+| Non-terminal Pod | Kubernetes `imageID` values for its owning controller |
 | ReplicaSet, Job | Ownership path from a Pod to a Deployment or CronJob |
 | Other resources | Not read or drawn |
 
-Desired images come from the controller's Pod template. Versions come from `app.kubernetes.io/version`, Helm charts from `helm.sh/chart`, and replica fields from controller status. Pods, ReplicaSets and Jobs never become diagram nodes.
+Desired images come from the controller's Pod template. Observed image IDs come from `ContainerStatus.imageID` and may include runtime-specific prefixes. Versions come from `app.kubernetes.io/version`, Helm charts from `helm.sh/chart`, and replica fields from controller status. Pods, ReplicaSets and Jobs never become diagram nodes; completed or failed Pods do not contribute image IDs.
 
 ## Install
 
@@ -41,6 +42,7 @@ deployment {
         kubernetesContext 'production-eu'
         kubernetesNamespaces ['shop', 'workers']
         kubernetesElementAnnotation 'architecture.example.com/likec4-element'
+        kubernetesIgnoreAnnotation 'architecture.example.com/likec4-ignore'
       }
 
       namespace shop {
@@ -65,13 +67,15 @@ Each target requires:
 - `kubernetesNamespaces`: a namespace, a list, or exactly `'*'`.
 - `kubernetesElementAnnotation`: the annotation key that maps a controller to a LikeC4 element.
 
+`kubernetesIgnoreAnnotation` optionally names a second annotation used to classify an in-scope controller as intentionally omitted. Its value is the reason. The mapping and ignore annotations must differ.
+
 `kubernetesExcludeNamespaces` optionally removes namespaces from the selected scope. Prefer an explicit list; use `'*'` only when the model covers the whole cluster. An authored namespace can declare one `kubernetesNamespace`. A namespace with mapped workloads and no authored match is generated below the target.
 
-Keep this configuration and all deployment views in authored files. The command owns `model/deployment.generated.c4`.
+Keep this configuration and all deployment views in authored files. Select generated content through stable authored ancestors such as `include production.**`; do not reference generated FQNs directly from authored views or deployment relationships. The command owns `model/deployment.generated.c4`.
 
 ## Map Helm workloads
 
-Choose an annotation prefix under a domain your organization controls. Put the mapping on the workload controller, not only on the Pod template. The value is the fully qualified ID of an existing logical element.
+Choose annotation prefixes under a domain your organization controls. Put the mapping on the workload controller, not only on the Pod template. The value is the fully qualified ID of an existing independently deployable logical element, such as a software system or container, never a person or component.
 
 ```yaml
 apiVersion: apps/v1
@@ -92,7 +96,17 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
 ```
 
-Do not copy the image, digest, chart version or replica status into the authored logical model. The installed controller and its Pods supply those values.
+Do not copy the image, image ID, chart version or replica status into the authored logical model. The installed controller and its Pods supply those values.
+
+For an incidental controller in a namespace that also contains mapped workloads, use the configured ignore annotation instead of removing the namespace:
+
+```yaml
+metadata:
+  annotations:
+    architecture.example.com/likec4-ignore: 'Platform-managed helper, not architecture-significant'
+```
+
+A controller must not have both mapping and ignore annotations.
 
 ## Permissions
 
@@ -112,9 +126,9 @@ Run discovery before every update:
 npx architecture-model-kubernetes discover model
 ```
 
-`discover` writes nothing. It reports mapped and unmapped supported controllers. Resolve each unmapped controller by adding the configured annotation or deliberately removing its namespace from the target scope.
+`discover` writes nothing. It prints every mapped controller and its LikeC4 FQN, every intentionally ignored controller and reason, and every unmapped controller. Resolve each unmapped controller by adding a mapping or ignore annotation, or deliberately removing its namespace from the target scope.
 
-If one context is inaccessible, discovery still reports successful contexts and every access failure, then exits nonzero. A workspace with no synchronization targets is an error rather than an empty result.
+If one context is inaccessible, discovery still reports successful contexts and every access failure, then exits nonzero. An unknown or non-deployable logical mapping and an explicitly configured namespace missing from the cluster are also errors. A workspace with no synchronization targets is an error rather than an empty result.
 
 Then update the overlay, validate the repository and review the diff:
 
@@ -131,4 +145,6 @@ The output must end in `.c4` or `.likec4`. When it already exists, its first lin
 
 `sync` discovers every target, renders one complete candidate, validates it with LikeC4 and atomically replaces the output only when content changed. Any inaccessible target, invalid metadata, unknown annotated element, authored/generated identifier collision or invalid candidate leaves the previous snapshot unchanged. It never writes a partial multi-cluster snapshot.
 
-Review image changes, multiple digests during rollouts, and desired/ready/available/updated replica counts. Keep the generated snapshot committed, but stage and commit it manually only after the diff and repository validation are acceptable. The command does not invoke Git.
+Review image changes, multiple image IDs during rollouts, and desired/ready/available/updated replica counts. The generated title shows the Kubernetes controller name and kind while `instanceOf` retains the logical association. Inherited relationships are resolved through the deployment hierarchy; they do not imply that every instance connects to every other instance.
+
+Keep the generated snapshot committed, but stage and commit it manually only after the diff and repository validation are acceptable. The command does not invoke Git. Refresh after releases or before architecture reviews, and use repository history to establish snapshot age because generated files contain no timestamp. Registry names, versions and image IDs may be sensitive when the documentation repository or site is public.

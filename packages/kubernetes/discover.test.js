@@ -39,6 +39,13 @@ const resources = {
         spec: { replicas: 1, template: podTemplate('registry/unmapped:1') },
         status: { replicas: 1, readyReplicas: 1 },
       },
+      {
+        metadata: metadata('ignored', 'payments', 'dep-ignored', {
+          'example.com/ignore': 'platform-managed helper',
+        }),
+        spec: { replicas: 1, template: podTemplate('registry/ignored:1') },
+        status: { replicas: 1, readyReplicas: 1 },
+      },
     ],
     monitoring: [{
       metadata: metadata('metrics', 'monitoring', 'dep-metrics', { 'example.com/element': 'shop.metrics' }),
@@ -74,34 +81,41 @@ const resources = {
     ],
   },
   jobs: {
-    workers: [{ metadata: metadata('cleanup-1', 'workers', 'job-cleanup', {}, {}, [owner('CronJob', 'cleanup', 'cron-cleanup')]) }],
+    workers: [{
+      metadata: metadata('cleanup-1', 'workers', 'job-cleanup', {}, {}, [owner('CronJob', 'cleanup', 'cron-cleanup')]),
+      status: { active: 1 },
+    }],
   },
   pods: {
     payments: [
       {
         metadata: metadata('api-old-1', 'payments', 'pod-old', {}, {}, [owner('ReplicaSet', 'api-old', 'rs-old')]),
-        status: { containerStatuses: [{ imageID: 'registry/api@sha256:bbb' }] },
+        status: { phase: 'Running', containerStatuses: [{ imageID: 'registry/api@sha256:bbb' }] },
       },
       {
         metadata: metadata('api-new-1', 'payments', 'pod-new', {}, {}, [owner('ReplicaSet', 'api-new', 'rs-new')]),
-        status: { containerStatuses: [
+        status: { phase: 'Running', containerStatuses: [
           { imageID: 'registry/api@sha256:aaa' },
           { imageID: 'registry/sidecar@sha256:ccc' },
         ] },
       },
       {
         metadata: metadata('database-0', 'payments', 'pod-db', {}, {}, [owner('StatefulSet', 'database', 'sts-db')]),
-        status: { containerStatuses: [{ imageID: 'registry/database@sha256:ddd' }] },
+        status: { phase: 'Running', containerStatuses: [{ imageID: 'registry/database@sha256:ddd' }] },
       },
     ],
     workers: [
       {
         metadata: metadata('agent-a', 'workers', 'pod-agent', {}, {}, [owner('DaemonSet', 'agent', 'ds-agent')]),
-        status: { containerStatuses: [{ imageID: 'registry/agent@sha256:eee' }] },
+        status: { phase: 'Running', containerStatuses: [{ imageID: 'registry/agent@sha256:eee' }] },
       },
       {
         metadata: metadata('cleanup-1-a', 'workers', 'pod-cleanup', {}, {}, [owner('Job', 'cleanup-1', 'job-cleanup')]),
-        status: { containerStatuses: [{ imageID: 'registry/cleanup@sha256:fff' }] },
+        status: { phase: 'Running', containerStatuses: [{ imageID: 'registry/cleanup@sha256:fff' }] },
+      },
+      {
+        metadata: metadata('cleanup-old', 'workers', 'pod-cleanup-old', {}, {}, [owner('Job', 'cleanup-1', 'job-cleanup')]),
+        status: { phase: 'Succeeded', containerStatuses: [{ imageID: 'registry/cleanup@sha256:old' }] },
       },
     ],
   },
@@ -124,6 +138,7 @@ const target = {
   includedNamespaces: '*',
   excludedNamespaces: ['monitoring'],
   elementAnnotation: 'example.com/element',
+  ignoreAnnotation: 'example.com/ignore',
   authoredNamespaces: {},
 }
 
@@ -134,6 +149,7 @@ test('discovers supported mapped workloads and derives rollout metadata', async 
     context: 'production-eu',
     deploymentFqn: 'production.eu',
     namespaces: ['payments', 'workers'],
+    missingNamespaces: [],
     workloads: [
       {
         namespace: 'payments',
@@ -143,7 +159,7 @@ test('discovers supported mapped workloads and derives rollout metadata', async 
         version: '1.8.0',
         chart: 'shop-2.4.0',
         desiredImages: ['registry/api:1.8.0', 'registry/migrate:1', 'registry/sidecar:2'],
-        observedImageDigests: ['registry/api@sha256:aaa', 'registry/api@sha256:bbb', 'registry/sidecar@sha256:ccc'],
+        observedImageIds: ['registry/api@sha256:aaa', 'registry/api@sha256:bbb', 'registry/sidecar@sha256:ccc'],
         replicas: { desired: 3, ready: 2, available: 2, updated: 1 },
       },
       {
@@ -154,8 +170,8 @@ test('discovers supported mapped workloads and derives rollout metadata', async 
         version: null,
         chart: null,
         desiredImages: ['registry/database:15'],
-        observedImageDigests: ['registry/database@sha256:ddd'],
-        replicas: { desired: 2, ready: 2, available: 2, updated: 2 },
+        observedImageIds: ['registry/database@sha256:ddd'],
+        replicas: { desired: 2, ready: 2, updated: 2 },
       },
       {
         namespace: 'workers',
@@ -165,7 +181,7 @@ test('discovers supported mapped workloads and derives rollout metadata', async 
         version: null,
         chart: null,
         desiredImages: ['registry/cleanup:7'],
-        observedImageDigests: ['registry/cleanup@sha256:fff'],
+        observedImageIds: ['registry/cleanup@sha256:fff'],
         replicas: {},
       },
       {
@@ -176,10 +192,16 @@ test('discovers supported mapped workloads and derives rollout metadata', async 
         version: null,
         chart: null,
         desiredImages: ['registry/agent:4'],
-        observedImageDigests: ['registry/agent@sha256:eee'],
+        observedImageIds: ['registry/agent@sha256:eee'],
         replicas: { desired: 4, ready: 3, available: 3, updated: 4 },
       },
     ],
+    ignored: [{
+      namespace: 'payments',
+      kind: 'Deployment',
+      name: 'ignored',
+      reason: 'platform-managed helper',
+    }],
     unmapped: [{ namespace: 'payments', kind: 'Deployment', name: 'unmapped' }],
   })
 })
@@ -192,7 +214,40 @@ test('uses the explicit namespace scope before discovering resources', async () 
   }, clientFactory)
 
   assert.deepEqual(snapshot.namespaces, ['payments'])
+  assert.deepEqual(snapshot.missingNamespaces, [])
   assert.equal(snapshot.workloads.every(workload => workload.namespace === 'payments'), true)
+})
+
+test('reports explicitly configured namespaces that do not exist', async () => {
+  const snapshot = await discoverTarget({
+    ...target,
+    includedNamespaces: ['payments', 'missing'],
+    excludedNamespaces: [],
+  }, clientFactory)
+
+  assert.deepEqual(snapshot.namespaces, ['payments'])
+  assert.deepEqual(snapshot.missingNamespaces, ['missing'])
+})
+
+test('rejects a controller with both mapping and ignore annotations', async () => {
+  await assert.rejects(discoverTarget({
+    ...target,
+    includedNamespaces: ['payments'],
+    excludedNamespaces: [],
+  }, async () => {
+    const client = await clientFactory()
+    return {
+      ...client,
+      listDeployments: async () => [{
+        metadata: metadata('ambiguous', 'payments', 'dep-ambiguous', {
+          'example.com/element': 'shop.api',
+          'example.com/ignore': 'not significant',
+        }),
+        spec: { replicas: 1, template: podTemplate('registry/api:1') },
+        status: { replicas: 1 },
+      }],
+    }
+  }), /both mapping and ignore annotations/)
 })
 
 test('normalizes context access failures', async () => {

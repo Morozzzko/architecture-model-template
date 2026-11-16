@@ -49,28 +49,35 @@ const replicaStatus = (kind, resource) => {
   return Object.fromEntries([
     ['desired', resource.spec?.replicas ?? status.replicas],
     ['ready', status.readyReplicas],
-    ['available', status.availableReplicas ?? status.currentReplicas],
+    ['available', status.availableReplicas],
     ['updated', status.updatedReplicas],
   ].filter(([, value]) => Number.isFinite(value)))
 }
 
-const normalizeWorkload = (namespace, kind, resource, annotation) => {
+const normalizeWorkload = (namespace, kind, resource, annotation, ignoreAnnotation) => {
   const labels = resource.metadata?.labels ?? {}
+  const annotations = resource.metadata?.annotations ?? {}
+  const element = annotations[annotation]?.trim()
+  const ignoreReason = ignoreAnnotation ? annotations[ignoreAnnotation]?.trim() : null
+  if (element && ignoreReason) {
+    throw new Error(`${kind} ${namespace}/${resource.metadata?.name} has both mapping and ignore annotations`)
+  }
   return {
     uid: resource.metadata?.uid,
     namespace,
     kind,
     name: resource.metadata?.name,
-    element: resource.metadata?.annotations?.[annotation]?.trim(),
+    element,
+    ignoreReason,
     version: labels['app.kubernetes.io/version'] ?? null,
     chart: labels['helm.sh/chart'] ?? null,
     desiredImages: desiredImages(kind, resource),
-    observedImageDigests: new Set(),
+    observedImageIds: new Set(),
     replicas: replicaStatus(kind, resource),
   }
 }
 
-const listNamespaceResources = async (client, namespace, annotation) => {
+const listNamespaceResources = async (client, namespace, annotation, ignoreAnnotation) => {
   const [deployments, statefulSets, daemonSets, cronJobs, replicaSets, jobs, pods] = await Promise.all([
     client.listDeployments(namespace),
     client.listStatefulSets(namespace),
@@ -81,10 +88,10 @@ const listNamespaceResources = async (client, namespace, annotation) => {
     client.listPods(namespace),
   ])
   const workloads = [
-    ...deployments.map(resource => normalizeWorkload(namespace, 'Deployment', resource, annotation)),
-    ...statefulSets.map(resource => normalizeWorkload(namespace, 'StatefulSet', resource, annotation)),
-    ...daemonSets.map(resource => normalizeWorkload(namespace, 'DaemonSet', resource, annotation)),
-    ...cronJobs.map(resource => normalizeWorkload(namespace, 'CronJob', resource, annotation)),
+    ...deployments.map(resource => normalizeWorkload(namespace, 'Deployment', resource, annotation, ignoreAnnotation)),
+    ...statefulSets.map(resource => normalizeWorkload(namespace, 'StatefulSet', resource, annotation, ignoreAnnotation)),
+    ...daemonSets.map(resource => normalizeWorkload(namespace, 'DaemonSet', resource, annotation, ignoreAnnotation)),
+    ...cronJobs.map(resource => normalizeWorkload(namespace, 'CronJob', resource, annotation, ignoreAnnotation)),
   ]
   const mappedByUid = new Map(workloads.filter(workload => workload.element).map(workload => [workload.uid, workload]))
   const childOwners = new Map()
@@ -93,12 +100,13 @@ const listNamespaceResources = async (client, namespace, annotation) => {
     if (workload && resource.metadata?.uid) childOwners.set(resource.metadata.uid, workload)
   }
   for (const pod of pods) {
+    if (pod.metadata?.deletionTimestamp || ['Failed', 'Succeeded'].includes(pod.status?.phase)) continue
     const uid = ownerUid(pod)
     const workload = mappedByUid.get(uid) ?? childOwners.get(uid)
     if (!workload) continue
     const statuses = [...(pod.status?.initContainerStatuses ?? []), ...(pod.status?.containerStatuses ?? [])]
     for (const status of statuses) {
-      if (status.imageID) workload.observedImageDigests.add(status.imageID)
+      if (status.imageID) workload.observedImageIds.add(status.imageID)
     }
   }
   return workloads
@@ -115,23 +123,33 @@ export const discoverTarget = async (target, clientFactory = apiClientFactory) =
     const client = await clientFactory(target.context)
     const available = uniqueSorted((await client.listNamespaces()).map(namespace => namespace.metadata?.name))
     const excluded = new Set(target.excludedNamespaces)
+    const missingNamespaces = target.includedNamespaces === '*'
+      ? []
+      : target.includedNamespaces.filter(namespace => !available.includes(namespace))
     const included = target.includedNamespaces === '*'
       ? available
       : target.includedNamespaces.filter(namespace => available.includes(namespace))
     const namespaces = included.filter(namespace => !excluded.has(namespace))
     const workloads = (await Promise.all(namespaces.map(namespace =>
-      listNamespaceResources(client, namespace, target.elementAnnotation),
+      listNamespaceResources(client, namespace, target.elementAnnotation, target.ignoreAnnotation),
     ))).flat().sort(compareWorkloads)
 
     return {
       context: target.context,
       deploymentFqn: target.deploymentFqn,
       namespaces,
-      workloads: workloads.filter(workload => workload.element).map(({ uid, observedImageDigests, ...workload }) => ({
+      missingNamespaces,
+      workloads: workloads.filter(workload => workload.element).map(({ uid, observedImageIds, ignoreReason, ...workload }) => ({
         ...workload,
-        observedImageDigests: uniqueSorted([...observedImageDigests]),
+        observedImageIds: uniqueSorted([...observedImageIds]),
       })),
-      unmapped: workloads.filter(workload => !workload.element).map(workload => ({
+      ignored: workloads.filter(workload => !workload.element && workload.ignoreReason).map(workload => ({
+        namespace: workload.namespace,
+        kind: workload.kind,
+        name: workload.name,
+        reason: workload.ignoreReason,
+      })),
+      unmapped: workloads.filter(workload => !workload.element && !workload.ignoreReason).map(workload => ({
         namespace: workload.namespace,
         kind: workload.kind,
         name: workload.name,

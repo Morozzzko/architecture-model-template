@@ -15,6 +15,9 @@
   "bin": {
     "architecture-model-kubernetes": "index.js"
   },
+  "exports": {
+    "./package.json": "./package.json"
+  },
   "files": [
     "index.js",
     "lib",

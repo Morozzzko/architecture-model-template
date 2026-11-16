@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto'
 import { generatedHeader } from './generated.js'
+import { mappingIssue } from './mappings.js'
 
 const compare = (left, right) => left < right ? -1 : left > right ? 1 : 0
 const sorted = values => [...new Set(values)].sort(compare)
@@ -46,7 +47,11 @@ const list = (lines, indent, key, values) => {
 }
 
 const workloadLines = (workload, id, context, indent) => {
-  const lines = [`${indent}${id} = instanceOf ${workload.element} {`, `${indent}  metadata {`]
+  const lines = [
+    `${indent}${id} = instanceOf ${workload.element} {`,
+    `${indent}  title ${quote(`${workload.name} (${workload.kind})`)}`,
+    `${indent}  metadata {`,
+  ]
   const metadataIndent = `${indent}    `
   scalar(lines, metadataIndent, 'kubernetesContext', context)
   scalar(lines, metadataIndent, 'kubernetesNamespace', workload.namespace)
@@ -55,7 +60,7 @@ const workloadLines = (workload, id, context, indent) => {
   scalar(lines, metadataIndent, 'version', workload.version)
   scalar(lines, metadataIndent, 'helmChart', workload.chart)
   list(lines, metadataIndent, 'desiredImages', workload.desiredImages)
-  list(lines, metadataIndent, 'observedImageDigests', workload.observedImageDigests)
+  list(lines, metadataIndent, 'observedImageIds', workload.observedImageIds)
   scalar(lines, metadataIndent, 'desiredReplicas', workload.replicas.desired)
   scalar(lines, metadataIndent, 'readyReplicas', workload.replicas.ready)
   scalar(lines, metadataIndent, 'availableReplicas', workload.replicas.available)
@@ -72,9 +77,8 @@ const workloadIds = workloads => assignIds(workloads, workload => workload.name,
 
 const assertElementsExist = (model, workloads) => {
   for (const workload of workloads) {
-    if (!model.findElement(workload.element)) {
-      throw new Error(`${workload.kind} ${workload.namespace}/${workload.name} maps to unknown element ${workload.element}`)
-    }
+    const issue = mappingIssue(model, workload)
+    if (issue) throw new Error(issue)
   }
 }
 
@@ -120,7 +124,13 @@ const renderGeneratedNamespaces = (model, target, snapshot, namespaces) => {
   const lines = [`  extend ${target.deploymentFqn} {`]
   namespaces.forEach((namespace, namespaceIndex) => {
     if (namespaceIndex > 0) lines.push('')
-    lines.push(`    namespace ${ids.get(namespace)} {`, '      metadata {', `        kubernetesNamespace ${quote(namespace)}`, '      }')
+    lines.push(
+      `    namespace ${ids.get(namespace)} {`,
+      `      title ${quote(namespace)}`,
+      '      metadata {',
+      `        kubernetesNamespace ${quote(namespace)}`,
+      '      }',
+    )
     const workloads = workloadsIn(snapshot, namespace)
     const idsByWorkload = workloadIds(workloads)
     workloads.forEach((workload, workloadIndex) => {
@@ -144,11 +154,11 @@ export const renderOverlay = ({ model, targets, snapshots }) => {
     if (!snapshot) throw new Error(`Missing Kubernetes snapshot for ${fqn}`)
     assertElementsExist(model, snapshot.workloads)
     const namespaces = sorted(snapshot.workloads.map(workload => workload.namespace))
-    for (const namespace of namespaces.filter(name => target.authoredNamespaces[name])) {
+    for (const namespace of namespaces.filter(name => Object.hasOwn(target.authoredNamespaces, name))) {
       const block = renderAuthoredNamespace(model, target, snapshot, namespace)
       if (block) blocks.push(block)
     }
-    const generated = namespaces.filter(namespace => !target.authoredNamespaces[namespace])
+    const generated = namespaces.filter(namespace => !Object.hasOwn(target.authoredNamespaces, namespace))
     const block = renderGeneratedNamespaces(model, target, snapshot, generated)
     if (block) blocks.push(block)
   }

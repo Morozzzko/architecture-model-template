@@ -30,8 +30,14 @@ export const run = async (args, {
 
     if (command === 'discover') {
       const report = await discoverFn({ workspace })
-      writeOut(`Discovered ${count(report.summary.targets, 'target')}: ${report.summary.mapped} mapped, ${report.summary.unmapped} unmapped`)
+      writeOut(`Discovered ${count(report.summary.targets, 'target')}: ${report.summary.mapped} mapped, ${report.summary.ignored} ignored, ${report.summary.unmapped} unmapped`)
       for (const snapshot of report.snapshots) {
+        for (const workload of snapshot.workloads) {
+          writeOut(`Mapped ${snapshot.context} ${workload.kind} ${workload.namespace}/${workload.name} -> ${workload.element}`)
+        }
+        for (const workload of snapshot.ignored) {
+          writeOut(`Ignored ${snapshot.context} ${workload.kind} ${workload.namespace}/${workload.name}: ${workload.reason}`)
+        }
         for (const workload of snapshot.unmapped) {
           writeOut(`Unmapped ${snapshot.context} ${workload.kind} ${workload.namespace}/${workload.name}`)
         }
@@ -43,7 +49,7 @@ export const run = async (args, {
     const output = values.output ?? joinWorkspace(workspace, 'deployment.generated.c4')
     const report = await syncFn({ workspace, output })
     const verb = report.status === 'changed' ? 'Updated deployment snapshot' : 'Deployment snapshot unchanged'
-    writeOut(`${verb}: ${output} (${count(report.summary.targets, 'target')}, ${report.summary.mapped} mapped, ${report.summary.unmapped} unmapped)`)
+    writeOut(`${verb}: ${output} (${count(report.summary.targets, 'target')}, ${report.summary.mapped} mapped, ${report.summary.ignored} ignored, ${report.summary.unmapped} unmapped)`)
     return 0
   } catch (error) {
     writeError(error.message)

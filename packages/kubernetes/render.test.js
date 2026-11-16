@@ -5,6 +5,7 @@ import { renderOverlay } from './lib/render.js'
 
 const source = `specification {
   element system
+  element container
   element component
   deploymentNode environment
   deploymentNode cluster
@@ -13,10 +14,11 @@ const source = `specification {
 
 model {
   shop = system {
-    api = component
-    database = component
-    manual = component
-    worker = component
+    api = container
+    database = container
+    manual = container
+    worker = container
+    detail = component
   }
 }
 
@@ -62,7 +64,7 @@ test('renders authored and generated namespaces as a deterministic overlay', asy
         version: null,
         chart: null,
         desiredImages: ['registry/worker:2'],
-        observedImageDigests: [],
+        observedImageIds: [],
         replicas: {},
       },
       {
@@ -73,7 +75,7 @@ test('renders authored and generated namespaces as a deterministic overlay', asy
         version: '1.8.0',
         chart: 'shop-2.4.0',
         desiredImages: ['registry/sidecar:2', 'registry/api:1.8.0'],
-        observedImageDigests: ['registry/api@sha256:bbb', 'registry/api@sha256:aaa'],
+        observedImageIds: ['registry/api@sha256:bbb', 'registry/api@sha256:aaa'],
         replicas: { updated: 1, available: 2, desired: 3, ready: 2 },
       },
     ],
@@ -86,6 +88,7 @@ test('renders authored and generated namespaces as a deterministic overlay', asy
 deployment {
   extend production.eu.payments {
     api_service = instanceOf shop.api {
+      title 'api-service (Deployment)'
       metadata {
         kubernetesContext 'prod\\\\east\\'s'
         kubernetesNamespace 'payments'
@@ -97,7 +100,7 @@ deployment {
           'registry/api:1.8.0',
           'registry/sidecar:2'
         ]
-        observedImageDigests [
+        observedImageIds [
           'registry/api@sha256:aaa',
           'registry/api@sha256:bbb'
         ]
@@ -111,10 +114,12 @@ deployment {
 
   extend production.eu {
     namespace workers {
+      title 'workers'
       metadata {
         kubernetesNamespace 'workers'
       }
       nightly_cleanup = instanceOf shop.worker {
+        title 'nightly-cleanup (CronJob)'
         metadata {
           kubernetesContext 'prod\\\\east\\'s'
           kubernetesNamespace 'workers'
@@ -141,7 +146,7 @@ test('adds stable hashes when sanitized workload names collide', async () => {
     version: null,
     chart: null,
     desiredImages: [],
-    observedImageDigests: [],
+    observedImageIds: [],
     replicas: {},
   }))
   const snapshot = {
@@ -173,7 +178,7 @@ test('does not render selected namespaces without mapped workloads', async () =>
       version: null,
       chart: null,
       desiredImages: [],
-      observedImageDigests: [],
+      observedImageIds: [],
       replicas: {},
     }],
     unmapped: [],
@@ -200,7 +205,7 @@ test('rejects a generated workload that collides with an authored instance', asy
       version: null,
       chart: null,
       desiredImages: [],
-      observedImageDigests: [],
+      observedImageIds: [],
       replicas: {},
     }],
   }
@@ -221,7 +226,7 @@ test('rejects authored collisions before disambiguating generated workload names
     version: null,
     chart: null,
     desiredImages: [],
-    observedImageDigests: [],
+    observedImageIds: [],
     replicas: {},
   }))
   const snapshot = {
@@ -248,7 +253,7 @@ test('rejects authored namespace collisions before disambiguating generated name
     version: null,
     chart: null,
     desiredImages: [],
-    observedImageDigests: [],
+    observedImageIds: [],
     replicas: {},
   }))
   const snapshot = {
@@ -262,5 +267,31 @@ test('rejects authored namespace collisions before disambiguating generated name
   assert.throws(
     () => renderOverlay({ model, targets: [target], snapshots: [snapshot] }),
     /my_ns.*authored|authored.*my_ns/,
+  )
+})
+
+test('rejects mapping a controller to a component', async () => {
+  const model = await loadedModel()
+  const snapshot = {
+    context: target.context,
+    deploymentFqn: target.deploymentFqn,
+    namespaces: ['workers'],
+    unmapped: [],
+    workloads: [{
+      namespace: 'workers',
+      kind: 'Deployment',
+      name: 'detail',
+      element: 'shop.detail',
+      version: null,
+      chart: null,
+      desiredImages: [],
+      observedImageIds: [],
+      replicas: {},
+    }],
+  }
+
+  assert.throws(
+    () => renderOverlay({ model, targets: [target], snapshots: [snapshot] }),
+    /component.*not independently deployable|not independently deployable.*component/,
   )
 })

@@ -38,9 +38,9 @@ deployment {
 }
 `
 
-const fixture = async () => {
+const fixture = async (modelSource = source) => {
   const workspace = await mkdtemp(join(tmpdir(), 'architecture-model-kubernetes-sync-'))
-  await writeFile(join(workspace, 'model.c4'), source)
+  await writeFile(join(workspace, 'model.c4'), modelSource)
   return { workspace, output: join(workspace, 'deployment.generated.c4') }
 }
 
@@ -83,6 +83,7 @@ test('discovers every target concurrently and reports unmapped workloads without
 
   assert.equal(report.summary.targets, 2)
   assert.equal(report.summary.mapped, 2)
+  assert.equal(report.summary.ignored, 0)
   assert.equal(report.summary.unmapped, 1)
   assert.deepEqual(report.snapshots.map(snapshot => snapshot.context), ['cluster-eu', 'cluster-us'])
   assert.deepEqual(report.snapshots[0].unmapped, [{ namespace: 'apps', kind: 'Deployment', name: 'api' }])
@@ -193,6 +194,37 @@ test('discover and sync reject a workspace without synchronization targets', asy
   await assert.rejects(discover({ workspace }), /no Kubernetes synchronization targets/i)
   await assert.rejects(sync({ workspace }), /no Kubernetes synchronization targets/i)
   await assert.rejects(access(join(workspace, 'deployment.generated.c4')), error => error.code === 'ENOENT')
+})
+
+test('reports unknown logical element mappings during discovery', async () => {
+  const { workspace } = await fixture()
+  const report = await discover({
+    workspace,
+    clientFactory: async context => ({
+      ...clientFor(context),
+      listDeployments: async () => [{
+        ...deployment(context),
+        metadata: {
+          ...deployment(context).metadata,
+          annotations: { 'example.com/element': 'missing.element' },
+        },
+      }],
+    }),
+  })
+
+  assert.equal(report.failures.length, 2)
+  assert.equal(report.failures.every(failure => failure.message.includes('missing.element')), true)
+})
+
+test('refuses synchronization when an explicitly configured namespace is missing', async () => {
+  const explicitSource = source.replaceAll("kubernetesNamespaces '*'", "kubernetesNamespaces ['apps', 'missing']")
+  const { workspace, output } = await fixture(explicitSource)
+
+  await assert.rejects(
+    sync({ workspace, output, clientFactory: async context => clientFor(context) }),
+    /missing.*namespace|namespace.*missing/,
+  )
+  await assert.rejects(access(output), error => error.code === 'ENOENT')
 })
 
 test('uses the workspace output by default and reports an unchanged second sync', async () => {

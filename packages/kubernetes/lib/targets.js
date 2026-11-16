@@ -6,6 +6,7 @@ const targetKeys = [
   'kubernetesNamespaces',
   'kubernetesExcludeNamespaces',
   'kubernetesElementAnnotation',
+  'kubernetesIgnoreAnnotation',
 ]
 
 const values = value => {
@@ -21,6 +22,12 @@ const one = (node, key, errors) => {
   return normalized[0]
 }
 
+const optionalOne = (node, key, errors) => {
+  const normalized = values(node.getMetadata(key))
+  if (normalized.length > 1) errors.push(`${key} must have at most one value`)
+  return normalized[0] ?? null
+}
+
 const namespaceScope = (node, errors) => {
   const included = values(node.getMetadata('kubernetesNamespaces'))
   const excluded = values(node.getMetadata('kubernetesExcludeNamespaces'))
@@ -30,8 +37,10 @@ const namespaceScope = (node, errors) => {
     return { includedNamespaces: '*', excludedNamespaces: excluded }
   }
   const excludedSet = new Set(excluded)
+  const selected = included.filter(namespace => !excludedSet.has(namespace))
+  if (selected.length === 0) errors.push('kubernetesNamespaces is empty after exclusions')
   return {
-    includedNamespaces: included.filter(namespace => !excludedSet.has(namespace)),
+    includedNamespaces: selected,
     excludedNamespaces: excluded,
   }
 }
@@ -42,10 +51,13 @@ const authoredNamespaces = target => {
     if (!descendant.isDeploymentNode()) continue
     const namespace = values(descendant.getMetadata('kubernetesNamespace'))
     if (namespace.length === 0) continue
+    if (descendant.kind !== 'namespace') {
+      throw new Error(`${descendant.id} has kubernetesNamespace but is not a namespace deployment node`)
+    }
     if (namespace.length !== 1) {
       throw new Error(`${descendant.id} must have exactly one kubernetesNamespace`)
     }
-    if (mappings[namespace[0]]) {
+    if (Object.hasOwn(mappings, namespace[0])) {
       throw new Error(`Kubernetes namespace ${namespace[0]} is mapped by both ${mappings[namespace[0]]} and ${descendant.id}`)
     }
     mappings[namespace[0]] = descendant.id
@@ -67,9 +79,16 @@ export const readTargets = async (workspace, { exclude } = {}) => {
   }
 
   const targets = candidates.map(node => {
+    if (node.kind !== 'cluster') {
+      throw new Error(`${node.id} has Kubernetes target metadata but is not a cluster deployment node`)
+    }
     const errors = []
     const context = one(node, 'kubernetesContext', errors)
     const elementAnnotation = one(node, 'kubernetesElementAnnotation', errors)
+    const ignoreAnnotation = optionalOne(node, 'kubernetesIgnoreAnnotation', errors)
+    if (ignoreAnnotation && ignoreAnnotation === elementAnnotation) {
+      errors.push('kubernetesIgnoreAnnotation must differ from kubernetesElementAnnotation')
+    }
     const scope = namespaceScope(node, errors)
     if (errors.length > 0) {
       throw new Error(`Invalid Kubernetes target ${node.id}: ${errors.join(', ')}`)
@@ -79,6 +98,7 @@ export const readTargets = async (workspace, { exclude } = {}) => {
       context,
       ...scope,
       elementAnnotation,
+      ...(ignoreAnnotation ? { ignoreAnnotation } : {}),
       authoredNamespaces: authoredNamespaces(node),
     }
   }).sort((left, right) => left.deploymentFqn < right.deploymentFqn ? -1 : left.deploymentFqn > right.deploymentFqn ? 1 : 0)

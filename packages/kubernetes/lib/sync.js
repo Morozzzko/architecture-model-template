@@ -1,12 +1,14 @@
 import { join } from 'node:path'
 import { discoverTarget } from './discover.js'
+import { mappingIssue } from './mappings.js'
 import { renderOverlay } from './render.js'
 import { readTargets } from './targets.js'
 import { assertOutputOwned, replaceIfChanged, validateCandidate } from './validate.js'
 
-const summaryOf = (snapshots, failures = []) => ({
-  targets: snapshots.length + failures.length,
+const summaryOf = (snapshots, targetCount = snapshots.length) => ({
+  targets: targetCount,
   mapped: snapshots.reduce((total, snapshot) => total + snapshot.workloads.length, 0),
+  ignored: snapshots.reduce((total, snapshot) => total + snapshot.ignored.length, 0),
   unmapped: snapshots.reduce((total, snapshot) => total + snapshot.unmapped.length, 0),
 })
 
@@ -35,11 +37,24 @@ const discoverSnapshots = async (targets, clientFactory) => {
   return { snapshots, failures }
 }
 
+const snapshotFailures = (model, snapshots) => snapshots.flatMap(snapshot => [
+  ...snapshot.missingNamespaces.map(namespace => ({
+    context: snapshot.context,
+    deploymentFqn: snapshot.deploymentFqn,
+    message: `Kubernetes context ${snapshot.context} is missing configured namespace ${namespace}`,
+  })),
+  ...snapshot.workloads.flatMap(workload => {
+    const message = mappingIssue(model, workload)
+    return message ? [{ context: snapshot.context, deploymentFqn: snapshot.deploymentFqn, message }] : []
+  }),
+])
+
 export const discover = async ({ workspace = 'model', clientFactory } = {}) => {
-  const { targets } = await readTargets(workspace)
+  const { model, targets } = await readTargets(workspace)
   requireTargets(targets)
-  const { snapshots, failures } = await discoverSnapshots(targets, clientFactory)
-  return { workspace, snapshots, failures, summary: summaryOf(snapshots, failures) }
+  const { snapshots, failures: accessFailures } = await discoverSnapshots(targets, clientFactory)
+  const failures = [...accessFailures, ...snapshotFailures(model, snapshots)]
+  return { workspace, snapshots, failures, summary: summaryOf(snapshots, targets.length) }
 }
 
 export const sync = async ({
@@ -52,7 +67,8 @@ export const sync = async ({
   await assertOutputOwned({ workspace, output })
   const { model, targets } = await readTargets(workspace, { exclude: output })
   requireTargets(targets)
-  const { snapshots, failures } = await discoverSnapshots(targets, clientFactory)
+  const { snapshots, failures: accessFailures } = await discoverSnapshots(targets, clientFactory)
+  const failures = [...accessFailures, ...snapshotFailures(model, snapshots)]
   if (failures.length > 0) {
     throw new Error(['Unable to read all Kubernetes synchronization targets:', ...failures.map(failure => `- ${failure.message}`)].join('\n'))
   }

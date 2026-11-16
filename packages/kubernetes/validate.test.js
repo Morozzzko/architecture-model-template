@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { mkdir, mkdtemp, readFile, readdir, stat, utimes, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, readdir, stat, symlink, utimes, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { test } from 'node:test'
@@ -125,6 +125,17 @@ test('rejects an output extension that LikeC4 will not load', async () => {
   await assert.rejects(
     validateCandidate({ workspace, output, source: candidate }),
     /\.c4.*\.likec4|\.likec4.*\.c4/,
+  )
+})
+
+test('rejects an output directory symlinked outside the workspace', async () => {
+  const { workspace } = await fixture()
+  const outside = await mkdtemp(join(tmpdir(), 'architecture-model-kubernetes-outside-'))
+  await symlink(outside, join(workspace, 'generated'), 'dir')
+
+  await assert.rejects(
+    validateCandidate({ workspace, output: join(workspace, 'generated', 'deployment.c4'), source: candidate }),
+    /Output must be a file inside the LikeC4 workspace/,
   )
 })
 

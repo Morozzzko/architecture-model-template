@@ -1,4 +1,9 @@
 import assert from 'node:assert/strict'
+import { once } from 'node:events'
+import { mkdtemp, writeFile } from 'node:fs/promises'
+import { createServer } from 'node:http'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { test } from 'node:test'
 import { discoverTarget } from './lib/discover.js'
 
@@ -142,6 +147,36 @@ const target = {
   authoredNamespaces: {},
 }
 
+const withKubernetesApi = async (handler, operation) => {
+  const server = createServer(handler)
+  server.listen(0, '127.0.0.1')
+  await once(server, 'listening')
+  const workspace = await mkdtemp(join(tmpdir(), 'architecture-model-kubernetes-client-'))
+  const kubeconfig = join(workspace, 'config.json')
+  const previous = process.env.KUBECONFIG
+  const address = server.address()
+  await writeFile(kubeconfig, JSON.stringify({
+    apiVersion: 'v1',
+    kind: 'Config',
+    clusters: [{
+      name: 'test',
+      cluster: { server: `http://127.0.0.1:${address.port}`, 'insecure-skip-tls-verify': true },
+    }],
+    contexts: [{ name: target.context, context: { cluster: 'test', user: 'test' } }],
+    'current-context': target.context,
+    users: [{ name: 'test', user: { token: 'test-token' } }],
+  }))
+  process.env.KUBECONFIG = kubeconfig
+  try {
+    return await operation()
+  } finally {
+    if (previous === undefined) delete process.env.KUBECONFIG
+    else process.env.KUBECONFIG = previous
+    server.closeAllConnections()
+    await new Promise((resolve, reject) => server.close(error => error ? reject(error) : resolve()))
+  }
+}
+
 test('discovers supported mapped workloads and derives rollout metadata', async () => {
   const snapshot = await discoverTarget(target, clientFactory)
 
@@ -203,6 +238,57 @@ test('discovers supported mapped workloads and derives rollout metadata', async 
       reason: 'platform-managed helper',
     }],
     unmapped: [{ namespace: 'payments', kind: 'Deployment', name: 'unmapped' }],
+  })
+})
+
+test('uses the Kubernetes client for authenticated API discovery', async () => {
+  const requests = []
+  const responses = new Map([
+    ['/api/v1/namespaces', [{ metadata: { name: 'apps' } }]],
+    ['/apis/apps/v1/namespaces/apps/deployments', [{
+      metadata: metadata('api', 'apps', 'dep-api', { 'example.com/element': 'shop.api' }),
+      spec: { replicas: 1, template: podTemplate('registry/api:1') },
+      status: { replicas: 1, readyReplicas: 1 },
+    }]],
+    ['/apis/apps/v1/namespaces/apps/statefulsets', []],
+    ['/apis/apps/v1/namespaces/apps/daemonsets', []],
+    ['/apis/batch/v1/namespaces/apps/cronjobs', []],
+    ['/apis/apps/v1/namespaces/apps/replicasets', []],
+    ['/apis/batch/v1/namespaces/apps/jobs', []],
+    ['/api/v1/namespaces/apps/pods', []],
+  ])
+
+  const snapshot = await withKubernetesApi((request, response) => {
+    const path = new URL(request.url, 'http://localhost').pathname
+    requests.push({ path, authorization: request.headers.authorization })
+    const items = responses.get(path)
+    response.writeHead(items ? 200 : 404, { 'content-type': 'application/json' })
+    response.end(JSON.stringify({ apiVersion: 'v1', kind: 'List', items: items ?? [] }))
+  }, () => discoverTarget({
+    ...target,
+    includedNamespaces: ['apps'],
+    excludedNamespaces: [],
+  }))
+
+  assert.deepEqual(requests.map(request => request.path).sort(), [...responses.keys()].sort())
+  assert.equal(requests.every(request => request.authorization === 'Bearer test-token'), true)
+  assert.deepEqual(snapshot.workloads.map(workload => workload.name), ['api'])
+})
+
+test('aborts a Kubernetes client request when discovery times out', async () => {
+  let aborted
+  const requestAborted = new Promise(resolve => { aborted = resolve })
+
+  await withKubernetesApi((request, response) => {
+    request.once('aborted', aborted)
+    response.once('close', aborted)
+  }, async () => {
+    await assert.rejects(discoverTarget({
+      ...target,
+      includedNamespaces: ['apps'],
+      excludedNamespaces: [],
+    }, undefined, { timeoutMs: 10 }), /timed out.*production-eu|production-eu.*timed out/i)
+    await requestAborted
   })
 })
 

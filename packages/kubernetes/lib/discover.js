@@ -1,4 +1,4 @@
-import { AppsV1Api, BatchV1Api, CoreV1Api, KubeConfig } from '@kubernetes/client-node'
+import { AppsV1Api, BatchV1Api, CoreV1Api, KubeConfig, Observable } from '@kubernetes/client-node'
 
 const uniqueSorted = values => [...new Set(values.filter(Boolean))].sort()
 const namespaceConcurrency = 4
@@ -27,12 +27,13 @@ const apiClientFactory = async (context, { signal, timeoutMs }) => {
   const core = kubeconfig.makeApiClient(CoreV1Api)
   const request = { timeoutSeconds: Math.max(1, Math.ceil(timeoutMs / 1_000)) }
   const options = {
+    middlewareMergeStrategy: 'append',
     middleware: [{
-      pre: async context => {
+      pre: context => {
         context.setSignal(signal)
-        return context
+        return new Observable(Promise.resolve(context))
       },
-      post: async context => context,
+      post: context => new Observable(Promise.resolve(context)),
     }],
   }
   return {

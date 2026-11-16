@@ -26,11 +26,16 @@ const assignIds = (items, name, identity) => {
     const base = identifier(name(item))
     groups.set(base, [...(groups.get(base) ?? []), item])
   }
-  return new Map(items.map(item => {
+  const used = new Set(groups.keys())
+  const assigned = new Map()
+  for (const item of [...items].sort((left, right) => compare(identity(left), identity(right)))) {
     const base = identifier(name(item))
-    const id = groups.get(base).length === 1 ? base : `${base}_${stableHash(identity(item))}`
-    return [item, id]
-  }))
+    let id = groups.get(base).length === 1 ? base : `${base}_${stableHash(identity(item))}`
+    while (used.has(id) && id !== base) id = `${id}_${stableHash(`${identity(item)}:${id}`)}`
+    used.add(id)
+    assigned.set(item, id)
+  }
+  return assigned
 }
 
 const scalar = (lines, indent, key, value) => {
@@ -97,7 +102,6 @@ const assertNoAuthoredCollision = (model, namespaceFqn, workloads, ids) => {
 const renderAuthoredNamespace = (model, target, snapshot, namespace) => {
   const fqn = target.authoredNamespaces[namespace]
   const workloads = workloadsIn(snapshot, namespace)
-  if (workloads.length === 0) return null
   const ids = workloadIds(workloads)
   assertNoAuthoredCollision(model, fqn, workloads, ids)
   return [
@@ -155,8 +159,7 @@ export const renderOverlay = ({ model, targets, snapshots }) => {
     assertElementsExist(model, snapshot.workloads)
     const namespaces = sorted(snapshot.workloads.map(workload => workload.namespace))
     for (const namespace of namespaces.filter(name => Object.hasOwn(target.authoredNamespaces, name))) {
-      const block = renderAuthoredNamespace(model, target, snapshot, namespace)
-      if (block) blocks.push(block)
+      blocks.push(renderAuthoredNamespace(model, target, snapshot, namespace))
     }
     const generated = namespaces.filter(namespace => !Object.hasOwn(target.authoredNamespaces, namespace))
     const block = renderGeneratedNamespaces(model, target, snapshot, generated)

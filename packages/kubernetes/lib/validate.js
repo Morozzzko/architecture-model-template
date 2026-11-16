@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto'
-import { mkdir, mkdtemp, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, readdir, realpath, rename, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { basename, dirname, extname, isAbsolute, join, relative, resolve } from 'node:path'
 import { LikeC4 } from 'likec4'
@@ -47,6 +47,23 @@ const pathIn = (workspace, file, label) => {
   return path
 }
 
+const existingRealpath = async path => {
+  try {
+    return await realpath(path)
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error
+    return existingRealpath(dirname(path))
+  }
+}
+
+const assertRealOutputIn = async (workspace, output) => {
+  const [realWorkspace, realParent] = await Promise.all([
+    realpath(workspace),
+    existingRealpath(dirname(output)),
+  ])
+  pathIn(realWorkspace, join(realParent, basename(output)), 'Output')
+}
+
 const assertSupportedExtension = output => {
   if (!sourceExtensions.has(extname(output))) {
     throw new Error('Output must end in .c4 or .likec4 so LikeC4 validates it')
@@ -76,6 +93,7 @@ export const assertOutputOwned = async ({ workspace, output }) => {
   const workspacePath = resolve(workspace)
   const outputPath = resolve(output)
   pathIn(workspacePath, outputPath, 'Output')
+  await assertRealOutputIn(workspacePath, outputPath)
   assertSupportedExtension(outputPath)
   await readGeneratedOutput(outputPath)
 }

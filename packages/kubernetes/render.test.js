@@ -164,6 +164,38 @@ test('adds stable hashes when sanitized workload names collide', async () => {
   assert.match(rendered, /kubernetesName 'my_app'/)
 })
 
+test('keeps hashed workload identifiers unique from Kubernetes names', async () => {
+  const model = await loadedModel()
+  const workloads = [
+    ['Deployment', 'api', 'shop.api'],
+    ['StatefulSet', 'api', 'shop.database'],
+    ['DaemonSet', 'api_f37f2d47', 'shop.worker'],
+  ].map(([kind, name, element]) => ({
+    namespace: 'workers',
+    kind,
+    name,
+    element,
+    version: null,
+    chart: null,
+    desiredImages: [],
+    observedImageIds: [],
+    replicas: {},
+  }))
+  const snapshot = {
+    context: target.context,
+    deploymentFqn: target.deploymentFqn,
+    namespaces: ['workers'],
+    workloads,
+    unmapped: [],
+  }
+
+  const rendered = renderOverlay({ model, targets: [target], snapshots: [snapshot] })
+  const likec4 = await LikeC4.fromSource(`${source}\n${rendered}`, { throwIfInvalid: true, logger: false, printErrors: false })
+
+  await likec4.computedModel()
+  assert.equal([...rendered.matchAll(/^\s+api[^ ]* = instanceOf/gm)].length, 3)
+})
+
 test('orders workloads by code point independently of locale', async () => {
   const model = await loadedModel()
   const workloads = ['a', 'B'].map(name => ({

@@ -85,6 +85,7 @@ test('discovers every target concurrently and reports unmapped workloads without
   assert.equal(report.summary.mapped, 2)
   assert.equal(report.summary.ignored, 0)
   assert.equal(report.summary.unmapped, 1)
+  assert.deepEqual(report.failures, [])
   assert.deepEqual(report.snapshots.map(snapshot => snapshot.context), ['cluster-eu', 'cluster-us'])
   assert.deepEqual(report.snapshots[0].unmapped, [{ namespace: 'apps', kind: 'Deployment', name: 'api' }])
   await assert.rejects(access(output), error => error.code === 'ENOENT')
@@ -137,6 +138,22 @@ test('does not replace the previous snapshot when one target is inaccessible', a
   }
 
   await assert.rejects(sync({ workspace, output, clientFactory }), /cluster-us.*forbidden/)
+  assert.equal(await readFile(output, 'utf8'), previous)
+})
+
+test('does not replace the previous snapshot when a controller is unmapped', async () => {
+  const { workspace, output } = await fixture()
+  const previous = `${generatedHeader}\n\ndeployment {}\n`
+  await writeFile(output, previous)
+
+  await assert.rejects(
+    sync({
+      workspace,
+      output,
+      clientFactory: async context => clientFor(context, context === 'cluster-eu'),
+    }),
+    /Deployment apps\/api.*neither mapped nor ignored/,
+  )
   assert.equal(await readFile(output, 'utf8'), previous)
 })
 

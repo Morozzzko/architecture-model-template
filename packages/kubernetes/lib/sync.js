@@ -51,6 +51,12 @@ const snapshotFailures = (model, snapshots) => snapshots.flatMap(snapshot => [
   }),
 ])
 
+const unmappedFailures = snapshots => snapshots.flatMap(snapshot => snapshot.unmapped.map(workload => ({
+  context: snapshot.context,
+  deploymentFqn: snapshot.deploymentFqn,
+  message: `${workload.kind} ${workload.namespace}/${workload.name} is neither mapped nor ignored`,
+})))
+
 const inspectTargets = async ({ workspace, output, clientFactory, timeoutMs }) => {
   await assertOutputOwned({ workspace, output })
   const { model, targets } = await readTargets(workspace, { exclude: output })
@@ -73,7 +79,8 @@ export const sync = async ({
   validateCandidateFn = validateCandidate,
   replaceIfChangedFn = replaceIfChanged,
 } = {}) => {
-  const { model, targets, snapshots, failures } = await inspectTargets({ workspace, output, clientFactory, timeoutMs })
+  const { model, targets, snapshots, failures: inspectionFailures } = await inspectTargets({ workspace, output, clientFactory, timeoutMs })
+  const failures = [...inspectionFailures, ...unmappedFailures(snapshots)]
   if (failures.length > 0) {
     throw new Error(['Unable to read all Kubernetes synchronization targets:', ...failures.map(failure => `- ${failure.message}`)].join('\n'))
   }

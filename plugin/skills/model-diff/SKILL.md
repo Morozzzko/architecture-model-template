@@ -1,13 +1,13 @@
 ---
 name: model-diff
-description: Use when someone wants to compare, diff or analyze a LikeC4 architecture model between two states of the same repository, including a Git revision versus the current working tree with uncommitted or untracked model files.
+description: Use when someone wants to compare or diff a LikeC4 architecture model between two states of the same repository, including a Git revision versus the current working tree with uncommitted or untracked model files.
 ---
 
 # Compare two model states
 
 Export the raw LikeC4 model from two states of one repository, then describe the net architectural change. Work locally and leave the repository untouched.
 
-LikeC4's `diff` command applies `diff` blocks written in the DSL. It does not compare repository states; do not use it for this job.
+Compare repository states through the exports below. This workflow does not invoke LikeC4's `diff` command.
 
 ## Choose the states
 
@@ -26,11 +26,15 @@ Resolve every revision with:
 git rev-parse --verify --end-of-options '<revision>^{commit}'
 ```
 
-Use the returned commit id from then on. Name an invalid revision in the error and stop; never fall back to `HEAD`. Before snapshotting it, verify that the revision contains `model/`:
+Use the returned commit id from then on. Name an invalid revision in the error and stop; never fall back to `HEAD`. Inspect the `model` path at that revision:
 
 ```bash
-git cat-file -e '<commit>:model'
+git cat-file -t '<commit>:model'
 ```
+
+If the command prints `tree`, snapshot and export the model normally. If the path does not exist, mark the revision as an absent model state. That is a valid empty state: it means the model had not been created yet. If the command prints another object type, stop and say that `model` is not a directory at that revision.
+
+Before snapshotting, stop if either model state contains any symlink under `model/`, and name it. Copying or archiving a symlink can change what it resolves to and create a false diff.
 
 ## Snapshot without changing the repository
 
@@ -38,12 +42,11 @@ Create one private directory for the comparison:
 
 ```bash
 mktemp -d
-chmod 700 '<temporary-directory>'
 ```
 
 Keep both snapshots and exports there. Do not create a branch, checkout a revision, stash files or change the index.
 
-For a revision, run these as separate commands:
+For a revision whose `model` path is a tree, run these as separate commands. Do not create a snapshot directory for an absent model state.
 
 ```bash
 git archive --format=tar --output='<temporary-directory>/<state>.tar' '<commit>' model
@@ -76,23 +79,40 @@ Export each computed model:
 npm exec --no -- likec4 export json '<temporary-directory>/<state>/model' --skip-layout --pretty --outfile '<temporary-directory>/<state>.json'
 ```
 
-The computed export does not contain authored view rules. Export the parsed model too, using the same installed LikeC4 package:
+The computed export does not contain authored view rules. Export the parsed model too, using the same installed LikeC4 package. Use explicit disposal so the script works across the repository's supported Node versions:
 
 ```bash
 node --input-type=module --eval '
 import { writeFile } from "node:fs/promises"
 import { LikeC4 } from "likec4"
-await using likec4 = await LikeC4.fromWorkspace(process.argv[1])
-const parsed = await likec4.parsedModel()
-await writeFile(process.argv[2], JSON.stringify(parsed.$data, null, 2) + String.fromCharCode(10))
+const likec4 = await LikeC4.fromWorkspace(process.argv[1])
+try {
+  const parsed = await likec4.parsedModel()
+  await writeFile(process.argv[2], JSON.stringify(parsed.$data, null, 2) + String.fromCharCode(10))
+} finally {
+  await likec4.dispose()
+}
 ' '<temporary-directory>/<state>/model' '<temporary-directory>/<state>.parsed.json'
 ```
 
-Run all four exports separately. Do not install or update dependencies automatically. If an export fails, stop, name the state, keep its diagnostic output and report the temporary directory.
+For an absent model state, do not invoke LikeC4. Create both marker files in one command:
+
+```bash
+node --input-type=module --eval '
+import { writeFile } from "node:fs/promises"
+for (const output of process.argv.slice(1)) {
+  await writeFile(output, JSON.stringify({ absentModel: true }, null, 2) + String.fromCharCode(10))
+}
+' '<temporary-directory>/<state>.json' '<temporary-directory>/<state>.parsed.json'
+```
+
+Run every present-state export separately. The marker command replaces both exports for an absent state. Do not install or update dependencies automatically. If an export fails, stop, name the state, keep its diagnostic output and report the temporary directory.
 
 ## Calculate the net change
 
-Read both computed JSON files and both parsed JSON files. Compare model facts, not JSON text or generated diagram content.
+Read both computed JSON files and both parsed JSON files. Treat an `absentModel` marker as empty elements, relationships, deployments, views, specification, globals and project metadata. Compare model facts, not JSON text or generated diagram content.
+
+Use the computed exports for elements, relationships and deployments. Use the parsed exports for authored views, specification, globals and project metadata. This separation prevents the same change from being reported twice.
 
 ### Elements
 
@@ -137,5 +157,7 @@ Keep the raw exports after the summary so the user can ask for regular follow-up
 
 - JSON export, including `--skip-layout` and `--pretty`: [LikeC4 CLI](https://likec4.dev/tooling/cli/)
 - Reading the model before view computation with `parsedModel()`: [LikeC4 Model API](https://likec4.dev/tooling/model-api/edit/#reading-the-parsed-model)
+- Inspecting the type of a path in a Git tree: [git-cat-file](https://git-scm.com/docs/git-cat-file)
 - Creating an archive from a named Git tree without checking it out: [git-archive](https://git-scm.com/docs/git-archive)
 - Accepted revision syntax: [gitrevisions](https://git-scm.com/docs/gitrevisions)
+- Treating an absent model as empty, rejecting model symlinks and pairing relationships by endpoints are this toolkit's own comparison rules.

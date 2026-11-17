@@ -39,6 +39,7 @@ In Claude Code:
 | Skill | Use |
 | --- | --- |
 | `new-architecture-repo` | Scaffold a new repository from the template |
+| `architecture-digest` | Interpret the last month of model changes and summarize them for architecture readers |
 | `document-a-system` | Walk someone through documenting a system, first time or after a break, and keep its open questions |
 | `metadata-fields` | Define, set and show element metadata with the editable-metadata addon |
 | `c4-modeling` | Decide what is a system, container or component, and model data stores, queues, providers and deployments |

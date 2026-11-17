@@ -153,6 +153,14 @@ Use the `model-diff` skill to inspect how the architecture changed between two G
 
 The working-tree state includes uncommitted and untracked files under `model/`. The skill leaves the repository unchanged, reports the paths of its computed and parsed JSON exports and compares their elements, relationships, deployments and view definitions without counting diagram layout changes.
 
+### Digest the last month
+
+Use `architecture-digest` when the changes need explaining for readers of the architecture documentation:
+
+> Digest the last month of model changes. Ask me what the important changes mean, then summarize them for someone reading this architecture documentation.
+
+The skill uses `model-diff` for the facts, groups related changes and asks one question at a time about what changed parts mean, why they happened or why they matter. It returns the digest in the conversation and does not edit the documentation.
+
 Run this whenever the system changes noticeably, and before you rely on the description:
 
 > Compare the model with the repositories and infrastructure. List what is missing, gone or different, and fix the model. Don't change the why sections; ask me if something there looks wrong.

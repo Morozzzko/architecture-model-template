@@ -151,7 +151,7 @@ Use the `model-diff` skill to inspect how the architecture changed between two G
 
 > Compare the model on main with my working tree. Give me the raw JSON exports, then summarize the net architectural changes.
 
-The working-tree state includes uncommitted and untracked files under `model/`. The skill leaves the repository unchanged, reports the paths of both raw JSON exports and compares their elements, relationships, deployments and view definitions without counting diagram layout changes.
+The working-tree state includes uncommitted and untracked files under `model/`. The skill leaves the repository unchanged, reports the paths of its computed and parsed JSON exports and compares their elements, relationships, deployments and view definitions without counting diagram layout changes.
 
 Run this whenever the system changes noticeably, and before you rely on the description:
 

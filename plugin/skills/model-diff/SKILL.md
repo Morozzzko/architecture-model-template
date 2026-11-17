@@ -62,17 +62,37 @@ Use short filesystem-safe labels such as `before` and `after` for `<state>`, not
 
 ## Export the raw models
 
-Use the repository's installed LikeC4 CLI for both states, so a dependency change between revisions cannot create a false model change:
+Use the repository's installed LikeC4 for both states, so a dependency change between revisions cannot create a false model change. First require the local executable:
 
 ```bash
-npm exec likec4 -- export json '<temporary-directory>/<state>/model' --skip-layout --pretty --outfile '<temporary-directory>/<state>.json'
+test -x node_modules/.bin/likec4
 ```
 
-Run each export separately. Do not install or update dependencies automatically. If the CLI is unavailable or an export fails, stop, name the state, keep its diagnostic output and report the temporary directory.
+If that fails, stop and ask the user to install the repository's dependencies. Do not let a package runner download LikeC4.
+
+Export each computed model:
+
+```bash
+npm exec --no -- likec4 export json '<temporary-directory>/<state>/model' --skip-layout --pretty --outfile '<temporary-directory>/<state>.json'
+```
+
+The computed export does not contain authored view rules. Export the parsed model too, using the same installed LikeC4 package:
+
+```bash
+node --input-type=module --eval '
+import { writeFile } from "node:fs/promises"
+import { LikeC4 } from "likec4"
+await using likec4 = await LikeC4.fromWorkspace(process.argv[1])
+const parsed = await likec4.parsedModel()
+await writeFile(process.argv[2], JSON.stringify(parsed.$data, null, 2) + String.fromCharCode(10))
+' '<temporary-directory>/<state>/model' '<temporary-directory>/<state>.parsed.json'
+```
+
+Run all four exports separately. Do not install or update dependencies automatically. If an export fails, stop, name the state, keep its diagnostic output and report the temporary directory.
 
 ## Calculate the net change
 
-Read both JSON files. Compare model facts, not JSON text or generated diagram content.
+Read both computed JSON files and both parsed JSON files. Compare model facts, not JSON text or generated diagram content.
 
 ### Elements
 
@@ -93,13 +113,13 @@ Never infer that elements or endpoints with different model references are the s
 
 ### Views and model definitions
 
-Match views by view id. Compare their authored definition fields, but omit computed `nodes`, `edges`, `hash`, `_stage`, `sourcePath` and layout fields. Do not repeat an element or relationship change merely because it also changed computed view nodes or edges.
+Match `views` from the parsed exports by view id. Compare their authored definition fields, including `rules`, but omit `_stage`, `sourcePath` and layout fields. Do not compare `views` from the computed exports: their generated `nodes`, `edges` and `hash` repeat model changes and can hide how authored rules changed.
 
 Compare changes to `specification`, `globals` and project metadata separately as model-definition changes. Ignore import bookkeeping and manual layout data in the default net diff, while leaving them available in the raw exports.
 
 ## Report
 
-Start with the two requested states and their resolved commit ids where applicable. Then give the absolute paths of both raw JSON exports.
+Start with the two requested states and their resolved commit ids where applicable. Then give the absolute paths of both computed JSON exports and both parsed JSON exports.
 
 Report counts and concise lists for:
 
@@ -116,5 +136,6 @@ Keep the raw exports after the summary so the user can ask for regular follow-up
 ## References
 
 - JSON export, including `--skip-layout` and `--pretty`: [LikeC4 CLI](https://likec4.dev/tooling/cli/)
+- Reading the model before view computation with `parsedModel()`: [LikeC4 Model API](https://likec4.dev/tooling/model-api/edit/#reading-the-parsed-model)
 - Creating an archive from a named Git tree without checking it out: [git-archive](https://git-scm.com/docs/git-archive)
 - Accepted revision syntax: [gitrevisions](https://git-scm.com/docs/gitrevisions)

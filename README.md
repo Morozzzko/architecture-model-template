@@ -43,6 +43,8 @@ In Claude Code:
 | `metadata-fields` | Define, set and show element metadata with the editable-metadata addon |
 | `c4-modeling` | Decide what is a system, container or component, and model data stores, queues, providers and deployments |
 | `kubernetes-deployment` | Keep LikeC4 deployment views synchronized with mapped Kubernetes and Helm workloads |
+| `model-diff` | Compare the raw LikeC4 model between two states of one repository |
+| `architecture-digest` | Interpret the last month of model changes and summarize them for architecture readers |
 | `quality-goals` | Interview people for a system's quality goals and scenarios, in ISO/IEC 25010 terms |
 | `architecture-review` | Have critics review documentation for noise, missing intent and rationale, and turn the gaps into questions |
 

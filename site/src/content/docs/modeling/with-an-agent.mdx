@@ -163,3 +163,21 @@ Then review what the build can't check:
 - Every view title says what it shows.
 - Decisions made since the last review have ADRs.
 - `npm run validate` and `npm run build` pass.
+
+### Compare two model states
+
+These comparison workflows require a Git repository with its dependencies already installed.
+
+Use the `model-diff` skill to inspect how the architecture changed between two Git revisions, or between a revision and your current work:
+
+> Compare the model on main with my working tree. Give me the raw JSON exports, then summarize the net architectural changes.
+
+The working-tree state includes uncommitted and untracked files under `model/`. The skill leaves the repository unchanged, reports the paths of its computed and parsed JSON exports and compares their elements, relationships, deployments and view definitions without counting diagram layout changes.
+
+### Digest the last month
+
+Use `architecture-digest` when the changes need explaining for readers of the architecture documentation:
+
+> Digest the last month of model changes. Ask me what the important changes mean, then summarize them for someone reading this architecture documentation.
+
+The skill uses `model-diff` for the facts, groups related changes and asks one question at a time about what changed parts mean, why they happened or why they matter. It returns the digest in the conversation, removes its temporary comparison data and does not edit the documentation.

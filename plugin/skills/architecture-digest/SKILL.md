@@ -5,7 +5,7 @@ description: Use when someone wants a monthly architecture digest, asks what cha
 
 # Digest the last month of architecture changes
 
-Compare the model with its state one month ago, ask about the meaning of material changes, then summarize what happened for someone reading the architecture documentation. Return the digest in conversation only. Do not write a page, file or persistent report.
+Compare the model with its state one month ago, ask about the meaning of material changes, then summarize what happened for someone reading the architecture documentation. Return the digest in conversation only. Do not write a page, file or persistent report for the digest. Temporary comparison exports are still required by `model-diff` and are not a saved digest.
 
 ## Set the period
 
@@ -27,7 +27,7 @@ In that case, say that the repository is younger than a month and give the short
 
 ## Get the facts
 
-Use the `model-diff` skill with the baseline commit as the first state and `working tree` as the second. Do not repeat its snapshot, export or comparison instructions here. The working-tree state includes uncommitted and untracked model files.
+Use the `model-diff` skill with the baseline commit as the first state and `working tree` as the second to produce internal comparison facts. Follow its snapshot, export and comparison instructions, including its temporary exports, but replace its standalone report instructions with the interview and digest below. Do not show its commit identifiers, export paths, counts or temporary-file notice. The working-tree state includes uncommitted and untracked model files.
 
 If `model-diff` finds no semantic change, return the period and one sentence saying that the architecture model did not change. Ask no questions.
 

@@ -20,6 +20,7 @@
   "exports": {
     ".": "./index.js",
     "./Metadata.astro": "./Metadata.astro",
+    "./MetadataElements.astro": "./MetadataElements.astro",
     "./Property.astro": "./Property.astro",
     "./Derived.astro": "./Derived.astro",
     "./People.astro": "./People.astro",
@@ -32,6 +33,7 @@
     "fields.js",
     "references.js",
     "Metadata.astro",
+    "MetadataElements.astro",
     "Property.astro",
     "Derived.astro",
     "People.astro",

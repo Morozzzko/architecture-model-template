@@ -35,7 +35,7 @@ Add or edit the key in `model/metadata.json`:
 - `people` picks from the shared list in `model/people.json` (`[{ "value": "dana", "label": "Dana Kim" }]`) and stores handles. The keys `integratedBy`, `experts`, `contributors` and `administrators` are `people` fields, and `peopleConfirmed` a `date`, without being listed; each holds one handle or a list. What each is for, and which job goes to whom, is in the repository's `AGENTS.md`. Add a person to `model/people.json`, creating it if missing, before using their handle anywhere. When someone leaves, add `"left": "2026-05-01"` to their entry; don't delete it or their handles.
 - Keys are identifiers: letters, digits, `_` and `-`, not starting with a digit.
 - `options` applies to `select` and `multiselect`. To add an option, append it to the array.
-- An option that should read differently from what the model stores is `{ "value": "igor", "label": "Igor Morozov" }`. Elements store the value; pages show the label.
+- An option that should read differently from what the model stores is `{ "value": "igor", "label": "Igor Morozov" }`. Elements store the value; pages show the label. Add `"href": "/contexts/#orders"` to make the label a link in built pages; a site-root path keeps Astro's configured base path.
 - Do not remove or rename an option that elements still use. Values in use are offered as options anyway, so the old value stays selectable until every element is changed. Find the users with the `likec4` MCP tool `query-by-metadata`.
 
 ## Set a value on an element
@@ -106,6 +106,16 @@ import PeopleTable from '@architecture-model/editable-metadata/PeopleTable.astro
 
 <PeopleTable />
 ```
+
+To list every element whose scalar or list metadata contains one configured value:
+
+```mdx
+import MetadataElements from '@architecture-model/editable-metadata/MetadataElements.astro'
+
+<MetadataElements name="implementsContext" value="orders" empty="No elements implement this context." />
+```
+
+The field must define `options`. The component fails the build when an element uses a value that is not one of them.
 
 In `npm run dev` the rendered value is click-to-edit and saves to `model/model.c4`. That is for people using the browser. As an agent, edit the files.
 

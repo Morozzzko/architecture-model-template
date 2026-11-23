@@ -18,7 +18,7 @@ The context map answers:
 
 1. Read `src/content/docs/contexts.mdx` when it exists, the involved system pages and model elements, `model/metadata.json`, and `docs/questions/contexts.md` when it exists.
 2. If there are open context questions, ask which have been answered. Write each answer into the page or model and remove its row.
-3. Name the systems and teams in scope. A context map crosses systems; one system's participant can confirm only what they know. Record another team's side as a question until someone from that team confirms it.
+3. Name the systems and teams in scope. A context map can describe several models inside one system or span several systems. A participant can confirm only what they know; record another team's side as a question until someone from that team confirms it.
 4. Ask one topic at a time. Stop when the confirmed map is useful; it does not need to cover the whole organization in one session.
 
 ## Discover the current contexts

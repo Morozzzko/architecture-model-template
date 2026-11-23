@@ -1,0 +1,131 @@
+---
+title: Map bounded contexts
+---
+
+A context map lets this architecture description answer:
+
+- Where does one domain model and language stop and another begin?
+- Whose model influences an integration, and how does the other side protect or conform itself?
+- Which software systems and containers implement each context?
+- Which unanswered question could still change a boundary or relationship?
+
+It describes the organization as it works now. A proposed future boundary belongs under **Where it's heading** on the affected system pages and in an ADR, not in the current context map.
+
+## Start the discovery
+
+Install the Claude Code plugin as described in [Model a system with an agent](../with-an-agent/), then say:
+
+> Help me map our current bounded contexts.
+
+The `context-mapping` skill first reads the existing system pages, model and any earlier context questions. It asks one topic at a time:
+
+1. Which business outcomes, rules and decisions belong together?
+2. Which important words mean different things to different teams?
+3. Which context is authoritative for each important fact or decision?
+4. Which model can change independently, who changes it and who must coordinate?
+5. What crosses each boundary, in which direction and where is it translated?
+
+An independently deployed service, a database or a team is evidence of a possible boundary, not proof of one. The agent proposes a context with its purpose, owner and distinctive language, then writes it only after someone confirms it. One participant can confirm only what they know; the other team's side remains an open question until that team answers it.
+
+Stop when the confirmed part is useful. The first session does not need to map the whole organization.
+
+## Describe relationships
+
+Record a relationship and every applicable role from observed coordination and translation, not from the shape of an arrow:
+
+| Kind | Name | What is true now |
+| --- | --- | --- |
+| Relationship | Partnership | Both contexts' delivery succeeds or fails together and the teams coordinate planning and integration. |
+| Relationship | Shared Kernel | The contexts deliberately share a small model with its code or database design, changed by agreement. |
+| Relationship | Customer–Supplier | The downstream's priorities are part of the upstream's planning commitments. |
+| Relationship | Upstream–Downstream | The upstream influences the downstream without that customer commitment. |
+| Downstream role | Conformist | The downstream adopts the upstream model instead of translating it. |
+| Downstream role | Anticorruption Layer | The downstream translates the upstream model into its own model. |
+| Upstream role | Open Host Service | The upstream exposes one general service for several consumers. |
+| Upstream role | Published Language | The upstream and consumers exchange a documented common language. |
+
+For a directional relationship, choose Customer–Supplier or Upstream–Downstream and add every confirmed upstream role. Add either Conformist or Anticorruption Layer when one is confirmed downstream; never add both. Partnership and Shared Kernel are symmetric relationships and take no directional roles.
+
+## Connect contexts to the software model
+
+Bounded contexts are not another level in the C4 hierarchy. They are configured values of the `implementsContext` metadata field and referenced by the LikeC4 elements that directly realize their domain behavior.
+
+Install the [editable-metadata addon](../../addons/editable-metadata/) if the repository does not use it already:
+
+```bash
+npx astro add @architecture-model/editable-metadata
+```
+
+Define the known contexts and their page links in `model/metadata.json`:
+
+```json
+{
+  "implementsContext": {
+    "type": "multiselect",
+    "options": [
+      { "value": "orders", "label": "Orders", "href": "/contexts/#orders" },
+      { "value": "fulfilment", "label": "Fulfilment", "href": "/contexts/#fulfilment" }
+    ]
+  }
+}
+```
+
+Map a system when the whole system implements one context:
+
+```text
+orders = system 'Orders' {
+  metadata {
+    implementsContext 'orders'
+  }
+}
+```
+
+When a system spans contexts, map the relevant containers instead. The mapping is explicit and never inherited: do not map both an element and its descendant to the same context. An element can implement several contexts when that coupling exists today. Actors, databases, queues and infrastructure do not implement a context merely because they use or store its data.
+
+On a system page, show its context links with:
+
+```mdx
+import Metadata from '@architecture-model/editable-metadata/Metadata.astro'
+
+Contexts: <Metadata of="orders" name="implementsContext" />
+```
+
+## Publish the context map
+
+The skill creates `src/content/docs/contexts.mdx`. It starts with the questions at the top of this page and contains:
+
+- A relationship table with contexts, relationship and direction, every confirmed role, what crosses the boundary and where translation happens. Directional rows name the upstream and downstream explicitly; symmetric rows use neutral context names.
+- One section per context with purpose, owner, terms that differ from neighbouring contexts and its confirmed relationships.
+- The LikeC4 elements that implement each context.
+
+The implementation list comes from the model rather than being copied into prose:
+
+```mdx
+import MetadataElements from '@architecture-model/editable-metadata/MetadataElements.astro'
+
+## Orders
+
+<MetadataElements name="implementsContext" value="orders" empty="No software element is mapped to this context." />
+```
+
+The build fails if an element uses an `implementsContext` value that is not configured in `model/metadata.json`. A configured context with no implementation is valid and remains visible through the empty text.
+
+## Keep only useful questions
+
+When an answer could change a boundary or relationship, the skill keeps it in the unpublished `docs/questions/contexts.md`:
+
+```markdown
+# Open questions: Context map
+
+| Question | Why it matters | Contexts affected | Who can answer | Asked |
+| --- | --- | --- | --- | --- |
+| Which service owns the canonical order state? | Determines whether Fulfilment is downstream of Orders | Orders, Fulfilment | Orders team | 2026-11-23 |
+```
+
+It does not add questions the repository can answer, vague research tasks or optional detail. The next session starts with these questions, applies answered ones to the map and removes their rows. The file is deleted when nothing remains.
+
+## Sources
+
+- Bounded Context, Context Map and the relationship patterns: Eric Evans, [Domain-Driven Design Reference](https://www.domainlanguage.com/ddd/reference/), licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+- Which relationship roles can be combined: [Context Mapper language semantics](https://contextmapper.org/docs/language-model/)
+- Why bounded contexts are not another C4 abstraction level: Simon Brown, [C4 model abstractions FAQ](https://c4model.com/abstractions/faq)

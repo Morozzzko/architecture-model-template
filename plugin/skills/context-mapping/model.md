@@ -2,26 +2,26 @@
 
 ## Relationship names
 
-Record a pattern only after its concrete coordination and translation behavior is confirmed:
+Record a relationship and its applicable roles only after the concrete coordination and translation behavior is confirmed:
 
-| Pattern | Use when |
-| --- | --- |
-| Partnership | Both contexts' delivery succeeds or fails together and the teams coordinate planning and integration. |
-| Shared Kernel | The contexts deliberately share a small part of their model and its code or database design, changed by agreement. |
-| Customer–Supplier | The downstream's priorities are part of the upstream's planning commitments. |
-| Upstream–Downstream | The upstream influences the downstream, without the customer commitment above. |
-| Conformist | The downstream adopts the upstream model instead of translating it. |
-| Anticorruption Layer | The downstream translates the upstream model into its own model. |
-| Open Host Service | The upstream exposes one general service for several consumers. |
-| Published Language | The upstream and its consumers exchange a documented common language. |
+| Kind | Name | Use when |
+| --- | --- | --- |
+| Relationship | Partnership | Both contexts' delivery succeeds or fails together and the teams coordinate planning and integration. |
+| Relationship | Shared Kernel | The contexts deliberately share a small part of their model and its code or database design, changed by agreement. |
+| Relationship | Customer–Supplier | The downstream's priorities are part of the upstream's planning commitments. |
+| Relationship | Upstream–Downstream | The upstream influences the downstream, without the customer commitment above. |
+| Downstream role | Conformist | The downstream adopts the upstream model instead of translating it. |
+| Downstream role | Anticorruption Layer | The downstream translates the upstream model into its own model. |
+| Upstream role | Open Host Service | The upstream exposes one general service for several consumers. |
+| Upstream role | Published Language | The upstream and its consumers exchange a documented common language. |
 
-Open Host Service and Published Language are upstream roles. Conformist and Anticorruption Layer are alternative downstream roles; do not record both on one relationship. Partnership and Shared Kernel are symmetric and have no upstream or downstream roles.
+For a directional relationship, choose Customer–Supplier or Upstream–Downstream and add every confirmed upstream role. Add either Conformist or Anticorruption Layer when one is confirmed downstream; never add both. Partnership and Shared Kernel are symmetric relationships and take no directional roles.
 
 ## Page
 
 Create `src/content/docs/contexts.mdx` when the first context is confirmed. Start with the questions the map answers, then include:
 
-1. A table of confirmed relationships: upstream, downstream, pattern, what crosses the boundary, and where translation happens. Symmetric relationships put the two contexts in the first two columns without implying direction.
+1. A table of confirmed relationships: contexts, relationship and direction, confirmed roles, what crosses the boundary, and where translation happens. Write a directional relationship as `Orders upstream → Fulfilment downstream (Customer–Supplier)` and attribute each role to its context. Write a symmetric relationship as `Orders ↔ Inventory (Partnership)` with no directional roles.
 2. One `##` section per context, with its purpose, owner, terms whose meanings differ from neighbouring contexts, and confirmed relationships.
 3. An implementation table under each context:
 

@@ -30,6 +30,7 @@
     "index.js",
     "editor.js",
     "model.js",
+    "metadata.js",
     "fields.js",
     "references.js",
     "Metadata.astro",

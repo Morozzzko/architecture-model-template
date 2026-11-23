@@ -122,7 +122,7 @@ The build fails if an element uses an `implementsContext` value that is not conf
 
 ## Keep only useful questions
 
-When an answer could change a boundary or relationship, the skill keeps it in the unpublished `docs/questions/contexts.md`. That path is reserved for the organization-wide map. If an older repository used it for the system whose id is `contexts`, the skill moves those system-question rows to `docs/questions/systems/contexts.md` before creating this backlog.
+When an answer could change a boundary or relationship, the skill keeps it in the unpublished `docs/questions/contexts.md`. That path is reserved for the organization-wide map. If an older repository used a top-level file with that name in any letter case for a system id equal to `contexts` ignoring case, the skill moves those system-question rows to `docs/questions/systems/<original-id>.md` before creating this backlog.
 
 ```markdown
 # Open questions: Context map

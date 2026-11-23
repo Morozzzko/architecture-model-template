@@ -25,7 +25,7 @@ Walk a person through documenting one system as a conversation. They bring what 
   | Where it's heading | *What is being added, replaced or retired, and why.* |
 
 - The system in the model: `model/model.c4`, following the `c4-modeling` skill.
-- Its open questions: `docs/questions/<id>.md`, created when the first question comes up. The id `contexts` is the one exception: `docs/questions/contexts.md` is reserved for the organization-wide context map, so that system uses `docs/questions/systems/contexts.md`. If an older `docs/questions/contexts.md` has the system-question columns shown below, move its rows to the namespaced path and merge with any existing rows without losing or duplicating them. The file is not published. Keep exactly this shape:
+- Its open questions: `docs/questions/<id>.md`, created when the first question comes up. An id equal to `contexts` ignoring case is the exception: the top-level path is reserved for the organization-wide context map, so that system uses `docs/questions/systems/<original-id>.md`. If an older top-level file whose name equals `contexts.md` ignoring case has the system-question columns shown below, move its rows to the namespaced path and merge with any existing rows without losing or duplicating them. The file is not published. Keep exactly this shape:
 
   ```markdown
   # Open questions: Payments

@@ -57,7 +57,7 @@ A section that loses all its content, including a table left with only its heade
 
 ## Ask
 
-Collect the questions from all findings. Ask the closed ones as multiple-choice questions (AskUserQuestion in Claude Code) and the rest in conversation, grouped by section. Write in only what the user answers. Questions about why belong to people; when the user can't answer, suggest who could, leave the section as it is, and add the question to the system's questions file, `docs/questions/<id>.md` except `docs/questions/systems/contexts.md` for the system id `contexts` (its shape and reserved-path migration are in the `document-a-system` skill), never to the page, unless the file already has it.
+Collect the questions from all findings. Ask the closed ones as multiple-choice questions (AskUserQuestion in Claude Code) and the rest in conversation, grouped by section. Write in only what the user answers. Questions about why belong to people; when the user can't answer, suggest who could, leave the section as it is, and add the question to the system's questions file, `docs/questions/<id>.md` except `docs/questions/systems/<original-id>.md` when the system id equals `contexts` ignoring case (its shape and reserved-path migration are in the `document-a-system` skill), never to the page, unless the file already has it.
 
 ## Finish
 

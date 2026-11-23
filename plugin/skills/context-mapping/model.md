@@ -64,7 +64,7 @@ Show a system or container's contexts on its page with `<Metadata of="<id>" name
 
 ## Useful open questions
 
-`docs/questions/contexts.md` is reserved for the organization-wide context map. Before using it, inspect an existing file: if its header is `Question | Section | Who might know | Asked`, it belongs to a system whose id is `contexts`. Move those rows to `docs/questions/systems/contexts.md`, merging without dropping or duplicating rows when that file already exists. Then create the context backlog only when an unanswered question could change a boundary or relationship. Keep it unpublished and use this exact shape:
+`docs/questions/contexts.md` is reserved for the organization-wide context map. Treat system ids equal to `contexts` ignoring case as reserved. Before using the map path, inspect any top-level question file whose name equals `contexts.md` ignoring case: when its header is `Question | Section | Who might know | Asked`, move its rows to `docs/questions/systems/<original-id>.md`, merging without dropping or duplicating rows when that file already exists. Then create the context backlog only when an unanswered question could change a boundary or relationship. Keep it unpublished and use this exact shape:
 
 ```markdown
 # Open questions: Context map

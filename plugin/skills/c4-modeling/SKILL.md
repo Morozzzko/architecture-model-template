@@ -13,17 +13,18 @@ Read `model/conventions.md` if it exists. It holds this repository's settled ans
 
 ## Which element is it
 
-Ask in order and stop at the first yes. Name the question in your answer, e.g. "a container: it runs as its own process (5)".
+Ask in order and stop at the first yes. Name the question in your answer, e.g. "a container: it runs as its own process (6)".
 
 | # | Question | Model it as |
 | --- | --- | --- |
 | 1 | Is it a person or role? | actor |
 | 2 | Is it owned by another team or company, or used without being configured by us? | external software system, with no internals |
-| 3 | Is it a domain, bounded context, capability, squad or tribe? | not an element: a tag, metadata or a group in a view |
-| 4 | Is it what one team builds, owns and usually deploys together? | software system |
-| 5 | Must it run, or hold data, for that system to work: a separate process (web app, SPA, mobile app, function, job) or a store we own, hosted or not? | container |
-| 6 | Is it functionality behind an interface inside one process? | component |
-| 7 | Is it a library, package, module or Docker image? | not an element: put it in `technology` or a link |
+| 3 | Is it a bounded context? | not an element: a confirmed option of `implementsContext`, mapped to its implementing systems or containers with the `context-mapping` skill |
+| 4 | Is it a domain, capability, squad or tribe? | not an element: a tag, metadata or a group in a view |
+| 5 | Is it what one team builds, owns and usually deploys together? | software system |
+| 6 | Must it run, or hold data, for that system to work: a separate process (web app, SPA, mobile app, function, job) or a store we own, hosted or not? | container |
+| 7 | Is it functionality behind an interface inside one process? | component |
+| 8 | Is it a library, package, module or Docker image? | not an element: put it in `technology` or a link |
 
 External systems use an `external` element kind. If `specification` has none, add it:
 
@@ -86,5 +87,6 @@ Then check each changed view: does every element and relationship pass the rules
 - Relationships, titles and colours: [notation](https://c4model.com/diagrams/notation) and the [review checklist](https://c4model.com/diagrams/checklist)
 - Which views to draw: [c4model.com diagrams](https://c4model.com/diagrams)
 - Domains and contexts are not levels: the [C4 FAQ](https://c4model.com/abstractions/faq)
+- The `implementsContext` convention and handoff to `context-mapping` are this toolkit's own design.
 - Other teams' systems as single boxes: [Structurizr, enterprise usage](https://docs.structurizr.com/workspaces/enterprise)
 - Element properties and kinds in LikeC4: the [model DSL](https://likec4.dev/dsl/model/)

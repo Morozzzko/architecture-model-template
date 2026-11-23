@@ -15,11 +15,15 @@ Record a relationship and its applicable roles only after the concrete coordinat
 | Upstream role | Open Host Service | The upstream exposes one general service for several consumers. |
 | Upstream role | Published Language | The upstream and its consumers exchange a documented common language. |
 
-For a directional relationship, choose Customer–Supplier or Upstream–Downstream and add every confirmed upstream role. Add either Conformist or Anticorruption Layer when one is confirmed downstream; never add both. Partnership and Shared Kernel are symmetric relationships and take no directional roles.
+The allowed roles depend on the relationship:
+
+- Upstream–Downstream can have Open Host Service, Published Language, both or neither upstream, and Conformist, Anticorruption Layer or neither downstream. Never record both downstream roles.
+- Customer–Supplier can have Published Language upstream. It cannot have Open Host Service or Conformist. Anticorruption Layer is allowed but unusual; record it only after confirming that the customer really translates the supplier's model despite influencing its priorities.
+- Partnership and Shared Kernel are symmetric and take no directional roles.
 
 ## Page
 
-Create `src/content/docs/contexts.mdx` when the first context is confirmed. Start with the questions the map answers, then include:
+Create `src/content/docs/contexts.mdx` when the first context is confirmed. When creating it, add `{ label: 'Bounded contexts', link: '/contexts/' }` to the existing Starlight sidebar or use the repository's equivalent navigation mechanism. Start the page with the questions the map answers, then include:
 
 1. A table of confirmed relationships: contexts, relationship and direction, confirmed roles, what crosses the boundary, and where translation happens. Write a directional relationship as `Orders upstream → Fulfilment downstream (Customer–Supplier)` and attribute each role to its context. Write a symmetric relationship as `Orders ↔ Inventory (Partnership)` with no directional roles.
 2. One `##` section per context, with its purpose, owner, terms whose meanings differ from neighbouring contexts, and confirmed relationships.
@@ -31,7 +35,7 @@ import MetadataElements from '@architecture-model/editable-metadata/MetadataElem
 <MetadataElements name="implementsContext" value="orders" empty="No software element is mapped to this context." />
 ```
 
-This requires the `@architecture-model/editable-metadata` addon. If `astro.config.mjs` does not use it, install it with `npx astro add @architecture-model/editable-metadata`.
+This requires `@architecture-model/editable-metadata` 0.6.0 or later. Check that `node_modules/@architecture-model/editable-metadata/package.json` exports `./MetadataElements.astro`. If `astro.config.mjs` does not use the integration, install the latest release with `npx astro add @architecture-model/editable-metadata@latest`. If the integration is present but the export is missing, upgrade it with `npm install @architecture-model/editable-metadata@latest` before importing the component.
 
 ## Model references
 
@@ -60,7 +64,7 @@ Show a system or container's contexts on its page with `<Metadata of="<id>" name
 
 ## Useful open questions
 
-Create `docs/questions/contexts.md` only when an unanswered question could change a boundary or relationship. Keep it unpublished and use this exact shape:
+`docs/questions/contexts.md` is reserved for the organization-wide context map. Before using it, inspect an existing file: if its header is `Question | Section | Who might know | Asked`, it belongs to a system whose id is `contexts`. Move those rows to `docs/questions/systems/contexts.md`, merging without dropping or duplicating rows when that file already exists. Then create the context backlog only when an unanswered question could change a boundary or relationship. Keep it unpublished and use this exact shape:
 
 ```markdown
 # Open questions: Context map

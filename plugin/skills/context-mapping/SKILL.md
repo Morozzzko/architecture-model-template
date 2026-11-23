@@ -16,7 +16,7 @@ The context map answers:
 
 ## Start or resume
 
-1. Read `src/content/docs/contexts.mdx` when it exists, the involved system pages and model elements, `model/metadata.json`, and `docs/questions/contexts.md` when it exists.
+1. Read `src/content/docs/contexts.mdx` when it exists, the involved system pages and model elements, `model/metadata.json`, and `docs/questions/contexts.md` when it exists. That last path is reserved for context-map questions; if it has the system-question columns instead, preserve and move those rows as [model.md](model.md) directs before treating it as a context backlog.
 2. If there are open context questions, ask which have been answered. Write each answer into the page or model and remove its row.
 3. Name the systems and teams in scope. A context map can describe several models inside one system or span several systems. A participant can confirm only what they know; record another team's side as a question until someone from that team confirms it.
 4. Ask one topic at a time. Stop when the confirmed map is useful; it does not need to cover the whole organization in one session.
@@ -48,3 +48,4 @@ Run `npm run validate`, `npm test` and `npm run build`. `MetadataElements` makes
 - Bounded Context, Context Map and the relationship patterns: Eric Evans, [Domain-Driven Design Reference](https://www.domainlanguage.com/ddd/reference/), licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 - Which relationship roles can be combined: [Context Mapper language semantics](https://contextmapper.org/docs/language-model/)
 - Why bounded contexts are not another C4 abstraction level: Simon Brown, [C4 model abstractions FAQ](https://c4model.com/abstractions/faq)
+- The page, metadata, navigation and private-question file shapes are this toolkit's own design.

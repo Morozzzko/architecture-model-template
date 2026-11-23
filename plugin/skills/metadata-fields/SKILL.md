@@ -115,7 +115,7 @@ import MetadataElements from '@architecture-model/editable-metadata/MetadataElem
 <MetadataElements name="implementsContext" value="orders" empty="No elements implement this context." />
 ```
 
-The field must define `options`. The component fails the build when an element uses a value that is not one of them.
+The field must define `options`. The component fails the build when an element uses a value that is not one of them, and each row includes the fully qualified element id so equal titles remain distinguishable.
 
 In `npm run dev` the rendered value is click-to-edit and saves to `model/model.c4`. That is for people using the browser. As an agent, edit the files.
 

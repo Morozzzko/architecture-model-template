@@ -17,9 +17,17 @@ model {
       implementsContext 'orders'
     }
 
-    api = container 'Shop API' {
+    api = container 'API' {
       metadata {
         implementsContext ['orders', 'catalog']
+      }
+    }
+  }
+
+  billing = system 'Billing' {
+    api = container 'API' {
+      metadata {
+        implementsContext 'orders'
       }
     }
   }
@@ -37,11 +45,25 @@ test('finds elements whose scalar or list metadata contains a value', async () =
 
   assert.deepEqual(
     elementsWithMetadata(computed, 'implementsContext', 'orders').map(({ id }) => id),
-    ['shop', 'shop.api'],
+    ['shop', 'shop.api', 'billing.api'],
   )
   assert.deepEqual(
     elementsWithMetadata(computed, 'implementsContext', 'catalog').map(({ id }) => id),
     ['shop.api'],
+  )
+})
+
+test('keeps equal element titles distinguishable by fully qualified id', async () => {
+  const computed = await model()
+
+  assert.deepEqual(
+    elementsWithMetadata(computed, 'implementsContext', 'orders')
+      .filter(({ title }) => title === 'API')
+      .map(({ title, id }) => ({ title, id })),
+    [
+      { title: 'API', id: 'shop.api' },
+      { title: 'API', id: 'billing.api' },
+    ],
   )
 })
 
@@ -60,6 +82,7 @@ test('normalizes string and object options and keeps documentation links', () =>
 
 test('prefixes site-root option links with the configured Astro base path', () => {
   assert.equal(hrefWithBase('/contexts/#orders', '/architecture/'), '/architecture/contexts/#orders')
+  assert.equal(hrefWithBase('//docs.example.org/contexts', '/architecture/'), '//docs.example.org/contexts')
   assert.equal(hrefWithBase('https://example.com/contexts', '/architecture/'), 'https://example.com/contexts')
 })
 
@@ -82,5 +105,14 @@ test('requires configured options before reverse-querying metadata', async () =>
   assert.throws(
     () => validateMetadataOptions(computed, 'implementsContext', { type: 'text' }),
     /Metadata "implementsContext" needs configured options/,
+  )
+})
+
+test('reports dangling values when the configured options list is empty', async () => {
+  const computed = await model()
+
+  assert.throws(
+    () => validateMetadataOptions(computed, 'implementsContext', { type: 'multiselect', options: [] }),
+    /Unknown values "orders", "catalog" for metadata "implementsContext"\. Known values: \(none\)/,
   )
 })

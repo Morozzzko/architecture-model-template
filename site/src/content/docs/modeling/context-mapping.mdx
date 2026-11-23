@@ -44,16 +44,26 @@ Record a relationship and every applicable role from observed coordination and t
 | Upstream role | Open Host Service | The upstream exposes one general service for several consumers. |
 | Upstream role | Published Language | The upstream and consumers exchange a documented common language. |
 
-For a directional relationship, choose Customer–Supplier or Upstream–Downstream and add every confirmed upstream role. Add either Conformist or Anticorruption Layer when one is confirmed downstream; never add both. Partnership and Shared Kernel are symmetric relationships and take no directional roles.
+The allowed roles depend on the relationship:
+
+- Upstream–Downstream can have Open Host Service, Published Language, both or neither upstream, and Conformist, Anticorruption Layer or neither downstream. Never record both downstream roles.
+- Customer–Supplier can have Published Language upstream. It cannot have Open Host Service or Conformist. Anticorruption Layer is allowed but unusual; record it only after confirming that the customer really translates the supplier's model despite influencing its priorities.
+- Partnership and Shared Kernel are symmetric and take no directional roles.
 
 ## Connect contexts to the software model
 
 Bounded contexts are not another level in the C4 hierarchy. They are configured values of the `implementsContext` metadata field and referenced by the LikeC4 elements that directly realize their domain behavior.
 
-Install the [editable-metadata addon](../../addons/editable-metadata/) if the repository does not use it already:
+`MetadataElements` was added in `@architecture-model/editable-metadata` 0.6.0. Install the latest addon when the repository does not use it already:
 
 ```bash
-npx astro add @architecture-model/editable-metadata
+npx astro add @architecture-model/editable-metadata@latest
+```
+
+If `astro.config.mjs` already uses the addon but `node_modules/@architecture-model/editable-metadata/package.json` does not export `./MetadataElements.astro`, upgrade it before adding the context page:
+
+```bash
+npm install @architecture-model/editable-metadata@latest
 ```
 
 Define the known contexts and their page links in `model/metadata.json`:
@@ -92,7 +102,7 @@ Contexts: <Metadata of="orders" name="implementsContext" />
 
 ## Publish the context map
 
-The skill creates `src/content/docs/contexts.mdx`. It starts with the questions at the top of this page and contains:
+The skill creates `src/content/docs/contexts.mdx` and adds **Bounded contexts** to the repository's existing documentation navigation. The page starts with the questions at the top of this page and contains:
 
 - A relationship table with contexts, relationship and direction, every confirmed role, what crosses the boundary and where translation happens. Directional rows name the upstream and downstream explicitly; symmetric rows use neutral context names.
 - One section per context with purpose, owner, terms that differ from neighbouring contexts and its confirmed relationships.
@@ -112,7 +122,7 @@ The build fails if an element uses an `implementsContext` value that is not conf
 
 ## Keep only useful questions
 
-When an answer could change a boundary or relationship, the skill keeps it in the unpublished `docs/questions/contexts.md`:
+When an answer could change a boundary or relationship, the skill keeps it in the unpublished `docs/questions/contexts.md`. That path is reserved for the organization-wide map. If an older repository used it for the system whose id is `contexts`, the skill moves those system-question rows to `docs/questions/systems/contexts.md` before creating this backlog.
 
 ```markdown
 # Open questions: Context map

@@ -21,8 +21,8 @@ This repository is an architecture model of an organization's systems and the do
 
   The starter page `systems/system.mdx` describes the sample "Software System"; rename it for the first real system.
 - `docs/decisions/`: Architecture Decision Records, plain adr-tools markdown.
-- `docs/questions/<id>.md`: a system's open questions, one table row each (question, section, who might know, date asked). Not published. A question nobody could answer goes here, never into a page; when it is answered, write the answer where it belongs and remove the row.
-- `docs/questions/contexts.md`: only unanswered questions that could change a bounded-context boundary or relationship, with why each matters, the affected contexts, who can answer and when it was asked. It is not published and is deleted when empty.
+- `docs/questions/<id>.md`: a system's open questions, one table row each (question, section, who might know, date asked). The system id `contexts` uses `docs/questions/systems/contexts.md` instead. Not published. A question nobody could answer goes here, never into a page; when it is answered, write the answer where it belongs and remove the row.
+- `docs/questions/contexts.md`: reserved for unanswered questions that could change a bounded-context boundary or relationship, with why each matters, the affected contexts, who can answer and when it was asked. If this path contains the four-column system-question table from an older repository, move those rows to `docs/questions/systems/contexts.md` before writing the context backlog. It is not published and is deleted when empty.
 - `src/components/`: components that render the model inside pages.
 
 ## Rules

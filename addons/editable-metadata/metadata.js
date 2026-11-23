@@ -13,18 +13,19 @@ export const optionsOf = (field) =>
 export const elementsWithMetadata = (model, name, value) =>
   [...model.elements()].filter((element) => valuesOf(element, name).includes(value))
 
-export const hrefWithBase = (href, base = '/') => (href.startsWith('/') ? `${base.replace(/\/$/, '')}${href}` : href)
+export const hrefWithBase = (href, base = '/') =>
+  href.startsWith('/') && !href.startsWith('//') ? `${base.replace(/\/$/, '')}${href}` : href
 
 export function validateMetadataOptions(model, name, field) {
+  if (!field.options) throw new Error(`Metadata "${name}" needs configured options before its values can be queried`)
   const options = optionsOf(field)
-  if (!options.length) throw new Error(`Metadata "${name}" needs configured options before its values can be queried`)
 
   const known = new Set(options.map(({ value }) => value))
   const used = [...new Set([...model.elements()].flatMap((element) => valuesOf(element, name)))]
   const unknown = used.filter((value) => !known.has(value))
   if (unknown.length) {
     throw new Error(
-      `Unknown ${unknown.length === 1 ? 'value' : 'values'} ${unknown.map((value) => `"${value}"`).join(', ')} for metadata "${name}". Known values: ${[...known].join(', ')}`,
+      `Unknown ${unknown.length === 1 ? 'value' : 'values'} ${unknown.map((value) => `"${value}"`).join(', ')} for metadata "${name}". Known values: ${known.size ? [...known].join(', ') : '(none)'}`,
     )
   }
 

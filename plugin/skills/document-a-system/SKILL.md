@@ -74,6 +74,8 @@ The first pass is done for now when all three are at least written, with open qu
 8. **Deployment,** only if environments differ in what runs where. See `c4-modeling`'s `deployment.md`.
 9. **Where it's heading.** What is being added, replaced or retired, and why.
 
+10. **Context mapping, when domain language or ownership crosses systems.** Offer the `context-mapping` skill when two teams use an important term differently, a system spans several teams' domain models, or an integration's upstream/downstream influence is unclear. It maps the current organization across systems, so do not run it as an automatic part of this system's first pass. The specialist skill resumes its own open questions and writes confirmed contexts back to the shared model and context page.
+
 Finish the second pass with an `architecture-review`.
 
 ## How to ask

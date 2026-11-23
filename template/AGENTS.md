@@ -7,6 +7,7 @@ This repository is an architecture model of an organization's systems and the do
 - `model/model.c4`: the LikeC4 model. It is the source of truth for elements, relationships and views.
 - `model/conventions.md`: how this repository settled modeling questions the rules below leave open.
 - `src/content/docs/`: documentation pages (MDX). `index.mdx` is the overview of all systems.
+- `src/content/docs/contexts.mdx`: the optional organization-wide map of confirmed bounded contexts, their language, owners, relationships and implementing elements.
 - `src/content/docs/systems/`: one page per software system in the model, named after its element id (`systems/payments.mdx` for `payments`). Every page has the same sections, in this order: Purpose, Quality goals, Quality scenarios, Key concepts, Context, Containers, Key flows, Principles and decisions, Where it's heading. Why the system exists is prose; what it is made of comes from the model through components. Each section starts with an italic placeholder line, which stays until the section's main point is written, and comes back if the section is emptied:
   - Purpose: *Why the system exists, who depends on it, and what each of them needs from it.*
   - Quality goals: *The three qualities the system is optimized for, in order, each with who needs it and why. When two conflict, the higher one wins.*
@@ -21,6 +22,7 @@ This repository is an architecture model of an organization's systems and the do
   The starter page `systems/system.mdx` describes the sample "Software System"; rename it for the first real system.
 - `docs/decisions/`: Architecture Decision Records, plain adr-tools markdown.
 - `docs/questions/<id>.md`: a system's open questions, one table row each (question, section, who might know, date asked). Not published. A question nobody could answer goes here, never into a page; when it is answered, write the answer where it belongs and remove the row.
+- `docs/questions/contexts.md`: only unanswered questions that could change a bounded-context boundary or relationship, with why each matters, the affected contexts, who can answer and when it was asked. It is not published and is deleted when empty.
 - `src/components/`: components that render the model inside pages.
 
 ## Rules
@@ -46,6 +48,7 @@ The model follows the C4 model (c4model.com).
 
 - Read `model/conventions.md` before modeling; its answers win. When you settle a case it doesn't cover, add a row to it.
 - Ownership and runtime decide what an element is, never size or importance: what another team or company owns is an `external` system with no internals; what one team builds and deploys together is a `system`; each process or data store of it that must run is a `container`. Domains, bounded contexts and libraries are not elements.
+- A confirmed bounded context is an option of the `implementsContext` multiselect field in `model/metadata.json`. Map a system when the whole system implements that context; when it spans contexts, map the relevant containers instead. Never map both an element and its descendant to the same context. The mapping is explicit and never inherited.
 - One container per database schema, bucket or topic with its own purpose, not one per server or cluster. Servers, clusters and which provider serves which environment belong in a `deployment` block.
 - Every element has a description, and every container a `technology`: what it is built with, not how it is deployed. While nobody knows a container's technology, leave it out and keep the question in the system's questions file.
 - Name views after their system (`paymentsContext`, `paymentsContainers`) so systems can't clash.

@@ -74,13 +74,28 @@ Without configuration every key is text, except the [people keys](#people). To g
 
 The options of `select` and `multiselect` are the ones listed plus every value already in use in the model. A `url` is a link in the built site.
 
-An option can have a label that pages and editors show in place of the stored value:
+An option can have a label that pages and editors show in place of the stored value. It can also have an `href`; built pages link the label to it, and a site-root path keeps Astro's configured base path:
 
 ```json
 {
-  "owners": { "type": "multiselect", "options": [{ "value": "igor", "label": "Igor Morozov" }, "platform-team"] }
+  "implementsContext": {
+    "type": "multiselect",
+    "options": [{ "value": "orders", "label": "Orders", "href": "/contexts/#orders" }]
+  }
 }
 ```
+
+## Find elements by metadata
+
+`MetadataElements` lists every element whose scalar or list metadata contains one configured value:
+
+```mdx
+import MetadataElements from '@architecture-model/editable-metadata/MetadataElements.astro'
+
+<MetadataElements name="implementsContext" value="orders" empty="No elements implement this context." />
+```
+
+The field must define `options`. The component checks every value used for that key and fails the build when one is not an option, so a misspelled reference cannot silently disappear from the list. A configured value with no elements is valid and renders `empty`.
 
 ## Derived values
 

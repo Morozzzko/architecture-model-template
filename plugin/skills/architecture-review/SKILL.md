@@ -57,7 +57,7 @@ A section that loses all its content, including a table left with only its heade
 
 ## Ask
 
-Collect the questions from all findings. Ask the closed ones as multiple-choice questions (AskUserQuestion in Claude Code) and the rest in conversation, grouped by section. Write in only what the user answers. Questions about why belong to people; when the user can't answer, suggest who could, leave the section as it is, and add the question to the system's questions file, `docs/questions/<id>.md` (its shape is in the `document-a-system` skill), never to the page, unless the file already has it.
+Collect the questions from all findings. Ask the closed ones as multiple-choice questions (AskUserQuestion in Claude Code) and the rest in conversation, grouped by section. Write in only what the user answers. Questions about why belong to people; when the user can't answer, suggest who could, leave the section as it is, and add the question to the system's questions file, `docs/questions/<id>.md` except `docs/questions/systems/<original-id>.md` when the system id equals `contexts` ignoring case (its shape and reserved-path migration are in the `document-a-system` skill), never to the page, unless the file already has it.
 
 ## Finish
 
@@ -73,3 +73,4 @@ Run `npm run validate` and `npm run build`, and fix what they report. Then repor
 - Reviewers who must use the document to answer questions find more than reviewers asked yes or no, which is the Newcomer critic's method: Parnas and Weiss, [Active Design Reviews: Principles and Practices](https://doi.org/10.1016/0164-1212(87)90025-2), *Journal of Systems and Software* 7(4), 1987, and the SEI's [Active Reviews for Intermediate Designs](https://apps.dtic.mil/sti/pdfs/ADA383775.pdf)
 - The decision checks and the reviewer anti-patterns the output format rules out (pass-through, copy-edit, comments without advice, repetition): Olaf Zimmermann, [How to review Architectural Decision Records](https://ozimmer.ch/practices/2023/04/05/ADRReview.html)
 - Element levels, labels and view titles: the [C4 review checklist](https://c4model.com/diagrams/checklist) and [notation](https://c4model.com/diagrams/notation)
+- The question-file locations, including the reserved context-map path, are this toolkit's own design.

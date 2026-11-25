@@ -1,0 +1,48 @@
+---
+import { fieldOf } from './fields.js'
+import { elementsWithMetadata, validateMetadataOptions } from './metadata.js'
+import { model } from './model.js'
+
+interface Props {
+  name: string
+  value: string
+  empty?: string
+}
+
+const { name, value, empty = 'None.' } = Astro.props
+const options = validateMetadataOptions(model, name, fieldOf(name))
+if (!options.some((option) => option.value === value)) {
+  throw new Error(
+    `Unknown value "${value}" for metadata "${name}". Known values: ${options.length ? options.map(({ value }) => value).join(', ') : '(none)'}`,
+  )
+}
+const elements = elementsWithMetadata(model, name, value)
+---
+
+{
+  elements.length ? (
+    <table>
+      <thead>
+        <tr><th>Element</th><th>Identifier</th><th>Kind</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        {elements.map((element) => (
+          <tr>
+            <td>{element.title}</td>
+            <td><code>{element.id}</code></td>
+            <td>{element.kind}</td>
+            <td>
+              {element.description.isMarkdown ? (
+                <Fragment set:html={element.description.html} />
+              ) : (
+                element.description.text
+              )}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  ) : (
+    <p>{empty}</p>
+  )
+}

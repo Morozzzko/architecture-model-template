@@ -25,7 +25,7 @@ Walk a person through documenting one system as a conversation. They bring what 
   | Where it's heading | *What is being added, replaced or retired, and why.* |
 
 - The system in the model: `model/model.c4`, following the `c4-modeling` skill.
-- Its open questions: `docs/questions/<id>.md`, created when the first question comes up. It is not published. Keep exactly this shape:
+- Its open questions: `docs/questions/<id>.md`, created when the first question comes up. An id equal to `contexts` ignoring case is the exception: the top-level path is reserved for the organization-wide context map, so that system uses `docs/questions/systems/<original-id>.md`. If an older top-level file whose name equals `contexts.md` ignoring case has the system-question columns shown below, move its rows to the namespaced path and merge with any existing rows without losing or duplicating them. The file is not published. Keep exactly this shape:
 
   ```markdown
   # Open questions: Payments
@@ -73,6 +73,8 @@ The first pass is done for now when all three are at least written, with open qu
 7. **Principles and decisions.** For each significant choice, ask why. Record each answered one as an ADR with `bin/adr new`; where that script is missing, write the next numbered file in `docs/decisions/` in the same adr-tools format, dated today, with when the decision was made in its context. Summarize the principles on the page.
 8. **Deployment,** only if environments differ in what runs where. See `c4-modeling`'s `deployment.md`.
 9. **Where it's heading.** What is being added, replaced or retired, and why.
+
+10. **Context mapping, when domain models or language diverge.** Offer the `context-mapping` skill when an important term has different meanings, a system contains distinct domain models even within one team, or an integration's upstream/downstream influence is unclear. It maps the current organization rather than one system in isolation, so do not run it as an automatic part of this system's first pass. The specialist skill resumes its own open questions and writes confirmed contexts back to the shared model and context page.
 
 Finish the second pass with an `architecture-review`.
 

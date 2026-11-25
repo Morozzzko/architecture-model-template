@@ -32,7 +32,7 @@ Use multiple-choice questions for choices and plain conversation for reasons and
 
 5. **Why, for each specific quality.** In conversation: who needs it, and what happens to them when it's missing. This is the part that stays true longest; don't skip it when the user is short of time.
 
-6. **Scenarios someone could check.** For each goal, draft one or more as "when <event> under <conditions>, the system <response> within <measure>", one per distinct check, then ask the user to correct the numbers. A number the user doesn't know is written as open, never guessed, and goes into the system's questions file, `docs/questions/<id>.md` (its shape is in the `document-a-system` skill), with who might know. A need nobody has thought about yet ("we never considered attacks") is a question in the same file, not a scenario.
+6. **Scenarios someone could check.** For each goal, draft one or more as "when <event> under <conditions>, the system <response> within <measure>", one per distinct check, then ask the user to correct the numbers. A number the user doesn't know is written as open, never guessed, and goes into the system's questions file, `docs/questions/<id>.md` except `docs/questions/systems/<original-id>.md` when the system id equals `contexts` ignoring case (its shape and reserved-path migration are in the `document-a-system` skill), with who might know. A need nobody has thought about yet ("we never considered attacks") is a question in the same file, not a scenario.
 
 7. **What was ranked lower on purpose.** For each kind that was picked but ranked below the top three, ask why it can wait and whether it still has a limit it must not cross ("a catalog upload still finishes within 10 minutes"). Record the trade-off: it explains the design as much as the goals do. A limit becomes a scenario, marked as a limit rather than a goal.
 
@@ -52,5 +52,6 @@ Name each goal by its ISO term, with the system's own words in the goal: "Reliab
 - Real-world wording and example requirements: the [Q42 quality model](https://quality.arc42.org/) by Gernot Starke, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 - Top quality goals as the trade-offs that shape a system: arc42's [Introduction and Goals](https://docs.arc42.org/section-1/) and [Quality Requirements](https://docs.arc42.org/section-10/), by Gernot Starke and Peter Hruschka, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 - Architecture as fundamental properties and the principles behind them: [ISO/IEC/IEEE 42010:2022](https://www.iso.org/standard/74393.html)
+- The question-file locations, including the reserved context-map path, are this toolkit's own design.
 
 This skill links to and paraphrases arc42 and Q42; it copies none of their text.

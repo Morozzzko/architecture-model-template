@@ -41,6 +41,7 @@ In Claude Code:
 | `new-architecture-repo` | Scaffold a new repository from the template |
 | `document-a-system` | Walk someone through documenting a system, first time or after a break, and keep its open questions |
 | `metadata-fields` | Define, set and show element metadata with the editable-metadata addon |
+| `context-mapping` | Discover current bounded contexts, their relationships and the LikeC4 elements that implement them |
 | `c4-modeling` | Decide what is a system, container or component, and model data stores, queues, providers and deployments |
 | `kubernetes-deployment` | Keep LikeC4 deployment views synchronized with mapped Kubernetes and Helm workloads |
 | `model-diff` | Compare the raw LikeC4 model between two states of one repository |

@@ -144,6 +144,20 @@ export const callsBack = (element, model) => [...element.outgoing()].some(({ tar
 
 A function returns a string, a number, a list, or `true` and `false`, shown as Yes and No. A derived value is never editable, and it changes as soon as the relationships in the model change.
 
+## Find elements by metadata
+
+`MetadataElements` lists the elements whose scalar or list metadata contains one configured option:
+
+```mdx
+import MetadataElements from '@architecture-model/editable-metadata/MetadataElements.astro'
+
+<MetadataElements name="implementsContext" value="orders" empty="No elements implement this context." />
+```
+
+The field must define `options` in `model/metadata.json`. The component fails the build when an element uses a value outside that list. Every row includes the fully qualified element identifier, so containers with the same title in different systems remain distinguishable. A configured value with no matching elements is valid and renders the supplied `empty` text.
+
+An option can include an `href` as well as a label. Built pages link the label to it; a site-root path such as `/contexts/#orders` keeps the site's configured base path.
+
 ## Editing
 
 In the dev server a value has a dashed underline:

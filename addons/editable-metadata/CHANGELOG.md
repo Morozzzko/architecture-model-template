@@ -1,5 +1,11 @@
 # @architecture-model/editable-metadata
 
+## 0.6.0
+
+### Minor Changes
+
+- 2d0e4dd: List elements by configured metadata values, link option labels in generated pages, and ship bounded-context guidance in generated projects
+
 ## 0.5.0
 
 ### Minor Changes

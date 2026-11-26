@@ -1,5 +1,11 @@
 # @architecture-model/create
 
+## 0.3.1
+
+### Patch Changes
+
+- 2d0e4dd: List elements by configured metadata values, link option labels in generated pages, and ship bounded-context guidance in generated projects
+
 ## 0.3.0
 
 ### Minor Changes
